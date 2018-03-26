@@ -1,0 +1,7 @@
+a.out
+a.out.js
+.vscode
+*.o
+.cache
+dist
+node_modules
