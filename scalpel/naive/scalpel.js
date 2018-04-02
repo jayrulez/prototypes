@@ -1,17 +1,14 @@
 
 export class Scalpel {
-  canvas = null
-  ctx = null
-  points = []
-  state = {
-    mouseDown: false,
-    mouseX: 0,
-    mouseY: 0
-  }
-
   constructor (canvas) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
+    this.points = []
+    this.state = {
+      mouseDown: false,
+      mouseX: 0,
+      mouseY: 0
+    }
 
     canvas.addEventListener('mousemove', (e) => {
       const box = canvas.getBoundingClientRect()
@@ -28,7 +25,7 @@ export class Scalpel {
     })
   }
   // Basic `quadraticCurveTo` approach.
-  draw = () => {
+  draw () {
     const { ctx, canvas, state, points } = this
     const { mouseX, mouseY } = state
 
