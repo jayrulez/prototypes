@@ -1,4 +1,4 @@
-# WebM Encoding Example
+# Example
 
 Please use [ParcelJS](https://parceljs.org) to run this example.
 
