@@ -1,4 +1,4 @@
-import { main } from './app'
+import { App } from './app'
 
 const stageConf = {
   container: 'container',
@@ -13,4 +13,5 @@ const lineConf = {
   tension: 0.5
 }
 
-main(stageConf, layerConf, lineConf)
+// main(stageConf, layerConf, lineConf)
+void new App(stageConf, layerConf, lineConf)
