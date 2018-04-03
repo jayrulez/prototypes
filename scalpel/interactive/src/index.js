@@ -13,5 +13,4 @@ const lineConf = {
   tension: 0.5
 }
 
-// main(stageConf, layerConf, lineConf)
 void new App(stageConf, layerConf, lineConf)
