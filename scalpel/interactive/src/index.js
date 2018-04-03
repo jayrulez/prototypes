@@ -7,7 +7,7 @@ const stageConf = {
 }
 const layerConf = {}
 const lineConf = {
-  stroke: 'black',
+  stroke: '#666',
   points: [],
   bezier: true,
   tension: 0.5
