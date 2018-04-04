@@ -1,35 +1,46 @@
 import { Stage, Layer, Circle, Rect, Line } from 'konva'
+import { pointerInCircle } from './utils'
 
 export class App {
   constructor (stageConf, layerConf, lineConf) {
+    // debug
+    window.app = this
     this.stage = new Stage(stageConf)
     this.layer = new Layer(layerConf)
     this.line = new Line(lineConf)
     this.points = []
+    this.count = 0
 
     this.bindStageEvents()
     this.layer.add(this.line)
     this.stage.add(this.layer)
   }
 
+  get linePoints () {
+    return this.points
+      .map(({ circle }) => [circle.x(), circle.y()])
+      .reduce((a, b) => [...a, ...b], [])
+  }
+
   bindStageEvents () {
     this.stage.on('click', () => {
       const { x, y } = this.stage.getPointerPosition()
-      this.points.push(x, y)
+      this.addCircle(x, y)
       // https://github.com/konvajs/konva/issues/378
-      this.line.points(this.points.concat())
-      this.initCircle(x, y)
+      this.line.points(this.linePoints)
+      this.layer.draw()
     })
   }
 
-  initCircle (x, y) {
-    const pointIndex = this.points.length / 2
+  addCircle (x, y) {
+    // FIXME
+    const id = this.count++
     // TODO detect invalid position.
     const circle = new Circle({
       x,
       y,
+      id: `circle-${id}`,
       radius: 8,
-      id: `circle-${pointIndex}`,
       fill: '#ddd',
       draggable: true,
       hitFunc: function (context) {
@@ -44,7 +55,7 @@ export class App {
       y: y - 10,
       width: 6,
       height: 6,
-      id: `tooltip-${pointIndex}`,
+      id: `tooltip-${id}`,
       fill: 'red'
     })
     tooltip.hide()
@@ -58,54 +69,44 @@ export class App {
     circle.on('mouseout', () => {
       circle.fill('#ddd')
       // Fix tooltip flickering.
-      setTimeout(() => {
-        if (!circle.intersects(this.stage.getPointerPosition())) {
+      pointerInCircle(circle, this.stage).then(isInCircle => {
+        if (!isInCircle) {
           tooltip.hide()
           this.layer.draw()
         }
-      }, 0)
+      })
     })
+
     tooltip.on('click', (e) => {
       e.cancelBubble = true
       this.removePoint(circle)
       tooltip.destroy()
       circle.destroy()
-      this.line.points(this.points)
+      this.line.points(this.linePoints)
       this.layer.draw()
     })
 
     // Drag events for re-rendering line.
     circle.on('dragmove', () => {
       this.moveTooltip(tooltip, circle)
-      this.getNewPoints(circle)
-      this.line.points(this.points)
+      this.line.points(this.linePoints)
       this.layer.draw()
     })
     circle.on('dragend', () => {
-      this.getNewPoints(circle)
-      this.line.points(this.points)
+      this.line.points(this.linePoints)
       this.layer.draw()
     })
 
+    // Save points for drawing line.
+    this.points.push({ circle, id, tooltip })
     this.layer.add(circle)
     this.layer.add(tooltip)
     this.layer.draw()
   }
 
   removePoint (circle) {
-    const index = (parseInt(circle.id().split('-')[1]) - 1) * 2
-    const newPoints = this.points.concat()
-    newPoints.splice(index, 1)
-    newPoints.splice(index, 1)
-    this.points = newPoints
-  }
-
-  getNewPoints (circle) {
-    const index = (parseInt(circle.id().split('-')[1]) - 1) * 2
-    const newPoints = this.points.concat()
-    newPoints[index] = circle.x()
-    newPoints[index + 1] = circle.y()
-    this.points = newPoints
+    const circleId = parseInt(circle.id().split('-')[1])
+    this.points = this.points.filter(({ id }) => id !== circleId)
   }
 
   moveTooltip (tooltip, circle) {
