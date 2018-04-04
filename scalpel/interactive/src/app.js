@@ -79,9 +79,7 @@ export class App {
 
     tooltip.on('click', (e) => {
       e.cancelBubble = true
-      this.removePoint(circle)
-      tooltip.destroy()
-      circle.destroy()
+      this.removePoint(id)
       this.line.points(this.linePoints)
       this.layer.draw()
     })
@@ -104,9 +102,11 @@ export class App {
     this.layer.draw()
   }
 
-  removePoint (circle) {
-    const circleId = parseInt(circle.id().split('-')[1])
-    this.points = this.points.filter(({ id }) => id !== circleId)
+  removePoint (removeId) {
+    const pointToRemove = this.points.find(({ id }) => id === removeId)
+    pointToRemove.tooltip.destroy()
+    pointToRemove.circle.destroy()
+    this.points = this.points.filter(({ id }) => id !== removeId)
   }
 
   moveTooltip (tooltip, circle) {
