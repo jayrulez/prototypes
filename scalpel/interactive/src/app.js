@@ -40,10 +40,10 @@ export class App {
       }
     })
     const tooltip = new Rect({
-      x: x + 5,
+      x: x + 6,
       y: y - 10,
-      width: 10,
-      height: 10,
+      width: 6,
+      height: 6,
       id: `tooltip-${pointIndex}`,
       fill: 'red'
     })
@@ -76,6 +76,7 @@ export class App {
 
     // Drag events for re-rendering line.
     circle.on('dragmove', () => {
+      this.moveTooltip(tooltip, circle)
       this.getNewPoints(circle)
       this.line.points(this.points)
       this.layer.draw()
@@ -105,5 +106,10 @@ export class App {
     newPoints[index] = circle.x()
     newPoints[index + 1] = circle.y()
     this.points = newPoints
+  }
+
+  moveTooltip (tooltip, circle) {
+    tooltip.x(circle.x() + 6)
+    tooltip.y(circle.y() - 10)
   }
 }
