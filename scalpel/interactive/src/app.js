@@ -1,5 +1,5 @@
 import { Stage, Layer, Circle, Rect, Line } from 'konva'
-import { pointerInCircle } from './utils'
+import { initPointEvents } from './utils'
 
 export class App {
   constructor (stageConf, layerConf, lineConf) {
@@ -12,6 +12,7 @@ export class App {
     this.count = 0
 
     this.bindStageEvents()
+    this.bindLineEvents()
     this.layer.add(this.line)
     this.stage.add(this.layer)
   }
@@ -25,15 +26,20 @@ export class App {
   bindStageEvents () {
     this.stage.on('click', () => {
       const { x, y } = this.stage.getPointerPosition()
-      this.addCircle(x, y)
+      this.addPoint(x, y)
       // https://github.com/konvajs/konva/issues/378
       this.line.points(this.linePoints)
       this.layer.draw()
     })
   }
 
-  addCircle (x, y) {
-    // FIXME
+  bindLineEvents () {
+    this.line.on('click', () => {
+      // TODO stage.getPointerPosition
+    })
+  }
+
+  addPoint (x, y) {
     const id = this.count++
     // TODO detect invalid position.
     const circle = new Circle({
@@ -60,40 +66,7 @@ export class App {
     })
     tooltip.hide()
 
-    // Mouse events for tooltips.
-    circle.on('mouseenter', () => {
-      circle.fill('blue')
-      tooltip.show()
-      this.layer.draw()
-    })
-    circle.on('mouseout', () => {
-      circle.fill('#ddd')
-      // Fix tooltip flickering.
-      pointerInCircle(circle, this.stage).then(isInCircle => {
-        if (!isInCircle) {
-          tooltip.hide()
-          this.layer.draw()
-        }
-      })
-    })
-
-    tooltip.on('click', (e) => {
-      e.cancelBubble = true
-      this.removePoint(id)
-      this.line.points(this.linePoints)
-      this.layer.draw()
-    })
-
-    // Drag events for re-rendering line.
-    circle.on('dragmove', () => {
-      this.moveTooltip(tooltip, circle)
-      this.line.points(this.linePoints)
-      this.layer.draw()
-    })
-    circle.on('dragend', () => {
-      this.line.points(this.linePoints)
-      this.layer.draw()
-    })
+    initPointEvents(this, id, circle, tooltip)
 
     // Save points for drawing line.
     this.points.push({ circle, id, tooltip })
