@@ -1,0 +1,8 @@
+{
+  "name": "scalpel-example",
+  "version": "0.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "konva": "^2.0.2"
+  }
+}
