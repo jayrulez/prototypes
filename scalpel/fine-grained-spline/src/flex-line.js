@@ -27,6 +27,7 @@ export class FlexLine {
     const point = new Point(this.app, this, x, y)
     this.points.push(point)
     this.drawSegments()
+    point.draw()
   }
 
   drawSegments = () => {

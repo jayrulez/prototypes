@@ -42,10 +42,6 @@ export class Point {
     this.parent = parent
 
     this.initDragBarEvents()
-    app.layer.add(this.mainMark)
-    app.layer.add(this.dragBar)
-    app.layer.add(this.delMark)
-    app.layer.add(this.cornerMark)
   }
 
   get x () {
@@ -84,5 +80,14 @@ export class Point {
     }
 
     this.dragBar.on('mousedown', onDragBarMousedown)
+  }
+
+  draw = () => {
+    const { layer } = this.app
+    layer.add(this.mainMark)
+    layer.add(this.dragBar)
+    layer.add(this.delMark)
+    layer.add(this.cornerMark)
+    layer.draw()
   }
 }
