@@ -3,6 +3,7 @@ import { Point } from './point'
 
 export class FlexLine {
   points = []
+  lines = []
 
   constructor (app) {
     this.app = app
@@ -31,6 +32,7 @@ export class FlexLine {
   }
 
   drawSegments = () => {
+    this.lines.forEach(line => line.destroy())
     const { layer } = this.app
     this.segments.forEach((segment, i) => {
       const { fromStart, toEnd, fromPoint, toPoint } = segment
@@ -44,6 +46,7 @@ export class FlexLine {
             toPoint.y
           ]
         })
+        this.lines.push(line)
         layer.add(line)
       }
     })
