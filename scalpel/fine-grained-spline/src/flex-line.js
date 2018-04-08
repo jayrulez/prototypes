@@ -17,19 +17,20 @@ export class FlexLine {
         fromPoint: this.points[i],
         toPoint: this.points[i + 1],
         fromStart: i === 0,
-        toEnd: i + 1 === len
+        toEnd: i + 1 === len - 1
       })
     }
     return segments
   }
 
   addPoint = (x, y) => {
-    const point = new Point(this.app.layer, x, y)
+    const point = new Point(this.app, this, x, y)
     this.points.push(point)
-    this.app.layer.draw()
+    this.drawSegments()
   }
 
   drawSegments = () => {
+    const { layer } = this.app
     this.segments.forEach((segment, i) => {
       const { fromStart, toEnd, fromPoint, toPoint } = segment
       if (fromStart || toEnd) {
@@ -42,9 +43,9 @@ export class FlexLine {
             toPoint.y
           ]
         })
-        this.app.layer.add(line)
+        layer.add(line)
       }
     })
-    this.app.layer.draw()
+    layer.draw()
   }
 }
