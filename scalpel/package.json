@@ -1,0 +1,14 @@
+{
+  "name": "scalpel",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.2",
+    "babel-preset-stage-0": "^6.24.1",
+    "standard": "^11.0.1"
+  }
+}
