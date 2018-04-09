@@ -4,7 +4,6 @@ import { initStage, initLayer } from './conf'
 export class App {
   stage = initStage()
   layer = initLayer()
-  flexLines = []
 
   constructor () {
     window.app = this
@@ -25,9 +24,9 @@ export class App {
   bindStageEvents = () => {
     this.stage.on('click', () => {
       const { x, y } = this.pointerPosition
+      // TODO keep references to flex lines.
       const flexLine = new FlexLine(this)
       flexLine.addPoint(x, y)
-      this.flexLines.push(flexLine)
     })
   }
 }
