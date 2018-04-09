@@ -67,6 +67,22 @@ export class FlexLine {
     layer.add(line)
   }
 
+  drawSpline = (segment) => {
+    const { layer } = this.app
+    const { from, to, prev, next } = segment
+
+    const h0 = getControlPoints(prev.x, prev.y, from.x, from.y, to.x, to.y)[1]
+    const h1 = getControlPoints(from.x, from.y, to.x, to.y, next.x, next.y)[0]
+
+    const line = new Line({
+      stroke: 'red',
+      bezier: true,
+      points: [from.x, from.y, h0.x, h0.y, h1.x, h1.y, to.x, to.y]
+    })
+
+    layer.add(line)
+  }
+
   drawSegments = () => {
     this.lines.forEach(line => line.destroy())
     const { layer } = this.app
@@ -107,7 +123,7 @@ export class FlexLine {
       } else if (from.isCorner || to.isCorner) {
         this.drawQuad(segment, from.isCorner)
       } else {
-        // TODO draw spline with control points.
+        this.drawSpline(segment)
       }
     })
     layer.draw()
