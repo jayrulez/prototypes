@@ -12,9 +12,19 @@ export class App {
     this.stage.add(this.layer)
   }
 
+  get pointerPosition () {
+    return this.stage.getPointerPosition()
+  }
+
+  addToLayer = (shape) => {
+    this.layer.add(shape)
+  }
+
+  draw = () => this.layer.draw()
+
   bindStageEvents = () => {
     this.stage.on('click', () => {
-      const { x, y } = this.stage.getPointerPosition()
+      const { x, y } = this.pointerPosition
       const flexLine = new FlexLine(this)
       flexLine.addPoint(x, y)
       this.flexLines.push(flexLine)

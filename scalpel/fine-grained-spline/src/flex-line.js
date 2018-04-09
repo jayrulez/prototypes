@@ -40,7 +40,7 @@ export class FlexLine {
   }
 
   addPointAfter = (leftId) => {
-    const { x, y } = this.app.stage.getPointerPosition()
+    const { x, y } = this.app.pointerPosition
     const point = new Point(this.app, this, x, y)
     let index = 0
     this.points.forEach((point, i) => {
@@ -62,7 +62,7 @@ export class FlexLine {
       this.addPointAfter(from.id)
     })
     this.lines.push(line)
-    this.app.layer.add(line)
+    this.app.addToLayer(line)
     line.moveToBottom()
   }
 
@@ -71,7 +71,7 @@ export class FlexLine {
     this.lines = []
     this.segments.forEach(this.drawSegment)
     this.points.forEach(point => point.draw())
-    this.app.layer.draw()
+    this.app.draw()
   }
 
   drawLine = (segment) => {

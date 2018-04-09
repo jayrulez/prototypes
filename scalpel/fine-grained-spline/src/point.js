@@ -91,26 +91,27 @@ export class Point {
   }
 
   initDragBarEvents = () => {
-    const { stage, layer } = this.app
+    const { app, parent } = this
+
     const onDragBarMousedown = () => {
-      const { x, y } = stage.getPointerPosition()
+      const { x, y } = app.pointerPosition
       const dragger = new Circle({ x, y, ...draggerStyle })
-      layer.add(dragger)
-      layer.draw()
+      app.addToLayer(dragger)
+      app.draw()
 
       const onWindowMousemove = () => {
-        const { x, y } = stage.getPointerPosition()
+        const { x, y } = app.pointerPosition
         dragger.x(x)
         dragger.y(y)
-        layer.draw()
+        app.draw()
       }
 
       const onWindowMouseup = () => {
         window.removeEventListener('mousemove', onWindowMousemove)
-        const { x, y } = stage.getPointerPosition()
+        const { x, y } = app.pointerPosition
         dragger.destroy()
-        this.parent.addPoint(x, y)
-        layer.draw()
+        parent.addPoint(x, y)
+        app.draw()
       }
 
       window.addEventListener('mousemove', onWindowMousemove)
@@ -121,12 +122,12 @@ export class Point {
   }
 
   draw = () => {
-    const { layer } = this.app
-    layer.add(this.mainMark)
-    layer.add(this.dragBar)
-    layer.add(this.delMark)
-    layer.add(this.cornerMark)
-    layer.draw()
+    const { app } = this
+    app.addToLayer(this.mainMark)
+    app.addToLayer(this.dragBar)
+    app.addToLayer(this.delMark)
+    app.addToLayer(this.cornerMark)
+    app.draw()
   }
 
   destroy = () => {
