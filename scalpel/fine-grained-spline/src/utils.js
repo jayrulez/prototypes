@@ -1,4 +1,14 @@
+import { Stage, Layer } from 'konva'
+
 let _id = 0
+
+export const initStage = () => new Stage({
+  container: 'container',
+  width: 640,
+  height: 480
+})
+
+export const initLayer = () => new Layer({})
 
 // Generate unique id.
 export function getId () {

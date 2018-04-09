@@ -1,5 +1,5 @@
 import { FlexLine } from './flex-line'
-import { initStage, initLayer } from './conf'
+import { initStage, initLayer } from './utils'
 
 export class App {
   stage = initStage()
