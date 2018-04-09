@@ -32,6 +32,8 @@ const draggerConf = {
 }
 
 export class Point {
+  isCorner = false
+
   constructor (app, parent, x, y) {
     this.id = getId()
     this.mainMark = new Circle({ x, y, ...mainConf })

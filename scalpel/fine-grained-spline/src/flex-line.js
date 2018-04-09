@@ -21,9 +21,7 @@ export class FlexLine {
         from: this.points[i],
         to: this.points[i + 1],
         prev: isStart ? null : this.points[i - 1],
-        next: isEnd ? null : this.points[i + 2],
-        isStart,
-        isEnd
+        next: isEnd ? null : this.points[i + 2]
       })
     }
     return segments
@@ -46,12 +44,12 @@ export class FlexLine {
     layer.add(line)
   }
 
-  drawQuad = (segment, isStart = true) => {
+  drawQuad = (segment, useNext = true) => {
     const { layer } = this.app
     const { from, to, prev, next } = segment
 
-    // Different helper point for start / end quad.
-    const helper = isStart
+    // Use next point or prev point as helper point.
+    const helper = useNext
       ? getControlPoints(from.x, from.y, to.x, to.y, next.x, next.y)[0]
       : getControlPoints(prev.x, prev.y, from.x, from.y, to.x, to.y)[1]
 
@@ -60,7 +58,6 @@ export class FlexLine {
         context.beginPath()
         context.moveTo(from.x, from.y)
         context.quadraticCurveTo(helper.x, helper.y, to.x, to.y)
-        context.closePath()
         // Konva specific method.
         context.strokeShape(this)
       },
@@ -74,15 +71,43 @@ export class FlexLine {
     this.lines.forEach(line => line.destroy())
     const { layer } = this.app
     this.segments.forEach((segment) => {
-      const { isStart, isEnd, prev, next } = segment
+      const { from, to, prev, next } = segment
+      const isStart = prev === null
+      const isEnd = next === null
 
-      if (!prev && !next) {
+      // Draw straight line if the line has only one segment.
+      if (isStart && isEnd) {
         this.drawLine(segment)
         return
       }
 
-      if (isStart || isEnd) {
-        this.drawQuad(segment, isStart)
+      // Draw begin segment.
+      if (isStart) {
+        if (to.isCorner) {
+          this.drawLine(segment)
+          return
+        }
+        this.drawQuad(segment, true)
+        return
+      }
+
+      // Draw end segment.
+      if (isEnd) {
+        if (from.isCorner) {
+          this.drawLine(segment)
+          return
+        }
+        this.drawQuad(segment, false)
+        return
+      }
+
+      // Draw middle segments whose points are neither start nor end point.
+      if (from.isCorner && to.isCorner) {
+        this.drawLine(segment)
+      } else if (from.isCorner || to.isCorner) {
+        this.drawQuad(segment, from.isCorner)
+      } else {
+        // TODO draw spline with control points.
       }
     })
     layer.draw()
