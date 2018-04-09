@@ -43,8 +43,7 @@ export class Point {
     this.app = app
     this.parent = parent
 
-    this.initDragBarEvents()
-    this.initDelMarkEvents()
+    this.initEvents()
   }
 
   get x () {
@@ -55,10 +54,24 @@ export class Point {
     return this.mainMark.y()
   }
 
+  initEvents = () => {
+    this.initDragBarEvents()
+    this.initDelMarkEvents()
+    this.initCornerMarkEvents()
+  }
+
   initDelMarkEvents = () => {
     this.delMark.on('click', (e) => {
       e.cancelBubble = true
       this.parent.removePoint(this.id)
+    })
+  }
+
+  initCornerMarkEvents = () => {
+    this.cornerMark.on('click', (e) => {
+      e.cancelBubble = true
+      this.isCorner = !this.isCorner
+      this.parent.draw()
     })
   }
 
