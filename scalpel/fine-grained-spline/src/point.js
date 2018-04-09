@@ -58,6 +58,21 @@ export class Point {
     this.initDragBarEvents()
     this.initDelMarkEvents()
     this.initCornerMarkEvents()
+    this.initMainMarkEvents()
+  }
+
+  initMainMarkEvents = () => {
+    this.mainMark.on('dragmove', () => {
+      const x = this.mainMark.x()
+      const y = this.mainMark.y()
+      this.delMark.x(x + 6)
+      this.delMark.y(y - 10)
+      this.dragBar.x(x)
+      this.dragBar.y(y)
+      this.cornerMark.x(x - 12)
+      this.cornerMark.y(y - 10)
+      this.parent.draw()
+    })
   }
 
   initDelMarkEvents = () => {
