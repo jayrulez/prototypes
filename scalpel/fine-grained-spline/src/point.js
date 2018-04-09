@@ -44,6 +44,7 @@ export class Point {
     this.parent = parent
 
     this.initDragBarEvents()
+    this.initDelMarkEvents()
   }
 
   get x () {
@@ -52,6 +53,13 @@ export class Point {
 
   get y () {
     return this.mainMark.y()
+  }
+
+  initDelMarkEvents = () => {
+    this.delMark.on('click', (e) => {
+      e.cancelBubble = true
+      this.parent.removePoint(this.id)
+    })
   }
 
   initDragBarEvents = () => {
@@ -91,5 +99,12 @@ export class Point {
     layer.add(this.delMark)
     layer.add(this.cornerMark)
     layer.draw()
+  }
+
+  destroy = () => {
+    this.mainMark.destroy()
+    this.dragBar.destroy()
+    this.delMark.destroy()
+    this.cornerMark.destroy()
   }
 }

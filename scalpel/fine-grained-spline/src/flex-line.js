@@ -1,12 +1,13 @@
 import { Line, Shape } from 'konva'
 import { Point } from './point'
-import { getControlPoints } from './utils'
+import { getControlPoints, getId } from './utils'
 
 export class FlexLine {
   points = []
   lines = []
 
   constructor (app) {
+    this.id = getId()
     this.app = app
   }
 
@@ -30,8 +31,22 @@ export class FlexLine {
   addPoint = (x, y) => {
     const point = new Point(this.app, this, x, y)
     this.points.push(point)
-    this.drawSegments()
-    point.draw()
+    this.draw()
+  }
+
+  removePoint = (targetId) => {
+    const targetPoint = this.points.find(({ id }) => id === targetId)
+    targetPoint.destroy()
+    this.points = this.points.filter(({ id }) => id !== targetId)
+    this.draw()
+  }
+
+  draw = () => {
+    this.lines.forEach(line => line.destroy())
+    this.lines = []
+    this.points.forEach(point => point.draw())
+    this.segments.forEach(this.drawSegment)
+    this.app.layer.draw()
   }
 
   drawLine = (segment) => {
@@ -41,6 +56,7 @@ export class FlexLine {
       stroke: 'red',
       points: [from.x, from.y, to.x, to.y]
     })
+    this.lines.push(line)
     layer.add(line)
   }
 
@@ -63,7 +79,7 @@ export class FlexLine {
       },
       stroke: 'red'
     })
-
+    this.lines.push(line)
     layer.add(line)
   }
 
@@ -79,53 +95,48 @@ export class FlexLine {
       bezier: true,
       points: [from.x, from.y, h0.x, h0.y, h1.x, h1.y, to.x, to.y]
     })
-
+    this.lines.push(line)
     layer.add(line)
   }
 
-  drawSegments = () => {
-    this.lines.forEach(line => line.destroy())
-    const { layer } = this.app
-    this.segments.forEach((segment) => {
-      const { from, to, prev, next } = segment
-      const isStart = prev === null
-      const isEnd = next === null
+  drawSegment = (segment) => {
+    const { from, to, prev, next } = segment
+    const isStart = prev === null
+    const isEnd = next === null
 
-      // Draw straight line if the line has only one segment.
-      if (isStart && isEnd) {
+    // Draw straight line if the line has only one segment.
+    if (isStart && isEnd) {
+      this.drawLine(segment)
+      return
+    }
+
+    // Draw begin segment.
+    if (isStart) {
+      if (to.isCorner) {
         this.drawLine(segment)
         return
       }
+      this.drawQuad(segment, true)
+      return
+    }
 
-      // Draw begin segment.
-      if (isStart) {
-        if (to.isCorner) {
-          this.drawLine(segment)
-          return
-        }
-        this.drawQuad(segment, true)
-        return
-      }
-
-      // Draw end segment.
-      if (isEnd) {
-        if (from.isCorner) {
-          this.drawLine(segment)
-          return
-        }
-        this.drawQuad(segment, false)
-        return
-      }
-
-      // Draw middle segments whose points are neither start nor end point.
-      if (from.isCorner && to.isCorner) {
+    // Draw end segment.
+    if (isEnd) {
+      if (from.isCorner) {
         this.drawLine(segment)
-      } else if (from.isCorner || to.isCorner) {
-        this.drawQuad(segment, from.isCorner)
-      } else {
-        this.drawSpline(segment)
+        return
       }
-    })
-    layer.draw()
+      this.drawQuad(segment, false)
+      return
+    }
+
+    // Draw middle segments whose points are neither start nor end point.
+    if (from.isCorner && to.isCorner) {
+      this.drawLine(segment)
+    } else if (from.isCorner || to.isCorner) {
+      this.drawQuad(segment, from.isCorner)
+    } else {
+      this.drawSpline(segment)
+    }
   }
 }
