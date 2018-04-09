@@ -7,39 +7,39 @@ const mainConf = {
   draggable: true
 }
 
-const delConf = {
+const delStyle = {
   width: 6,
   height: 6,
   fill: 'red'
 }
 
-const cornerConf = {
+const cornerStyle = {
   width: 6,
   height: 6,
   fill: 'blue'
 }
 
-const dragBarConf = {
+const dragBarStyle = {
   innerRadius: 8,
   outerRadius: 16,
   angle: 360,
   fill: 'yellow'
 }
 
-const draggerConf = {
+const draggerStyle = {
   radius: 8,
   fill: '#ddd'
 }
 
 export class Point {
   isCorner = false
+  id = getId()
 
   constructor (app, parent, x, y) {
-    this.id = getId()
     this.mainMark = new Circle({ x, y, ...mainConf })
-    this.delMark = new Rect({ x: x + 6, y: y - 10, ...delConf })
-    this.dragBar = new Arc({ x, y, ...dragBarConf })
-    this.cornerMark = new Rect({ x: x - 12, y: y - 10, ...cornerConf })
+    this.delMark = new Rect({ x: x + 6, y: y - 10, ...delStyle })
+    this.dragBar = new Arc({ x, y, ...dragBarStyle })
+    this.cornerMark = new Rect({ x: x - 12, y: y - 10, ...cornerStyle })
     this.app = app
     this.parent = parent
 
@@ -94,7 +94,7 @@ export class Point {
     const { stage, layer } = this.app
     const onDragBarMousedown = () => {
       const { x, y } = stage.getPointerPosition()
-      const dragger = new Circle({ x, y, ...draggerConf })
+      const dragger = new Circle({ x, y, ...draggerStyle })
       layer.add(dragger)
       layer.draw()
 

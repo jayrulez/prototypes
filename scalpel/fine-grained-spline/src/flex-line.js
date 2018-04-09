@@ -2,6 +2,11 @@ import { Line, Shape } from 'konva'
 import { Point } from './point'
 import { getControlPoints, getId } from './utils'
 
+const lineStyle = {
+  strokeWidth: 4,
+  stroke: '#aaa'
+}
+
 export class FlexLine {
   points = []
   lines = []
@@ -34,11 +39,30 @@ export class FlexLine {
     this.draw()
   }
 
+  addPointAfter = (leftId) => {
+    const { x, y } = this.app.stage.getPointerPosition()
+    const point = new Point(this.app, this, x, y)
+    let index = 0
+    this.points.forEach((point, i) => {
+      if (point.id === leftId) index = i
+    })
+    this.points.splice(index + 1, 0, point)
+    this.draw()
+  }
+
   removePoint = (targetId) => {
     const targetPoint = this.points.find(({ id }) => id === targetId)
     targetPoint.destroy()
     this.points = this.points.filter(({ id }) => id !== targetId)
     this.draw()
+  }
+
+  initLine = (line, from, to) => {
+    line.on('click', () => {
+      this.addPointAfter(from.id)
+    })
+    this.lines.push(line)
+    this.app.layer.add(line)
   }
 
   draw = () => {
@@ -50,18 +74,15 @@ export class FlexLine {
   }
 
   drawLine = (segment) => {
-    const { layer } = this.app
     const { from, to } = segment
     const line = new Line({
-      stroke: 'red',
+      ...lineStyle,
       points: [from.x, from.y, to.x, to.y]
     })
-    this.lines.push(line)
-    layer.add(line)
+    this.initLine(line, from, to)
   }
 
   drawQuad = (segment, useNext = true) => {
-    const { layer } = this.app
     const { from, to, prev, next } = segment
 
     // Use next point or prev point as helper point.
@@ -70,33 +91,30 @@ export class FlexLine {
       : getControlPoints(prev.x, prev.y, from.x, from.y, to.x, to.y)[1]
 
     const line = new Shape({
+      ...lineStyle,
       sceneFunc: function (context) {
         context.beginPath()
         context.moveTo(from.x, from.y)
         context.quadraticCurveTo(helper.x, helper.y, to.x, to.y)
         // Konva specific method.
         context.strokeShape(this)
-      },
-      stroke: 'red'
+      }
     })
-    this.lines.push(line)
-    layer.add(line)
+    this.initLine(line, from, to)
   }
 
   drawSpline = (segment) => {
-    const { layer } = this.app
     const { from, to, prev, next } = segment
 
     const h0 = getControlPoints(prev.x, prev.y, from.x, from.y, to.x, to.y)[1]
     const h1 = getControlPoints(from.x, from.y, to.x, to.y, next.x, next.y)[0]
 
     const line = new Line({
-      stroke: 'red',
+      ...lineStyle,
       bezier: true,
       points: [from.x, from.y, h0.x, h0.y, h1.x, h1.y, to.x, to.y]
     })
-    this.lines.push(line)
-    layer.add(line)
+    this.initLine(line, from, to)
   }
 
   drawSegment = (segment) => {
