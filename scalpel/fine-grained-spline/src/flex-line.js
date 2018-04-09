@@ -63,13 +63,14 @@ export class FlexLine {
     })
     this.lines.push(line)
     this.app.layer.add(line)
+    line.moveToBottom()
   }
 
   draw = () => {
     this.lines.forEach(line => line.destroy())
     this.lines = []
-    this.points.forEach(point => point.draw())
     this.segments.forEach(this.drawSegment)
+    this.points.forEach(point => point.draw())
     this.app.layer.draw()
   }
 
