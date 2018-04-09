@@ -36,19 +36,24 @@ export class FlexLine {
     point.draw()
   }
 
-  drawQuad = (segment) => {
-    const { from, to, next } = segment
+  drawLine = (segment) => {
+    const { layer } = this.app
+    const { from, to } = segment
+    const line = new Line({
+      stroke: 'red',
+      points: [from.x, from.y, to.x, to.y]
+    })
+    layer.add(line)
+  }
 
-    // TODO downgrade to line when no next point exists.
-    if (!next) return
-    const helper = getControlPoints(
-      from.x,
-      from.y,
-      to.x,
-      to.y,
-      next.x,
-      next.y
-    )[0]
+  drawQuad = (segment, isStart = true) => {
+    const { layer } = this.app
+    const { from, to, prev, next } = segment
+
+    // Different helper point for start / end quad.
+    const helper = isStart
+      ? getControlPoints(from.x, from.y, to.x, to.y, next.x, next.y)[0]
+      : getControlPoints(prev.x, prev.y, from.x, from.y, to.x, to.y)[1]
 
     const line = new Shape({
       sceneFunc: function (context) {
@@ -59,11 +64,9 @@ export class FlexLine {
         // Konva specific method.
         context.strokeShape(this)
       },
-      stroke: 'red',
-      strokeWidth: 1
+      stroke: 'red'
     })
 
-    const { layer } = this.app
     layer.add(line)
   }
 
@@ -71,20 +74,15 @@ export class FlexLine {
     this.lines.forEach(line => line.destroy())
     const { layer } = this.app
     this.segments.forEach((segment) => {
-      const { isStart, isEnd, from, to } = segment
+      const { isStart, isEnd, prev, next } = segment
+
+      if (!prev && !next) {
+        this.drawLine(segment)
+        return
+      }
+
       if (isStart || isEnd) {
-        const line = new Line({
-          stroke: '#666',
-          points: [
-            from.x,
-            from.y,
-            to.x,
-            to.y
-          ]
-        })
-        this.drawQuad(segment)
-        this.lines.push(line)
-        layer.add(line)
+        this.drawQuad(segment, isStart)
       }
     })
     layer.draw()
