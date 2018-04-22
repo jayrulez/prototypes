@@ -1,10 +1,10 @@
 'use strict'
 
-var rule = require('../lib/rules')
+var rule = require('../lib/rules/comment')
 var RuleTester = require('eslint').RuleTester
 
 var ruleTester = new RuleTester()
-ruleTester.run('no-full-fp-lib', rule, {
+ruleTester.run('comment', rule, {
   valid: [
     "var $ = require('jquery');",
     "var filter = require('lodash/fp/filter')"

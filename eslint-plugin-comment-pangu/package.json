@@ -1,5 +1,5 @@
 {
-  "name": "eslint-plugin-comment-pangu",
+  "name": "eslint-plugin-pangu",
   "version": "0.0.0",
   "description": "Pangu whitespace for Chinese comments.",
   "keywords": [
