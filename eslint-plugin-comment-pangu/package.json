@@ -13,6 +13,7 @@
     "test": "mocha tests --recursive"
   },
   "dependencies": {
+    "pangu": "^3.3.0",
     "requireindex": "~1.1.0"
   },
   "devDependencies": {

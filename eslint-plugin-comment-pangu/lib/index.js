@@ -2,14 +2,14 @@
  * @fileoverview Pangu whitespace for Chinese comments.
  * @author doodlewind
  */
-'use strict'
-var path = require('path')
+
+const path = require('path')
 
 // ------------------------------------------------------------------------------
 // Requirements
 // ------------------------------------------------------------------------------
 
-var requireIndex = require('requireindex')
+const requireIndex = require('requireindex')
 
 // ------------------------------------------------------------------------------
 // Plugin Definition

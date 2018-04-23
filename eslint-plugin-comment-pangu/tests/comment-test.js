@@ -1,20 +1,21 @@
-'use strict'
+const rule = require('../lib/rules/comment')
+const RuleTester = require('eslint').RuleTester
 
-var rule = require('../lib/rules/comment')
-var RuleTester = require('eslint').RuleTester
-
-var ruleTester = new RuleTester()
+const ruleTester = new RuleTester()
 ruleTester.run('comment', rule, {
   valid: [
-    "var $ = require('jquery');",
-    "var filter = require('lodash/fp/filter')"
+    '// 123',
+    `/** demo
+ * foo
+ * bar
+ **/`
   ],
   invalid: [
     {
-      code: "var _ = require('your favorite fp library');",
+      code: '// 这是123不合适的注释',
       errors: [{
-        message: 'Prefer importing single functions over a full FP library',
-        type: 'VariableDeclaration'
+        message: 'Inappropriate Chinese spacing.',
+        type: 'Line'
       }]
     }
   ]
