@@ -3,17 +3,19 @@
  * @author doodlewind
  */
 
-const path = require('path')
-
 // ------------------------------------------------------------------------------
 // Requirements
 // ------------------------------------------------------------------------------
 
-const requireIndex = require('requireindex')
+const spacing = require('./rules/spacing')
 
 // ------------------------------------------------------------------------------
 // Plugin Definition
 // ------------------------------------------------------------------------------
 
 // import all rules in lib/rules
-module.exports.rules = requireIndex(path.resolve('./rules'))
+module.exports = {
+  rules: {
+    'spacing': spacing
+  }
+}

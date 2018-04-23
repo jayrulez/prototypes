@@ -1,0 +1,8 @@
+{
+  "plugins": [
+      "pangu-comment"
+  ],
+  "rules": {
+    "pangu-comment/spacing": 2
+  }
+}

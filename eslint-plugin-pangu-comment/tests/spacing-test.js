@@ -1,4 +1,4 @@
-const rule = require('../lib/rules/comment')
+const rule = require('../lib/rules/spacing')
 const RuleTester = require('eslint').RuleTester
 
 const ruleTester = new RuleTester()
