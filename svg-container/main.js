@@ -1,6 +1,6 @@
 import $ from 'jquery'
 
 $(document).ready(() => {
-  const svg = $('#Layer_2')
+  const svg = $('#demo')
   window.svg = svg
 })
