@@ -1,1 +1,6 @@
-console.log(213)
+import $ from 'jquery'
+
+$(document).ready(() => {
+  const svg = $('#Layer_2')
+  window.svg = svg
+})
