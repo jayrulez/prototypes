@@ -8,14 +8,16 @@ void new Vue({
     return {
       baseWidth: 575,
       baseHeight: 250,
-      currWidth: 575,
-      currHeight: 250,
+      stretchX: 1,
+      stretchY: 1,
       scale: 1
     }
   },
   computed: {
     tSE () {
-      return null
+      const offsetX = this.baseWidth * (this.stretchX - 1)
+      const offsetY = this.baseHeight * (this.stretchY - 1)
+      return `translate(${offsetX} ${offsetY})`
     }
   },
   mounted () {
@@ -24,10 +26,10 @@ void new Vue({
   },
   methods: {
     addW () {
-      this.currWidth += 10
+      this.stretchX *= 1.001
     },
     subW () {
-      this.currWidth -= 10
+      this.stretchX *= 0.999
     }
   }
 })
