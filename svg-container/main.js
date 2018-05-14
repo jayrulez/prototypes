@@ -6,12 +6,16 @@ void new Vue({
   template: document.getElementById('template').innerHTML,
   data () {
     return {
-      message: 'Hello Vue!'
+      baseWidth: 575,
+      baseHeight: 250,
+      currWidth: 575,
+      currHeight: 250,
+      scale: 1
     }
   },
   computed: {
-    demoTransform () {
-      return 'scale(1.05 1.05)'
+    tSE () {
+      return null
     }
   },
   mounted () {
@@ -19,11 +23,11 @@ void new Vue({
     window.svg = svg
   },
   methods: {
-    addE () {
-      console.log('addE TODO')
+    addW () {
+      this.currWidth += 10
     },
-    subE () {
-      console.log('subE TODO')
+    subW () {
+      this.currWidth -= 10
     }
   }
 })

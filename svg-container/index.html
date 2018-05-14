@@ -11,19 +11,18 @@
   <div id="app"></div>
   <template id="template">
     <div>
-      {{ message }}
       <br/>
-      <button @click="addE">E+</button>
-      <button @click="subE">E-</button>
+      <button @click="addW">W+</button>
+      <button @click="subW">W-</button>
       <br/>
 
       <!-- SVG container -->
-      <svg id="demo" width="575" height="250" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 575 250">
+      <svg id="demo" :width="currWidth" :height="currHeight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 575 250">
         <title>Asset 6</title>
         <g id="Layer_2" data-name="Layer 2">
           <g id="Layer_1-2" data-name="Layer 1">
             <path id="SE" d="M527.5,249.49a47.21,47.21,0,0,0,47-47h-47Z" style="fill:#ff0;stroke:#000;stroke-miterlimit:10"
-              :transform="demoTransform"
+              :transform="tSE"
             />
             <path id="S" d="M47.5,202.5v47h480v-47Z" style="fill:#ff0;stroke:#000;stroke-miterlimit:10" />
             <path id="SW" d="M.51,202.5a47.21,47.21,0,0,0,47,47v-47Z" style="fill:#ff0;stroke:#000;stroke-miterlimit:10" />
