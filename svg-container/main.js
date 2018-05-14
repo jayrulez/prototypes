@@ -9,6 +9,11 @@ void new Vue({
       message: 'Hello Vue!'
     }
   },
+  computed: {
+    demoTransform () {
+      return 'scale(1.05 1.05)'
+    }
+  },
   mounted () {
     const svg = $('#demo')
     window.svg = svg
