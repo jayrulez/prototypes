@@ -20,6 +20,7 @@ void new Vue({
         se: null
       },
       transform: {
+        scale: 1,
         nw: { sx: 1, sy: 1, tx: 0, ty: 0 },
         n: { sx: 1, sy: 1, tx: 0, ty: 0 },
         ne: { sx: 1, sy: 1, tx: 0, ty: 0 },
@@ -33,6 +34,9 @@ void new Vue({
     }
   },
   computed: {
+    tScale () {
+      return `scale(${this.transform.scale})`
+    },
     tNW () {
       return this.getComputedTransform('nw')
     },
@@ -122,11 +126,7 @@ void new Vue({
       })
     },
     setScale (scale) {
-      const dirs = ['nw', 'n', 'ne', 'w', 'c', 'e', 'sw', 's', 'se']
-      dirs.forEach(dir => {
-        this.transform[dir].sx *= scale
-        this.transform[dir].sy *= scale
-      })
+      this.transform.scale *= scale
     }
   }
 })
