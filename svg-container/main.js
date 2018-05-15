@@ -121,17 +121,12 @@ void new Vue({
         transform[dir].ty += offset
       })
     },
-    addH () {
-      this.setH(10)
-    },
-    subH () {
-      this.setH(-10)
-    },
-    addW () {
-      this.setW(10)
-    },
-    subW () {
-      this.setW(-10)
+    setScale (scale) {
+      const dirs = ['nw', 'n', 'ne', 'w', 'c', 'e', 'sw', 's', 'se']
+      dirs.forEach(dir => {
+        this.transform[dir].sx *= scale
+        this.transform[dir].sy *= scale
+      })
     }
   }
 })

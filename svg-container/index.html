@@ -12,10 +12,12 @@
   <template id="template">
     <div>
       <br/>
-      <button @click="addW">W+</button>
-      <button @click="subW">W-</button>
-      <button @click="addH">H+</button>
-      <button @click="subH">H-</button>
+      <button @click="setW(10)">W+</button>
+      <button @click="setW(-10)">W-</button>
+      <button @click="setH(10)">H+</button>
+      <button @click="setH(-10)">H-</button>
+      <button @click="setScale(1.1)">Scale+</button>
+      <button @click="setScale(0.9)">Scale-</button>
       <br/>
 
       <!-- SVG container -->
