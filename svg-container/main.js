@@ -84,9 +84,9 @@ void new Vue({
       const { sx, sy, tx, ty } = this.transform[dir]
       if (!this.svg) return null
 
-      const box = this.getBBox(dir)
+      const box = this.boxes[dir]
       const [mx, my] = this.getMiddlePoint(box)
-      return `translate(${mx}, ${my}) scale(${sx}, ${sy}) translate(${-mx}, ${-my}) translate(${tx}, ${ty})`
+      return `translate(${tx} ${ty}) translate(${mx} ${my}) scale(${sx} ${sy}) translate(${-mx} ${-my})`
     },
     initBoxes () {
       const { getBBox } = this
