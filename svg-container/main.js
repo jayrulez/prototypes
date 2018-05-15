@@ -5,8 +5,8 @@ void new Vue({
   template: document.getElementById('template').innerHTML,
   data () {
     return {
-      baseWidth: 575,
-      baseHeight: 250,
+      width: 575,
+      height: 250,
       scale: 1,
       boxes: {
         nw: null,
@@ -34,6 +34,9 @@ void new Vue({
     }
   },
   computed: {
+    viewBox () {
+      return `0 0 ${this.width} ${this.height}`
+    },
     tScale () {
       return `scale(${this.transform.scale})`
     },
@@ -111,6 +114,7 @@ void new Vue({
       rightGroup.forEach(dir => {
         transform[dir].tx += offset
       })
+      this.width += offset
     },
     setH (offset) {
       const { transform } = this
@@ -124,8 +128,11 @@ void new Vue({
       bottomGroup.forEach(dir => {
         transform[dir].ty += offset
       })
+      this.height += offset
     },
     setScale (scale) {
+      this.width *= scale
+      this.height *= scale
       this.transform.scale *= scale
     }
   }
