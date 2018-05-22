@@ -102,6 +102,7 @@ void new Vue({
         nw: getBBox('nw')
       }
     },
+    // FIXME 计入 scale 参数
     setW (offset) {
       const { transform } = this
       const middleGroup = ['n', 'c', 's']
@@ -116,6 +117,7 @@ void new Vue({
       })
       this.width += offset
     },
+    // FIXME 计入 scale 参数
     setH (offset) {
       const { transform } = this
       const middleGroup = ['w', 'c', 'e']
