@@ -2,10 +2,10 @@ import { mat4 } from '../gl-matrix-min'
 
 // Draw the scene.
 export function render (gl, programInfo, buffers) {
-  gl.clearColor(0.0, 0.0, 0.0, 1.0)  // Clear to black, fully opaque
-  gl.clearDepth(1.0)                 // Clear everything
-  gl.enable(gl.DEPTH_TEST)           // Enable depth testing
-  gl.depthFunc(gl.LEQUAL)            // Near things obscure far things
+  gl.clearColor(0.0, 0.0, 0.0, 1.0) // Clear to black, fully opaque
+  gl.clearDepth(1.0) // Clear everything
+  gl.enable(gl.DEPTH_TEST) // Enable depth testing
+  gl.depthFunc(gl.LEQUAL) // Near things obscure far things
 
   // Clear the canvas before we start drawing on it.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -16,7 +16,7 @@ export function render (gl, programInfo, buffers) {
   // ratio that matches the display size of the canvas
   // and we only want to see objects between 0.1 units
   // and 100 units away from the camera.
-  const fieldOfView = 45 * Math.PI / 180   // in radians
+  const fieldOfView = 45 * Math.PI / 180 // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
   const zNear = 0.1
   const zFar = 100.0
@@ -39,9 +39,9 @@ export function render (gl, programInfo, buffers) {
   // Now move the drawing position a bit to where we want to
   // start drawing the square.
   mat4.translate(
-    modelViewMatrix,     // destination matrix
-    modelViewMatrix,     // matrix to translate
-    [-0.0, 0.0, -5.0]    // amount to translate
+    modelViewMatrix, // destination matrix
+    modelViewMatrix, // matrix to translate
+    [-0.0, 0.0, -5.0] // amount to translate
   )
 
   // Tell WebGL how to pull out the positions from the position

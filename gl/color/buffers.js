@@ -21,10 +21,10 @@ export function initBuffers (gl) {
 
   // Bind color buffer data.
   const colors = [
-    1.0, 1.0, 1.0, 1.0,   // white
-    1.0, 0.0, 0.0, 1.0,   // red
-    0.0, 1.0, 0.0, 1.0,   // green
-    0.0, 0.0, 1.0, 1.0    // blue
+    1.0, 1.0, 1.0, 1.0, // white
+    1.0, 0.0, 0.0, 1.0, // red
+    0.0, 1.0, 0.0, 1.0, // green
+    0.0, 0.0, 1.0, 1.0 // blue
   ]
   const colorBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer)

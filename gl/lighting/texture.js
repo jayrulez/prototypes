@@ -50,11 +50,11 @@ export function initTexture (gl, url) {
     // vs non power of 2 images so check if the image is a
     // power of 2 in both dimensions.
     if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-       // Yes, it's a power of 2. Generate mips.
+      // Yes, it's a power of 2. Generate mips.
       gl.generateMipmap(gl.TEXTURE_2D)
     } else {
-       // No, it's not a power of 2. Turn of mips and set
-       // wrapping to clamp to edge.
+      // No, it's not a power of 2. Turn of mips and set
+      // wrapping to clamp to edge.
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
