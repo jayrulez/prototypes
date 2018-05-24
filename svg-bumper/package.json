@@ -1,0 +1,8 @@
+{
+  "name": "svg-bumper-demo",
+  "version": "0.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "bumpover": "^0.6.0"
+  }
+}
