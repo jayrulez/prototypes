@@ -7,7 +7,7 @@ const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 575 250">
   <title>Asset 8</title>
   <g id="Layer_2" data-name="Layer 2">
-    <g id="container" fill="red">
+    <g id="container">
       <path id="se keepColor" d="M527.5,249.49a47.21,47.21,0,0,0,47-47h-47Z" fill="#ff0" stroke="#000" stroke-miterlimit="10" />
       <path id="s" d="M47.5,202.5v47h480v-47Z" fill="#ff0" stroke="#000" stroke-miterlimit="10" />
       <path id="sw" d="M.51,202.5a47.21,47.21,0,0,0,47,47v-47Z" fill="#ff0" stroke="#000" stroke-miterlimit="10" />
@@ -78,7 +78,7 @@ class SVGConverter {
       }
     })
 
-    svg = getHTML($(svg).find('title').html('Gaoding TextContainer'))
+    svg = getHTML($(svg).find('title').html('TextContainer'))
 
     let colors = []
 
@@ -131,4 +131,5 @@ class SVGConverter {
 
 const converter = new SVGConverter()
 const result = converter.convert(svg)
+console.log(result.colors)
 console.log(result.content)
