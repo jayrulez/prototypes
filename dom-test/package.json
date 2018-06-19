@@ -1,0 +1,14 @@
+{
+  "name": "dom-test",
+  "version": "0.0.0",
+  "description": "dom test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "puppeteer": "^1.5.0"
+  }
+}
