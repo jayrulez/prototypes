@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import { mat4 } from '../gl-matrix-min'
+import { mat4 } from 'gl-matrix'
 
 let delta = 0
 
@@ -53,15 +53,15 @@ function renderFrame (gl, programInfo, buffers, delta) {
   mat4.translate(
     modelViewMatrix, // destination matrix
     modelViewMatrix, // matrix to translate
-    [-0.0, 0.0, -5.0] // amount to translate
+    [-0.0, 0.0, -20.0] // amount to translate
   )
 
   // Rotate the square by rotating view matrix.
   mat4.rotate(
     modelViewMatrix,
     modelViewMatrix,
-    delta * 0.7,
-    [0, 1, 1]
+    delta,
+    [1, 0, 0]
   )
 
   // Tell WebGL how to pull out the positions from the position

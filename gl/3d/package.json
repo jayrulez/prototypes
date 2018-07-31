@@ -2,5 +2,8 @@
   "name": "3d",
   "version": "1.0.0",
   "main": "main.js",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "gl-matrix": "^2.7.1"
+  }
 }
