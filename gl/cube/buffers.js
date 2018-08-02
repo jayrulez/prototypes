@@ -1,4 +1,4 @@
-export function initBuffers (gl) {
+export function bufferGetter (gl, xOffset = 0) {
   const positions = [
     // Front face
     -1.0, -1.0, 1.0,
@@ -36,6 +36,11 @@ export function initBuffers (gl) {
     -1.0, 1.0, 1.0,
     -1.0, 1.0, -1.0
   ]
+
+  // Move positions for x offset.
+  for (let i = 0; i < positions.length; i++) {
+    if (i % 3 === 0) positions[i] += xOffset
+  }
 
   const positionBuffer = gl.createBuffer()
 
@@ -81,8 +86,8 @@ export function initBuffers (gl) {
   )
 
   return {
-    position: positionBuffer,
-    color: colorBuffer,
+    positions: positionBuffer,
+    colors: colorBuffer,
     indices: indexBuffer
   }
 }
