@@ -4,12 +4,9 @@ let delta = 0
 
 export const beforeRender = (gl, programInfo, bufferGetter) => {
   gl.useProgram(programInfo.program)
-
-  const buffers = []
-  for (let i = 0; i < 10; i++) {
-    buffers.push(bufferGetter(gl, Math.random() * 20 - 10))
-  }
-  return buffers
+  return [
+    bufferGetter(gl, -3), bufferGetter(gl, 0), bufferGetter(gl, 3)
+  ]
 }
 
 const draw = (gl, programInfo, mats, buffer) => {
@@ -73,6 +70,6 @@ export const render = (gl, programInfo, buffers) => {
   window.requestAnimationFrame(() => {
     delta += 0.01
     _render(gl, programInfo, buffers, delta)
-    render(gl, programInfo, buffers)
+    if (window.localStorage._ANIMATE) render(gl, programInfo, buffers)
   })
 }

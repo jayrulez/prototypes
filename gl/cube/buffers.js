@@ -1,3 +1,5 @@
+import { vec3 } from 'gl-matrix'
+
 export function bufferGetter (gl, xOffset = 0) {
   const positions = [
     // Front face
@@ -40,6 +42,15 @@ export function bufferGetter (gl, xOffset = 0) {
   // Move positions for x offset.
   for (let i = 0; i < positions.length; i++) {
     if (i % 3 === 0) positions[i] += xOffset
+  }
+
+  if (xOffset === 0) {
+    for (let i = 0; i < positions.length; i += 3) {
+      const pos = positions
+      const vec = vec3.fromValues(pos[i], pos[i + 1], pos[i + 2])
+      vec3.rotateX(vec, vec, [0, 0, 0], Math.PI / 4)
+      ;[pos[i], pos[i + 1], pos[i + 2]] = [vec[0], vec[1], vec[2]]
+    }
   }
 
   const positionBuffer = gl.createBuffer()
