@@ -1,12 +1,11 @@
 import { matGetter } from './matrix'
+import { positionsGetter } from './cube'
 
 let delta = 0
 
 export const beforeRender = (gl, programInfo, bufferGetter) => {
   gl.useProgram(programInfo.program)
-  return [
-    bufferGetter(gl, -3), bufferGetter(gl, 0), bufferGetter(gl, 3)
-  ]
+  return positionsGetter().map(pos => bufferGetter(gl, pos))
 }
 
 const draw = (gl, programInfo, mats, buffer) => {
