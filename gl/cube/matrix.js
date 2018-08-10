@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix'
 
-export const matGetter = (gl, delta) => {
+export const getMats = (gl, delta) => {
   const fov = 45 * Math.PI / 180
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
   const zNear = 0.1

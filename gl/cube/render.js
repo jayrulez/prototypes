@@ -1,12 +1,6 @@
-import { matGetter } from './matrix'
-import { positionsGetter } from './cube'
+import { getMats } from './matrix'
 
-let delta = 0
-
-export const beforeRender = (gl, programInfo, bufferGetter) => {
-  gl.useProgram(programInfo.program)
-  return positionsGetter().map(pos => bufferGetter(gl, pos))
-}
+let delta = parseFloat(window.localStorage.delta) || 0
 
 const draw = (gl, programInfo, mats, buffer) => {
   const { projectionMat, modelViewMat } = mats
@@ -51,8 +45,8 @@ const draw = (gl, programInfo, mats, buffer) => {
   }
 }
 
-const _render = (gl, programInfo, buffers, delta) => {
-  const mats = matGetter(gl, delta)
+export const renderFrame = (gl, programInfo, buffers, delta) => {
+  const mats = getMats(gl, delta)
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)
@@ -65,10 +59,11 @@ const _render = (gl, programInfo, buffers, delta) => {
   }
 }
 
+// Legacy render entry
 export const render = (gl, programInfo, buffers) => {
   window.requestAnimationFrame(() => {
     delta += 0.01
-    _render(gl, programInfo, buffers, delta)
+    renderFrame(gl, programInfo, buffers, delta)
     if (window.localStorage._ANIMATE) render(gl, programInfo, buffers)
   })
 }

@@ -1,9 +1,5 @@
-import { beforeRender, render } from './render'
-import { bufferGetter } from './buffers'
-import { initProgram } from './shaders'
+import { Cube } from './cube'
 
-const gl = document.querySelector('#glcanvas').getContext('webgl')
-const programInfo = initProgram(gl)
-
-const buffers = beforeRender(gl, programInfo, bufferGetter)
-render(gl, programInfo, buffers)
+const canvas = document.querySelector('#glcanvas')
+window.cube = new Cube(canvas)
+// Try `cube.render()` in console!
