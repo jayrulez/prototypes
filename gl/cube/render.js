@@ -1,7 +1,5 @@
 import { getMats } from './matrix'
 
-let delta = parseFloat(window.localStorage.delta) || 0
-
 const draw = (gl, programInfo, mats, buffer) => {
   const { projectionMat, modelViewMat } = mats
   const { vertexPosition, vertexColor } = programInfo.attribLocations
@@ -57,13 +55,4 @@ export const renderFrame = (gl, programInfo, buffers, delta) => {
     // TODO dynamic update buffers with extra transform.
     draw(gl, programInfo, mats, buffers[i])
   }
-}
-
-// Legacy render entry
-export const render = (gl, programInfo, buffers) => {
-  window.requestAnimationFrame(() => {
-    delta += 0.01
-    renderFrame(gl, programInfo, buffers, delta)
-    if (window.localStorage._ANIMATE) render(gl, programInfo, buffers)
-  })
 }

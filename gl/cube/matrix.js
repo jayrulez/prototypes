@@ -11,6 +11,7 @@ export const getMats = (gl, delta) => {
   const modelViewMat = mat4.create()
   mat4.translate(modelViewMat, modelViewMat, [-0.0, 0.0, -20.0])
   mat4.rotate(modelViewMat, modelViewMat, delta, [1, 0, 0])
+  mat4.rotate(modelViewMat, modelViewMat, -delta / 2, [0, 1, 0])
   return {
     projectionMat,
     modelViewMat
