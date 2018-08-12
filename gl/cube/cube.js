@@ -124,9 +124,6 @@ export class Cube {
     this.gl.useProgram(this.programInfo.program)
 
     this.initBlocks()
-    this.buffers = this.blocks.map(
-      ({ colors, positions }) => getBuffer(this.gl, colors, positions)
-    )
   }
 
   getBlockColors (x, y, z) {
@@ -165,7 +162,73 @@ export class Cube {
     }
   }
 
+  move (notation) {
+    const mapping = {
+      'F': () => this.rotate([0, 0, 1], true),
+      'B\'': () => this.rotate([0, 0, -1], true),
+      'R': () => this.rotate([1, 0, 0], true),
+      'L\'': () => this.rotate([-1, 0, 0], true)
+    }
+    mapping[notation]()
+  }
+
   render (delta = 0) {
+    this.buffers = this.blocks.map(
+      ({ colors, positions }) => getBuffer(this.gl, colors, positions)
+    )
     renderFrame(this.gl, this.programInfo, this.buffers, delta)
+  }
+
+  rotate (center, clockwise = true) {
+    const axis = center.indexOf(1) + center.indexOf(-1) + 1
+    const prepareIndex = (i) => {
+      i.splice(axis, 0, center[axis])
+
+      if (clockwise) return
+      const [a, b] = [(axis + 1) % 3, (axis + 2) % 3]
+      ;[i[a], i[b]] = [i[b], i[a]]
+    }
+    const colorsAt = (i) => {
+      return this.blocks[(i[0] + 1) * 9 + (i[1] + 1) * 3 + (i[2] + 1)].colors
+    }
+    const cs = [[1, 1], [1, -1], [-1, -1], [-1, 1]] // corner indexes
+    const es = [[0, 1], [1, 0], [0, -1], [-1, 0]] // edge indexes
+    cs.forEach(prepareIndex)
+    es.forEach(prepareIndex)
+
+    const shiftColor = (a, b, c, d) => {
+      const set = (a, b) => { for (let i = 0; i < 6; i++) a[i] = [...b[i]] }
+      let tmp = []
+      if (clockwise) {
+        set(tmp, a); set(a, d); set(d, c); set(c, b); set(b, tmp)
+      } else {
+        set(tmp, a); set(a, b); set(b, c); set(c, d); set(d, tmp)
+      }
+    }
+
+    let [a, b, c, d, e, f, g, h] = [
+      colorsAt(cs[0]), colorsAt(cs[1]), colorsAt(cs[2]), colorsAt(cs[3]),
+      colorsAt(es[0]), colorsAt(es[1]), colorsAt(es[2]), colorsAt(es[3])
+    ]
+
+    shiftColor(a, b, c, d); shiftColor(e, f, g, h)
+
+    const swap = [
+      [FRONT, TOP, BACK, BOTTOM],
+      [LEFT, BACK, RIGHT, FRONT],
+      [LEFT, TOP, RIGHT, BOTTOM]
+    ][axis]
+    const swapBlockFaces = (i) => {
+      const b = colorsAt(i)
+      if (clockwise) {
+        [b[swap[1]], b[swap[2]], b[swap[3]], b[swap[0]]] =
+        [b[swap[0]], b[swap[1]], b[swap[2]], b[swap[3]]]
+      } else {
+        [b[swap[0]], b[swap[1]], b[swap[2]], b[swap[3]]] =
+        [b[swap[1]], b[swap[2]], b[swap[3]], b[swap[0]]]
+      }
+    }
+    cs.forEach(swapBlockFaces)
+    es.forEach(swapBlockFaces)
   }
 }
