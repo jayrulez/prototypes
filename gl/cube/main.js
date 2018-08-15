@@ -3,14 +3,14 @@ import { Cube } from './cube'
 import { Solver } from './solver'
 
 const canvas = document.querySelector('#glcanvas')
-window.cube = new Cube(canvas, ['L', 'U', 'B', 'D', 'U', 'F\''])
-window.solver = new Solver(window.cube)
+const cube = new Cube(canvas, ['L', 'U', 'B', 'D', 'U', 'F\''])
+const solver = new Solver(cube)
+
+const $rangeX = document.getElementById('range-x')
+const $rangeY = document.getElementById('range-y')
+const render = () => cube.render($rangeX.value, $rangeY.value)
+
+$rangeX.addEventListener('input', render)
+$rangeY.addEventListener('input', render)
+window.cube = cube; window.solver = solver
 // Try `cube.render()` in console!
-
-function loop () {
-  localStorage.delta = (parseFloat(localStorage.delta) || 0) + 0.01
-  window.cube.render(localStorage.delta)
-  requestAnimationFrame(loop)
-}
-
-if (localStorage._ANIMATE) loop()

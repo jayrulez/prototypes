@@ -27,6 +27,6 @@ export class Solver {
   solveCross () {
     const lostEdgeCoords = getLostEdgeCoords(this.cube)
     if (!lostEdgeCoords.length) return []
-    return solveCrossEdge(lostEdgeCoords[0])
+    return solveCrossEdge(this.cube, lostEdgeCoords[0])
   }
 }

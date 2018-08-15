@@ -5,11 +5,15 @@
   </head>
   <style>
     html, body { margin: 0; padding: 0; }
-    body { display: flex; }
-    canvas { margin: auto; }
+    body { display: flex; flex-direction: column; align-items: center; }
+    .hud { display: flex; margin: auto; }
   </style>
-  <body style="display: flex">
+  <body>
     <canvas id="glcanvas" width="640" height="480"></canvas>
+    <div class="hud">
+      <input type="range" min="-180" max="180" step="10" value="0" id="range-y">
+      <input type="range" min="-180" max="180" step="10" value="0" id="range-x">
+    </div>
     <script src="./main.js"></script>
   </body>
 </html>

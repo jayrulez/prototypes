@@ -6,11 +6,9 @@ const draw = (gl, programInfo, mats, buffer) => {
   const { projectionMatrix, modelViewMatrix } = programInfo.uniformLocations
 
   {
-    const numComponents = 3
-    const type = gl.FLOAT
-    const normalize = false
-    const stride = 0
-    const offset = 0
+    const [
+      numComponents, type, normalize, stride, offset
+    ] = [3, gl.FLOAT, false, 0, 0]
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.positions)
     gl.vertexAttribPointer(
       vertexPosition, numComponents, type, normalize, stride, offset
@@ -19,11 +17,9 @@ const draw = (gl, programInfo, mats, buffer) => {
   }
 
   {
-    const numComponents = 4
-    const type = gl.FLOAT
-    const normalize = false
-    const stride = 0
-    const offset = 0
+    const [
+      numComponents, type, normalize, stride, offset
+    ] = [4, gl.FLOAT, false, 0, 0]
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.colors)
     gl.vertexAttribPointer(
       vertexColor, numComponents, type, normalize, stride, offset
@@ -36,15 +32,14 @@ const draw = (gl, programInfo, mats, buffer) => {
 
   {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.indices)
-    const offset = 0
-    const type = gl.UNSIGNED_SHORT
-    const vertexCount = 36
+    const [offset, type, vertexCount] = [0, gl.UNSIGNED_SHORT, 36]
     gl.drawElements(gl.TRIANGLES, vertexCount, type, offset)
   }
 }
 
-export const renderFrame = (gl, programInfo, buffers, delta) => {
-  const mats = getMats(gl, delta)
+export const renderFrame = (gl, programInfo, buffers, rX, rY) => {
+  const { clientWidth, clientHeight } = gl.canvas
+  const mats = getMats(clientWidth, clientHeight, rX, rY)
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)
@@ -52,7 +47,6 @@ export const renderFrame = (gl, programInfo, buffers, delta) => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   for (let i = 0; i < buffers.length; i++) {
-    // TODO dynamic update buffers with extra transform.
     draw(gl, programInfo, mats, buffers[i])
   }
 }

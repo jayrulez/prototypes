@@ -67,11 +67,11 @@ export class Cube {
     return this
   }
 
-  render (delta = 0) {
+  render (rX = 0, rY = 0) {
     this.buffers = this.blocks.map(
       ({ colors, positions }) => getBuffer(this.gl, colors, positions)
     )
-    renderFrame(this.gl, this.programInfo, this.buffers, delta)
+    renderFrame(this.gl, this.programInfo, this.buffers, rX, rY)
   }
 
   rotate (center, clockwise = true) {
