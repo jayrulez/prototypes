@@ -7,7 +7,11 @@ export const COLORS = {
   YELLOW: [1.0, 1.0, 0.0, 1.0],
   GREY: [0.0, 0.0, 0.0, 0.5]
 }
+
+export const BOTTOM_COLOR = COLORS.WHITE
+
 export const [F, B, U, D, R, L] = [0, 1, 2, 3, 4, 5]
+
 export const FACE_MAPPING = {
   '-1': {
     '-1': { '-1': [B, D, L], '0': [D, L], '1': [F, D, L] },
@@ -25,10 +29,21 @@ export const FACE_MAPPING = {
     '1': { '-1': [B, U, R], '0': [U, R], '1': [F, U, R] }
   }
 }
+
 export const FACES = [
   COLORS.BLUE, COLORS.GREEN, COLORS.YELLOW,
   COLORS.WHITE, COLORS.RED, COLORS.ORANGE
 ]
+
+export const EDGE_COORDS = [
+  // Bottom
+  [0, -1, -1], [1, -1, 0], [0, -1, -1], [-1, -1, 0],
+  // Second layer
+  [-1, 0, 1], [1, 0, 1], [1, 0, -1], [-1, 0, -1],
+  // Top layer
+  [0, 1, 1], [1, 1, 0], [0, 1, -1], [-1, 1, 0]
+]
+
 export const BASE_POSITIONS = [
   // Front face
   -1.0, -1.0, 1.0,
