@@ -37,7 +37,7 @@ export const FACES = [
 
 export const EDGE_COORDS = [
   // Bottom
-  [0, -1, -1], [1, -1, 0], [0, -1, -1], [-1, -1, 0],
+  [0, -1, -1], [1, -1, 0], [0, -1, 1], [-1, -1, 0],
   // Second layer
   [-1, 0, 1], [1, 0, 1], [1, 0, -1], [-1, 0, -1],
   // Top layer
@@ -81,3 +81,33 @@ export const BASE_POSITIONS = [
   -1.0, 1.0, 1.0,
   -1.0, 1.0, -1.0
 ]
+
+const positionsFromCoords = (x, y, z) => {
+  const width = 1.9
+  const margin = 0.05
+  const diff = width + 2 * margin
+  const positions = BASE_POSITIONS
+    .map((v, i) => v * width / 2 + [x, y, z][i % 3] * diff)
+  return positions
+}
+
+const colorsFromCoords = (x, y, z) => {
+  const colors = [...Array(6)].map(() => COLORS.GREY)
+  FACE_MAPPING[x][y][z].forEach(i => { colors[i] = FACES[i] })
+  return colors
+}
+
+export const INIT_BLOCKS = () => {
+  const blocks = []
+  for (let x = -1; x <= 1; x++) {
+    for (let y = -1; y <= 1; y++) {
+      for (let z = -1; z <= 1; z++) {
+        blocks.push({
+          positions: positionsFromCoords(x, y, z),
+          colors: colorsFromCoords(x, y, z)
+        })
+      }
+    }
+  }
+  return blocks
+}

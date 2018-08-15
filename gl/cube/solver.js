@@ -1,12 +1,20 @@
 import {
-  D, EDGE_COORDS, BOTTOM_COLOR
+  EDGE_COORDS, BOTTOM_COLOR, INIT_BLOCKS
 } from './consts'
+
+const base = INIT_BLOCKS() // base cube blocks
+const baseBlockAt = ([x, y, z]) => base[(x + 1) * 9 + (y + 1) * 3 + z + 1]
+
+const colorsEqual = (a, b) => a.colors.every((c, i) => c === b.colors[i])
 
 const blockHasColor = (block, color) => block.colors.some(c => c === color)
 
 const getLostEdgeCoords = cube => EDGE_COORDS.filter(coord => {
   const block = cube.getBlock(coord)
-  return blockHasColor(block, BOTTOM_COLOR) && block.colors[D] !== BOTTOM_COLOR
+  return (
+    blockHasColor(block, BOTTOM_COLOR) &&
+    !colorsEqual(block, baseBlockAt(coord))
+  )
 })
 
 const solveCrossEdge = (cube, edgeCoord) => {
@@ -19,6 +27,7 @@ const solveCrossEdge = (cube, edgeCoord) => {
     // Top layer
   }
 }
+
 export class Solver {
   constructor (cube) {
     this.cube = cube
