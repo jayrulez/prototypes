@@ -1,3 +1,6 @@
+const BLOCK_WIDTH = 1.9
+const BLOCK_MARGIN = 0.05
+
 export const COLORS = {
   WHITE: [1.0, 1.0, 1.0, 1.0],
   GREEN: [0.0, 1.0, 0.0, 1.0],
@@ -5,7 +8,7 @@ export const COLORS = {
   BLUE: [0.0, 0.0, 1.0, 1.0],
   ORANGE: [1.0, 0.5, 0.0, 1.0],
   YELLOW: [1.0, 1.0, 0.0, 1.0],
-  GREY: [0.0, 0.0, 0.0, 0.5]
+  EMPTY: [0.0, 0.0, 0.0, 0.5]
 }
 
 export const BOTTOM_COLOR = COLORS.WHITE
@@ -82,22 +85,24 @@ export const BASE_POSITIONS = [
   -1.0, 1.0, -1.0
 ]
 
-const positionsFromCoords = (x, y, z) => {
-  const width = 1.9
-  const margin = 0.05
-  const diff = width + 2 * margin
-  const positions = BASE_POSITIONS
-    .map((v, i) => v * width / 2 + [x, y, z][i % 3] * diff)
-  return positions
-}
-
-const colorsFromCoords = (x, y, z) => {
-  const colors = [...Array(6)].map(() => COLORS.GREY)
-  FACE_MAPPING[x][y][z].forEach(i => { colors[i] = FACES[i] })
-  return colors
+export const Y_ROTATE_MAPPING = {
+  '0': { '0': { '-1': 2, '1': 0 } },
+  '1': { '0': { '0': 3 }, '1': { '1': 0, '-1': 3 } },
+  '-1': { '0': { '0': 1 }, '1': { '1': 1, '-1': 2 } }
 }
 
 export const INIT_BLOCKS = () => {
+  const positionsFromCoords = (x, y, z) => {
+    const diff = BLOCK_WIDTH + 2 * BLOCK_MARGIN
+    const positions = BASE_POSITIONS
+      .map((v, i) => v * BLOCK_WIDTH / 2 + [x, y, z][i % 3] * diff)
+    return positions
+  }
+  const colorsFromCoords = (x, y, z) => {
+    const colors = [...Array(6)].map(() => COLORS.EMPTY)
+    FACE_MAPPING[x][y][z].forEach(i => { colors[i] = FACES[i] })
+    return colors
+  }
   const blocks = []
   for (let x = -1; x <= 1; x++) {
     for (let y = -1; y <= 1; y++) {

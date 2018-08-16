@@ -4,19 +4,24 @@ import { renderFrame } from './render'
 import { F, B, U, D, R, L, INIT_BLOCKS } from './consts'
 
 export class Cube {
-  constructor (canvas, notations = []) {
+  constructor (moves = [], canvas) {
+    this.blocks = INIT_BLOCKS()
+    this.moves = []
+    moves.forEach(n => this.move(n))
+
+    if (!canvas) return
     this.gl = canvas.getContext('webgl')
     this.programInfo = initProgram(this.gl)
     this.gl.useProgram(this.programInfo.program)
-    this.blocks = INIT_BLOCKS()
-    notations.forEach(n => this.move(n))
   }
 
   getBlock ([x, y, z]) {
     return this.blocks[(x + 1) * 9 + (y + 1) * 3 + z + 1]
   }
 
-  move (notation) {
+  move (m) {
+    if (Array.isArray(m)) { m.forEach(m => this.move(m)); return this }
+
     const mapping = {
       'F': () => this.rotate([0, 0, 1], true),
       "F'": () => this.rotate([0, 0, 1], false),
@@ -31,11 +36,12 @@ export class Cube {
       'D': () => this.rotate([0, -1, 0], true),
       "D'": () => this.rotate([0, -1, 0], false)
     }
-    mapping[notation]()
+    mapping[m] && mapping[m](); this.moves.push(m)
     return this
   }
 
   render (rX = 0, rY = 0) {
+    if (!this.gl) throw new Error('Missing WebGL context!')
     this.buffers = this.blocks.map(
       ({ colors, positions }) => getBuffer(this.gl, colors, positions)
     )
