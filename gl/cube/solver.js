@@ -1,8 +1,7 @@
 import { Cube } from './cube'
 import {
   F, B, U, D, R, L,
-  EDGE_COORDS, BOTTOM_COLOR, INIT_BLOCKS, COLORS,
-  Y_ROTATE_MAPPING
+  EDGE_COORDS, BOTTOM_COLOR, INIT_BLOCKS, COLORS, Y_ROTATE_MAPPING
 } from './consts'
 
 const base = INIT_BLOCKS() // base cube blocks
@@ -147,7 +146,7 @@ export class Solver {
   }
 
   solveCross () {
-    const baseCube = new Cube(this.cube.moves)
+    const baseCube = new Cube(null, this.cube.moves)
     const moves = []
     while (true) {
       const lostEdgeCoords = getLostEdgeCoords(baseCube)

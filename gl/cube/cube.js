@@ -4,7 +4,7 @@ import { renderFrame } from './render'
 import { F, B, U, D, R, L, INIT_BLOCKS } from './consts'
 
 export class Cube {
-  constructor (moves = [], canvas) {
+  constructor (canvas, moves = []) {
     this.blocks = INIT_BLOCKS()
     this.moves = []
     moves.forEach(n => this.move(n))
@@ -81,5 +81,12 @@ export class Cube {
     }
     cs.forEach(rotateFaces); es.forEach(rotateFaces)
     return this
+  }
+
+  shuffle (n = 20) {
+    const notations = ['F', 'B', 'U', 'D', 'R', 'L']
+    return this.move(
+      [...Array(n)].map(() => notations[parseInt(Math.random() * 6)])
+    )
   }
 }
