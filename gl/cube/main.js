@@ -3,7 +3,11 @@ import { Cube } from './cube'
 import { Solver } from './solver'
 
 const canvas = document.querySelector('#glcanvas')
-const cube = new Cube(canvas, ['L', 'U', 'B', 'D', 'U', 'F\''])
+const cube = new Cube(canvas, [
+  'L', 'U', 'B', 'D', 'U', "F'",
+  'B', 'B', 'U', 'R', 'R',
+  "L'", 'F', 'L', 'U', 'L', 'L'
+])
 const solver = new Solver(cube)
 
 const $rangeX = document.getElementById('range-x')

@@ -91,7 +91,7 @@ const solveCrossEdge = (cube, [x, y, z]) => {
       tmpMoves.forEach(m => cube.move(m))
       moves.push(...tmpMoves)
     } else {
-      const tmpMoves = movesRelativeTo(centerCoord, ["F'", 'R', 'F', "R'"])
+      const tmpMoves = movesRelativeTo(centerCoord, ["F'", 'R', 'F', 'U'])
       tmpMoves.forEach(m => cube.move(m))
       moves.push(...tmpMoves)
     }

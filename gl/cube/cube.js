@@ -19,17 +19,17 @@ export class Cube {
   move (notation) {
     const mapping = {
       'F': () => this.rotate([0, 0, 1], true),
-      'F\'': () => this.rotate([0, 0, 1], false),
+      "F'": () => this.rotate([0, 0, 1], false),
       'B': () => this.rotate([0, 0, -1], true),
-      'B\'': () => this.rotate([0, 0, -1], false),
+      "B'": () => this.rotate([0, 0, -1], false),
       'R': () => this.rotate([1, 0, 0], true),
-      'R\'': () => this.rotate([1, 0, 0], false),
+      "R'": () => this.rotate([1, 0, 0], false),
       'L': () => this.rotate([-1, 0, 0], true),
-      'L\'': () => this.rotate([-1, 0, 0], false),
+      "L'": () => this.rotate([-1, 0, 0], false),
       'U': () => this.rotate([0, 1, 0], true),
-      'U\'': () => this.rotate([0, 1, 0], false),
+      "U'": () => this.rotate([0, 1, 0], false),
       'D': () => this.rotate([0, -1, 0], true),
-      'D\'': () => this.rotate([0, -1, 0], false)
+      "D'": () => this.rotate([0, -1, 0], false)
     }
     mapping[notation]()
     return this
