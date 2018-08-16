@@ -145,6 +145,10 @@ export class Solver {
     this.cube = cube
   }
 
+  solve () {
+    this.solveCross().forEach(moves => this.cube.move(moves))
+  }
+
   solveCross () {
     const baseCube = new Cube(null, this.cube.moves)
     const moves = []
@@ -154,5 +158,9 @@ export class Solver {
       moves.push(solveCrossEdge(baseCube, lostEdgeCoords[0]))
     }
     return moves
+  }
+
+  solveF2L () {
+
   }
 }
