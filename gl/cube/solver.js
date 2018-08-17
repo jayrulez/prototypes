@@ -1,23 +1,55 @@
 import { Cube } from './cube'
 import {
   F, B, U, D, R, L,
-  EDGE_COORDS, BOTTOM_COLOR, INIT_BLOCKS, COLORS, Y_ROTATE_MAPPING
+  EDGE_COORDS, BLOCK_COORDS, COLORS, BOTTOM_COLOR, PAIRS,
+  INIT_BLOCKS, Y_ROTATE_MAPPING, SLOT_COORDS_MAPPING
 } from './consts'
 
 const base = INIT_BLOCKS() // base cube blocks
 const baseBlockAt = ([x, y, z]) => base[(x + 1) * 9 + (y + 1) * 3 + z + 1]
 
+const isCorner = ([x, y, z]) => Math.abs(x) + Math.abs(y) + Math.abs(z) === 3
+
+const coordEqual = (a, b) => a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
+
 const colorsEqual = (a, b) => a.colors.every((c, i) => c === b.colors[i])
 
 const blockHasColor = (block, color) => block.colors.some(c => c === color)
 
-const getLostEdgeCoords = cube => EDGE_COORDS.filter(coord => {
+const findCrossCoords = cube => EDGE_COORDS.filter(coord => {
   const block = cube.getBlock(coord)
   return (
     blockHasColor(block, BOTTOM_COLOR) &&
     !colorsEqual(block, baseBlockAt(coord))
   )
 })
+
+const findPairCoords = (cube, pair) => BLOCK_COORDS.filter(coord => {
+  const block = cube.getBlock(coord)
+  const faces = isCorner(coord) ? [...pair, BOTTOM_COLOR] : pair
+  return faces.every(c => block.colors.includes(c))
+})
+
+const inPairSlot = (coord, pair) => {
+  const targetSlot = SLOT_COORDS_MAPPING[pair]
+  return targetSlot.some(slotCoord => coordEqual(coord, slotCoord))
+}
+
+const preparePair = (cube, pair, moves = []) => {
+  const [edgeCoord, cornerCoord] = findPairCoords(cube, pair)
+  let sideMoves = ['R', 'U', "R'"]
+  if (!inPairSlot(edgeCoord, pair) && edgeCoord[1] === 0) {
+    const tmpVec = [edgeCoord[0], 1, edgeCoord[2]]
+    sideMoves = movesRelativeTo(tmpVec, sideMoves); cube.move(sideMoves)
+    return preparePair(cube, pair, [...moves, ...sideMoves])
+  }
+  if (!inPairSlot(cornerCoord, pair) && cornerCoord[1] === -1) {
+    const tmpVec = [cornerCoord[0], 1, cornerCoord[2]]
+    sideMoves = movesRelativeTo(tmpVec, sideMoves); cube.move(sideMoves)
+    return preparePair(cube, pair, [...moves, ...sideMoves])
+  }
+  return [edgeCoord, cornerCoord, moves]
+}
 
 const getTopFaceMove = ([x0, y0, z0], [x1, y1, z1]) => {
   const offsetMapping = {
@@ -150,17 +182,18 @@ export class Solver {
   }
 
   solveCross () {
-    const baseCube = new Cube(null, this.cube.moves)
+    const clonedCube = new Cube(null, this.cube.moves)
     const moves = []
     while (true) {
-      const lostEdgeCoords = getLostEdgeCoords(baseCube)
+      const lostEdgeCoords = findCrossCoords(clonedCube)
       if (!lostEdgeCoords.length) break
-      moves.push(solveCrossEdge(baseCube, lostEdgeCoords[0]))
+      moves.push(solveCrossEdge(clonedCube, lostEdgeCoords[0]))
     }
     return moves
   }
 
   solveF2L () {
-
+    const clonedCube = new Cube(null, this.cube.moves)
+    return preparePair(clonedCube, PAIRS[0])
   }
 }

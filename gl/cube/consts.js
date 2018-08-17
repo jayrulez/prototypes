@@ -1,6 +1,3 @@
-const BLOCK_WIDTH = 1.9
-const BLOCK_MARGIN = 0.05
-
 export const COLORS = {
   WHITE: [1.0, 1.0, 1.0, 1.0],
   GREEN: [0.0, 1.0, 0.0, 1.0],
@@ -39,13 +36,34 @@ export const FACES = [
 ]
 
 export const EDGE_COORDS = [
-  // Bottom
+  // Bottom layer
   [0, -1, -1], [1, -1, 0], [0, -1, 1], [-1, -1, 0],
   // Second layer
   [-1, 0, 1], [1, 0, 1], [1, 0, -1], [-1, 0, -1],
   // Top layer
   [0, 1, 1], [1, 1, 0], [0, 1, -1], [-1, 1, 0]
 ]
+
+export const CORNER_COORDS = [
+  // Bottom layer
+  [1, -1, 1], [1, -1, -1], [-1, -1, -1], [-1, -1, 1],
+  // Top layer
+  [1, 1, 1], [1, 1, -1], [-1, 1, -1], [-1, 1, 1]
+]
+
+export const BLOCK_COORDS = [...EDGE_COORDS, ...CORNER_COORDS]
+
+export const PAIRS = [
+  [COLORS.BLUE, COLORS.RED], [COLORS.RED, COLORS.GREEN],
+  [COLORS.GREEN, COLORS.ORANGE], [COLORS.ORANGE, COLORS.BLUE]
+]
+
+export const SLOT_COORDS_MAPPING = {
+  [PAIRS[0]]: [[1, -1, 1], [1, 0, 1]],
+  [PAIRS[1]]: [[1, -1, -1], [1, 0, -1]],
+  [PAIRS[2]]: [[-1, -1, -1], [-1, 0, -1]],
+  [PAIRS[3]]: [[-1, -1, 1], [-1, 0, 1]]
+}
 
 export const BASE_POSITIONS = [
   // Front face
@@ -92,6 +110,8 @@ export const Y_ROTATE_MAPPING = {
 }
 
 export const INIT_BLOCKS = () => {
+  const BLOCK_WIDTH = 1.9
+  const BLOCK_MARGIN = 0.05
   const positionsFromCoords = (x, y, z) => {
     const diff = BLOCK_WIDTH + 2 * BLOCK_MARGIN
     const positions = BASE_POSITIONS
