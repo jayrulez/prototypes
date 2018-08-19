@@ -1,6 +1,6 @@
-import { initProgram } from './shaders'
-import { getBuffer } from './buffers'
-import { renderFrame } from './render'
+import { initProgram } from '../renderer/shaders'
+import { getBuffer } from '../renderer/buffers'
+import { renderFrame } from '../renderer/render'
 import { F, B, U, D, R, L, INIT_BLOCKS } from './consts'
 
 export class Cube {

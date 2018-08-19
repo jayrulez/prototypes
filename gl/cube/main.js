@@ -1,6 +1,6 @@
 /* eslint-env browser */
-import { Cube } from './cube'
-import { Solver } from './solver'
+import { Cube } from './model/cube'
+import { Solver } from './model/solver'
 
 const canvas = document.querySelector('#glcanvas')
 const cube = new Cube(canvas, JSON.parse(localStorage.moves || '[]'))
