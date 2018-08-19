@@ -236,6 +236,7 @@ export class Solver {
 
   solve () {
     this.solveCross().forEach(moves => this.cube.move(moves))
+    this.solveF2L().forEach(moves => this.cube.move(moves))
   }
 
   solveCross () {
