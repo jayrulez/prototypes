@@ -5,7 +5,7 @@ export const COLORS = {
   BLUE: [0.0, 0.0, 1.0, 1.0],
   ORANGE: [1.0, 0.5, 0.0, 1.0],
   YELLOW: [1.0, 1.0, 0.0, 1.0],
-  EMPTY: [0.0, 0.0, 0.0, 0.5]
+  EMPTY: [0.5, 0.5, 0.5, 1.0]
 }
 
 export const [COLOR_D, COLOR_F, COLOR_R] = [COLORS.WHITE, 0, 1]
