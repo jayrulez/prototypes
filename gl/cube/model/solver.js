@@ -149,10 +149,12 @@ const matchPairRule = (cube, rule, pair) => {
 const tryPairRules = (cube, pair) => {
   if (isPairSolved(cube, pair)) return []
 
-  const preMoves = preparePair(cube, pair)
+  const preMoves = preparePair(new Cube(null, cube.moves), pair)
   const topMoves = [[], ['U'], ['U', 'U'], ["U'"]]
   for (let i = 0; i < topMoves.length; i++) {
-    const testCube = new Cube(null, [...cube.moves, ...topMoves[i]])
+    const testCube = new Cube(
+      null, [...cube.moves, ...preMoves, ...topMoves[i]]
+    )
     for (let j = 0; j < RULES.F2L.length; j++) {
       if (matchPairRule(testCube, RULES.F2L[j], pair)) {
         const topCornerCoord = gridByPair(pair, SE)
