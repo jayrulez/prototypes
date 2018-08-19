@@ -1,11 +1,11 @@
 import { Cube } from './cube'
 import {
   F, B, U, D, R, L,
-  W, SE,
-  COLORS, COLOR_D, COLOR_L, COLOR_R, PAIRS, EDGE_COORDS, BLOCK_COORDS,
+  SE, COLORS, COLOR_D, PAIRS, EDGE_COORDS, BLOCK_COORDS,
   Y_ROTATE_MAPPING, SLOT_COORDS_MAPPING, EDGE_GRID_MAPPING, CORNER_GRID_MAPPING,
   EDGE_GRIDS, INIT_BLOCKS
 } from './consts'
+import * as RULES from './rules'
 
 const base = INIT_BLOCKS() // base cube blocks
 const baseBlockAt = ([x, y, z]) => base[(x + 1) * 9 + (y + 1) * 3 + z + 1]
@@ -17,6 +17,12 @@ const coordEqual = (a, b) => a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
 const colorsEqual = (a, b) => a.colors.every((c, i) => c === b.colors[i])
 
 const blockHasColor = (block, color) => block.colors.some(c => c === color)
+
+const isPairSolved = (cube, pair) => {
+  return SLOT_COORDS_MAPPING[pair].every(
+    coord => colorsEqual(cube.getBlock(coord), baseBlockAt(coord))
+  )
+}
 
 const findCrossCoords = cube => EDGE_COORDS.filter(coord => {
   const block = cube.getBlock(coord)
@@ -123,17 +129,7 @@ const gridByPair = (pair, gridDir) => {
   return mapping[index]
 }
 
-const rules = [
-  {
-    match: {
-      [W]: { [U]: COLOR_L, [L]: COLOR_R },
-      [SE]: { [F]: COLOR_D, [U]: COLOR_L, [R]: COLOR_R }
-    },
-    moves: ["U'", 'R', 'U', 'U', "R'", 'U', 'U', 'R', "U'", "R'"]
-  }
-]
-
-const matchRule = (cube, rule, pair) => {
+const matchPairRule = (cube, rule, pair) => {
   return Object.keys(rule.match).every(dir => {
     const ruleFaces = Object.keys(rule.match[dir]).map(x => parseInt(x))
     const targetBlock = cube.getBlock(gridByPair(pair, dir))
@@ -148,18 +144,23 @@ const matchRule = (cube, rule, pair) => {
   })
 }
 
-const tryRules = (cube, pair) => {
+const tryPairRules = (cube, pair) => {
+  if (isPairSolved(cube, pair)) return []
+
   const preMoves = preparePair(cube, pair)
   const topMoves = [[], ['U'], ['U', 'U'], ["U'"]]
   for (let i = 0; i < topMoves.length; i++) {
     const testCube = new Cube(null, [...cube.moves, ...topMoves[i]])
-    for (let j = 0; j < rules.length; j++) {
-      if (matchRule(testCube, rules[j], pair)) {
-        return [...preMoves, ...topMoves[i], ...rules[j].moves]
+    for (let j = 0; j < RULES.F2L.length; j++) {
+      if (matchPairRule(testCube, RULES.F2L[j], pair)) {
+        const topCornerCoord = gridByPair(pair, SE)
+        const mappedMoves = movesRelativeTo(topCornerCoord, RULES.F2L[j].moves)
+        const result = [...preMoves, ...topMoves[i], ...mappedMoves]
+        cube.move(result); return result
       }
     }
   }
-  return null
+  return null // rule not found
 }
 
 const topEdgeToBottom = (cube, edgeCoord) => {
@@ -235,17 +236,21 @@ export class Solver {
 
   solveCross () {
     const clonedCube = new Cube(null, this.cube.moves)
-    const moves = []
+    const moveSteps = []
     while (true) {
       const lostEdgeCoords = findCrossCoords(clonedCube)
       if (!lostEdgeCoords.length) break
-      moves.push(solveCrossEdge(clonedCube, lostEdgeCoords[0]))
+      moveSteps.push(solveCrossEdge(clonedCube, lostEdgeCoords[0]))
     }
-    return moves
+    return moveSteps
   }
 
   solveF2L () {
     const clonedCube = new Cube(null, this.cube.moves)
-    return tryRules(clonedCube, PAIRS[0])
+    const moveSteps = []
+    for (let i = 0; i < 4; i++) {
+      moveSteps.push(tryPairRules(clonedCube, PAIRS[i]))
+    }
+    return moveSteps
   }
 }
