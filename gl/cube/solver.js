@@ -1,8 +1,10 @@
 import { Cube } from './cube'
 import {
   F, B, U, D, R, L,
-  EDGE_COORDS, BLOCK_COORDS, COLORS, BOTTOM_COLOR, PAIRS,
-  INIT_BLOCKS, Y_ROTATE_MAPPING, SLOT_COORDS_MAPPING
+  W, SE,
+  COLORS, COLOR_D, COLOR_L, COLOR_R, PAIRS, EDGE_COORDS, BLOCK_COORDS,
+  Y_ROTATE_MAPPING, SLOT_COORDS_MAPPING, EDGE_GRID_MAPPING, CORNER_GRID_MAPPING,
+  EDGE_GRIDS, INIT_BLOCKS
 } from './consts'
 
 const base = INIT_BLOCKS() // base cube blocks
@@ -19,14 +21,14 @@ const blockHasColor = (block, color) => block.colors.some(c => c === color)
 const findCrossCoords = cube => EDGE_COORDS.filter(coord => {
   const block = cube.getBlock(coord)
   return (
-    blockHasColor(block, BOTTOM_COLOR) &&
+    blockHasColor(block, COLOR_D) &&
     !colorsEqual(block, baseBlockAt(coord))
   )
 })
 
 const findPairCoords = (cube, pair) => BLOCK_COORDS.filter(coord => {
   const block = cube.getBlock(coord)
-  const faces = isCorner(coord) ? [...pair, BOTTOM_COLOR] : pair
+  const faces = isCorner(coord) ? [...pair, COLOR_D] : pair
   return faces.every(c => block.colors.includes(c))
 })
 
@@ -48,7 +50,7 @@ const preparePair = (cube, pair, moves = []) => {
     sideMoves = movesRelativeTo(tmpVec, sideMoves); cube.move(sideMoves)
     return preparePair(cube, pair, [...moves, ...sideMoves])
   }
-  return [edgeCoord, cornerCoord, moves]
+  return moves
 }
 
 const getTopFaceMove = ([x0, y0, z0], [x1, y1, z1]) => {
@@ -110,16 +112,66 @@ const centerByColor = (color) => {
   }[color]
 }
 
+const gridByPair = (pair, gridDir) => {
+  gridDir = parseInt(gridDir)
+  const isEdge = gridDir < 4
+  const index = isEdge
+    ? (gridDir + PAIRS.indexOf(pair)) % 4
+    : ((gridDir - 4 + PAIRS.indexOf(pair)) % 4) + 4
+  const mapping = EDGE_GRIDS.includes(gridDir)
+    ? EDGE_GRID_MAPPING : CORNER_GRID_MAPPING
+  return mapping[index]
+}
+
+const rules = [
+  {
+    match: {
+      [W]: { [U]: COLOR_L, [L]: COLOR_R },
+      [SE]: { [F]: COLOR_D, [U]: COLOR_L, [R]: COLOR_R }
+    },
+    moves: ["U'", 'R', 'U', 'U', "R'", 'U', 'U', 'R', "U'", "R'"]
+  }
+]
+
+const matchRule = (cube, rule, pair) => {
+  return Object.keys(rule.match).every(dir => {
+    const ruleFaces = Object.keys(rule.match[dir]).map(x => parseInt(x))
+    const targetBlock = cube.getBlock(gridByPair(pair, dir))
+    const topCornerCoord = gridByPair(pair, SE)
+    const mappedFaces = ruleFaces.map(f => faceRelativeTo(topCornerCoord, f))
+    const result = ruleFaces.every((face, i) => {
+      const ruleColor = rule.match[dir][face]
+      const expectedColor = ruleColor === COLOR_D ? COLOR_D : pair[ruleColor]
+      return targetBlock.colors[mappedFaces[i]] === expectedColor
+    })
+    return result
+  })
+}
+
+const tryRules = (cube, pair) => {
+  const preMoves = preparePair(cube, pair)
+  const topMoves = [[], ['U'], ['U', 'U'], ["U'"]]
+  for (let i = 0; i < topMoves.length; i++) {
+    const testCube = new Cube(null, [...cube.moves, ...topMoves[i]])
+    for (let j = 0; j < rules.length; j++) {
+      if (matchRule(testCube, rules[j], pair)) {
+        return [...preMoves, ...topMoves[i], ...rules[j].moves]
+      }
+    }
+  }
+  return null
+}
+
 const topEdgeToBottom = (cube, edgeCoord) => {
   const moves = []
   const topEdge = cube.getBlock(edgeCoord)
   const targetColor = topEdge.colors.find(
-    c => c !== BOTTOM_COLOR && c !== COLORS.EMPTY
+    c => c !== COLOR_D && c !== COLORS.EMPTY
   )
   const toCenter = centerByColor(targetColor)
   const toTopEdge = [toCenter[0], toCenter[1] + 1, toCenter[2]]
   moves.push(...getTopFaceMove(edgeCoord, toTopEdge))
-  if (topEdge.colors[U] !== BOTTOM_COLOR) {
+  if (topEdge.colors[U] !== COLOR_D) {
     moves.push(...movesRelativeTo(toCenter, ["U'", "R'", 'F', 'R']))
   } else {
     moves.push(...movesRelativeTo(toCenter, ['F', 'F']))
@@ -134,7 +186,7 @@ const solveCrossEdge = (cube, [x, y, z]) => {
   if (y === -1) {
     // Bottom layer
     const centerCoord = [x, y + 1, z]
-    if (edge.colors[D] === BOTTOM_COLOR) {
+    if (edge.colors[D] === COLOR_D) {
       const sideMoves = movesRelativeTo(centerCoord, ['F', 'F'])
       sideMoves.forEach(m => cube.move(m))
       moves.push(...sideMoves)
@@ -150,7 +202,7 @@ const solveCrossEdge = (cube, [x, y, z]) => {
     // Center layer
     const topVec = [x, y + 1, z]
     const leftFace = faceRelativeTo(topVec, F)
-    if (edge.colors[leftFace] === BOTTOM_COLOR) {
+    if (edge.colors[leftFace] === COLOR_D) {
       const sideMoves = movesRelativeTo(topVec, ['R', 'U', "R'"])
       sideMoves.forEach(m => cube.move(m))
       moves.push(...sideMoves)
@@ -194,6 +246,6 @@ export class Solver {
 
   solveF2L () {
     const clonedCube = new Cube(null, this.cube.moves)
-    return preparePair(clonedCube, PAIRS[0])
+    return tryRules(clonedCube, PAIRS[0])
   }
 }

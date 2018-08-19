@@ -8,9 +8,15 @@ export const COLORS = {
   EMPTY: [0.0, 0.0, 0.0, 0.5]
 }
 
-export const BOTTOM_COLOR = COLORS.WHITE
+export const [COLOR_D, COLOR_L, COLOR_R] = [COLORS.WHITE, 0, 1]
 
 export const [F, B, U, D, R, L] = [0, 1, 2, 3, 4, 5]
+
+export const [S, E, N, W, SE, NE, NW, SW] = [0, 1, 2, 3, 4, 5, 6, 7]
+
+export const EDGE_GRIDS = [S, E, N, W]
+
+export const CORNER_GRIDS = [SW, NE, NW, SE]
 
 export const FACE_MAPPING = {
   '-1': {
@@ -107,6 +113,14 @@ export const Y_ROTATE_MAPPING = {
   '0': { '0': { '-1': 2, '1': 0 } },
   '1': { '0': { '0': 3 }, '1': { '1': 0, '-1': 3 } },
   '-1': { '0': { '0': 1 }, '1': { '1': 1, '-1': 2 } }
+}
+
+export const EDGE_GRID_MAPPING = {
+  [S]: [0, 1, 1], [E]: [1, 1, 0], [N]: [0, 1, -1], [W]: [-1, 1, 0]
+}
+
+export const CORNER_GRID_MAPPING = {
+  [SE]: [1, 1, 1], [NE]: [1, 1, -1], [NW]: [-1, 1, -1], [SW]: [-1, 1, 1]
 }
 
 export const INIT_BLOCKS = () => {
