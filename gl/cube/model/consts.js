@@ -8,11 +8,13 @@ export const COLORS = {
   EMPTY: [0.0, 0.0, 0.0, 0.5]
 }
 
-export const [COLOR_D, COLOR_L, COLOR_R] = [COLORS.WHITE, 0, 1]
+export const [COLOR_D, COLOR_F, COLOR_R] = [COLORS.WHITE, 0, 1]
 
 export const [F, B, U, D, R, L] = [0, 1, 2, 3, 4, 5]
 
 export const [S, E, N, W, SE, NE, NW, SW] = [0, 1, 2, 3, 4, 5, 6, 7]
+
+export const [SLOT_M, SLOT_D] = [8, 9]
 
 export const EDGE_GRIDS = [S, E, N, W]
 

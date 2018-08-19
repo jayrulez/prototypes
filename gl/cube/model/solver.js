@@ -1,7 +1,7 @@
 import { Cube } from './cube'
 import {
-  F, B, U, D, R, L,
-  SE, COLORS, COLOR_D, PAIRS, EDGE_COORDS, BLOCK_COORDS,
+  F, B, U, D, R, L, SE, SLOT_M, SLOT_D,
+  COLORS, COLOR_D, PAIRS, EDGE_COORDS, BLOCK_COORDS,
   Y_ROTATE_MAPPING, SLOT_COORDS_MAPPING, EDGE_GRID_MAPPING, CORNER_GRID_MAPPING,
   EDGE_GRIDS, INIT_BLOCKS
 } from './consts'
@@ -120,6 +120,8 @@ const centerByColor = (color) => {
 
 const gridByPair = (pair, gridDir) => {
   gridDir = parseInt(gridDir)
+  if (gridDir === SLOT_M) return SLOT_COORDS_MAPPING[pair][1]
+  else if (gridDir === SLOT_D) return SLOT_COORDS_MAPPING[pair][0]
   const isEdge = gridDir < 4
   const index = isEdge
     ? (gridDir + PAIRS.indexOf(pair)) % 4
@@ -156,7 +158,9 @@ const tryPairRules = (cube, pair) => {
         const topCornerCoord = gridByPair(pair, SE)
         const mappedMoves = movesRelativeTo(topCornerCoord, RULES.F2L[j].moves)
         const result = [...preMoves, ...topMoves[i], ...mappedMoves]
-        cube.move(result); return result
+        cube.move(result)
+        if (!isPairSolved(cube, pair)) console.error(`Error F2L rule at ${j}`)
+        return result
       }
     }
   }
