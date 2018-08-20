@@ -8,7 +8,9 @@ export const COLORS = {
   EMPTY: [0.5, 0.5, 0.5, 1.0]
 }
 
-export const [COLOR_D, COLOR_F, COLOR_R] = [COLORS.WHITE, 0, 1]
+export const [
+  COLOR_U, COLOR_D, COLOR_F, COLOR_R
+] = [COLORS.YELLOW, COLORS.WHITE, 0, 1]
 
 export const [F, B, U, D, R, L] = [0, 1, 2, 3, 4, 5]
 
@@ -124,6 +126,15 @@ export const EDGE_GRID_MAPPING = {
 export const CORNER_GRID_MAPPING = {
   [SE]: [1, 1, 1], [NE]: [1, 1, -1], [NW]: [-1, 1, -1], [SW]: [-1, 1, 1]
 }
+
+export const GRID_MAPPING = Object.assign(
+  {}, EDGE_GRID_MAPPING, CORNER_GRID_MAPPING
+)
+
+export const TOP_BLOCKS = [
+  [0, 1, 1], [1, 1, 0], [0, 1, -1], [-1, 1, 0],
+  [1, 1, 1], [1, 1, -1], [-1, 1, -1], [-1, 1, 1]
+]
 
 export const INIT_BLOCKS = () => {
   const BLOCK_WIDTH = 1.9

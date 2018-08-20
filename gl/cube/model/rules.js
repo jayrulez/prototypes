@@ -1,6 +1,6 @@
 import {
   F, B, U, D, R, L,
-  N, W, S, E, SE, SLOT_M, SLOT_D,
+  N, W, S, E, NW, NE, SW, SE, SLOT_M, SLOT_D,
   COLOR_D as CD, COLOR_F as CF, COLOR_R as CR
 } from './consts'
 
@@ -227,6 +227,23 @@ export const F2L = [
   {
     match: { [SLOT_M]: SLOT_M_REVERSED, [SLOT_D]: SLOT_D_D_AS_R },
     moves: "(R U R' U') (R U' R') U U (F' U' F)"
+  }
+].map(rule => ({
+  match: rule.match,
+  moves: rule.moves.replace(/(\(|\))/g, '').split(' ')
+}))
+
+// https://www.speedsolving.com/wiki/index.php/OLL
+export const OLL = [
+  // 47
+  {
+    match: { [NW]: B, [NE]: R, [W]: L, [SW]: F, [S]: F, [SE]: R },
+    moves: "F' (L' U' L U) (L' U' L U) F"
+  },
+  // 53
+  {
+    match: { [NW]: L, [SW]: L, [S]: F, [SE]: R, [E]: R, [NE]: R },
+    moves: "F R U R' U' F' R U R' U' R' F R F'"
   }
 ].map(rule => ({
   match: rule.match,

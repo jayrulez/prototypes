@@ -1,9 +1,10 @@
 import { Cube } from './cube'
 import {
-  F, B, U, D, R, L, SE, SLOT_M, SLOT_D,
-  COLORS, COLOR_D, PAIRS, EDGE_COORDS, BLOCK_COORDS,
+  F, B, U, D, R, L, SLOT_M, SLOT_D,
+  S, E, N, W, SE, NE, NW, SW,
+  COLORS, COLOR_D, COLOR_U, PAIRS, EDGE_COORDS, BLOCK_COORDS, TOP_BLOCKS,
   Y_ROTATE_MAPPING, SLOT_COORDS_MAPPING, EDGE_GRID_MAPPING, CORNER_GRID_MAPPING,
-  EDGE_GRIDS, INIT_BLOCKS
+  GRID_MAPPING, EDGE_GRIDS, INIT_BLOCKS
 } from './consts'
 import * as RULES from './rules'
 
@@ -22,6 +23,10 @@ const isPairSolved = (cube, pair) => {
   return SLOT_COORDS_MAPPING[pair].every(
     coord => colorsEqual(cube.getBlock(coord), baseBlockAt(coord))
   )
+}
+
+const isOrientationSolved = (cube) => {
+  return TOP_BLOCKS.every(coord => cube.getBlock(coord).colors[U] === COLOR_U)
 }
 
 const findCrossCoords = cube => EDGE_COORDS.filter(coord => {
@@ -169,6 +174,31 @@ const tryPairRules = (cube, pair) => {
   return null // rule not found
 }
 
+const matchOrientationRule = (cube, { match }) => {
+  return [S, E, N, W, SE, NE, NW, SW].every(dir => {
+    const faceIndex = Number.isInteger(match[dir]) ? match[dir] : U
+    return cube.getBlock(GRID_MAPPING[dir]).colors[faceIndex] === COLOR_U
+  })
+}
+
+const tryOrientationRules = (cube) => {
+  if (isOrientationSolved(cube)) return []
+
+  const topMoves = [[], ['U'], ['U', 'U'], ["U'"]]
+  for (let i = 0; i < topMoves.length; i++) {
+    const testCube = new Cube(null, [...cube.moves, ...topMoves[i]])
+    for (let j = 0; j < RULES.OLL.length; j++) {
+      if (matchOrientationRule(testCube, RULES.OLL[j])) {
+        const result = [...topMoves[i], ...RULES.OLL[j].moves]
+        cube.move(result)
+        if (!isOrientationSolved(cube)) console.error(`Error OLL rule at ${j}`)
+        return result
+      }
+    }
+  }
+  return null // rule not found
+}
+
 const topEdgeToBottom = (cube, edgeCoord) => {
   const moves = []
   const topEdge = cube.getBlock(edgeCoord)
@@ -259,5 +289,10 @@ export class Solver {
       moveSteps.push(tryPairRules(clonedCube, PAIRS[i]))
     }
     return moveSteps
+  }
+
+  solveOLL () {
+    const clonedCube = new Cube(null, this.cube.moves)
+    return tryOrientationRules(clonedCube)
   }
 }
