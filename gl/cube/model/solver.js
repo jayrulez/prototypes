@@ -191,7 +191,9 @@ const tryOrientationRules = (cube) => {
       if (matchOrientationRule(testCube, RULES.OLL[j])) {
         const result = [...topMoves[i], ...RULES.OLL[j].moves]
         cube.move(result)
-        if (!isOrientationSolved(cube)) console.error(`Error OLL rule at ${j}`)
+        if (!isOrientationSolved(cube)) {
+          console.error(`Error OLL rule id ${RULES.OLL[j].id}`)
+        }
         return result
       }
     }

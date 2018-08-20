@@ -235,17 +235,33 @@ export const F2L = [
 
 // https://www.speedsolving.com/wiki/index.php/OLL
 export const OLL = [
-  // 47
   {
+    id: 47,
     match: { [NW]: B, [NE]: R, [W]: L, [SW]: F, [S]: F, [SE]: R },
     moves: "F' (L' U' L U) (L' U' L U) F"
   },
-  // 53
   {
+    id: 49,
+    match: { [NW]: B, [N]: B, [NE]: R, [E]: R, [SE]: R, [SW]: F },
+    moves: "R B' R R F R R B R R F' R"
+  },
+  {
+    id: 50,
+    match: { [NW]: L, [N]: B, [NE]: B, [SE]: F, [SW]: L, [W]: L },
+    moves: "R B' R B R2' U2 F R' F' R"
+  },
+  {
+    id: 53,
     match: { [NW]: L, [SW]: L, [S]: F, [SE]: R, [E]: R, [NE]: R },
     moves: "F R U R' U' F' R U R' U' R' F R F'"
+  },
+  {
+    id: 54,
+    match: { [NW]: L, [NE]: R, [SE]: R, [S]: F, [SW]: L, [W]: L },
+    moves: "U U F R' F' R U2 F2 L F L' F"
   }
 ].map(rule => ({
+  id: rule.id,
   match: rule.match,
   moves: rule.moves.replace(/(\(|\))/g, '').split(' ')
 }))
