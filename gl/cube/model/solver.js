@@ -36,6 +36,10 @@ const isPermutationSolved = (colors) => (
   colors[SW][L] === colors[W][L] && colors[W][L] === colors[SW][L]
 )
 
+const isTopLayerAligned = (cube) => {
+  return colorsEqual(cube.getBlock(TOP_BLOCKS[0]), baseBlockAt(TOP_BLOCKS[0]))
+}
+
 const findCrossCoords = cube => EDGE_COORDS.filter(coord => {
   const block = cube.getBlock(coord)
   return (
@@ -228,18 +232,26 @@ const matchPermutationRule = (cube, { match }) => {
 const tryPermutationRules = (cube) => {
   if (isPermutationSolved(getTopColors(cube))) return []
 
-  const topMoves = [[], ['U'], ['U', 'U'], ["U'"]]
-  for (let i = 0; i < topMoves.length; i++) {
-    const testCube = new Cube(null, [...cube.moves, ...topMoves[i]])
+  const preMoves = [[], ['U'], ['U', 'U'], ["U'"]]
+  let solveMoves = []
+  for (let i = 0; i < preMoves.length; i++) {
+    const testCube = new Cube(null, [...cube.moves, ...preMoves[i]])
     for (let j = 0; j < RULES.PLL.length; j++) {
       if (matchPermutationRule(testCube, RULES.PLL[j])) {
-        const result = [...topMoves[i], ...RULES.PLL[j].moves]
-        cube.move(result)
+        solveMoves = [...preMoves[i], ...RULES.PLL[j].moves]
+        cube.move(solveMoves)
         if (!isPermutationSolved(getTopColors(cube))) {
           console.error(`Error PLL name ${RULES.PLL[j].name}`)
         }
-        return result
+        break
       }
+    }
+  }
+  const postMoves = [[], ['U'], ['U', 'U'], ["U'"]]
+  for (let i = 0; i < postMoves.length; i++) {
+    const testCube = new Cube(null, [...cube.moves, ...postMoves[i]])
+    if (isTopLayerAligned(testCube)) {
+      return [...solveMoves, ...postMoves[i]]
     }
   }
   return null // rule not found
@@ -315,6 +327,8 @@ export class Solver {
   solve () {
     this.solveCross().forEach(moves => this.cube.move(moves))
     this.solveF2L().forEach(moves => this.cube.move(moves))
+    this.cube.move(this.solveOLL() || [])
+    this.cube.move(this.solvePLL() || [])
   }
 
   solveCross () {
