@@ -4,7 +4,7 @@ import {
   S, E, N, W, SE, NE, NW, SW,
   COLORS, COLOR_D, COLOR_U, PAIRS, EDGE_COORDS, BLOCK_COORDS, TOP_BLOCKS,
   Y_ROTATE_MAPPING, SLOT_COORDS_MAPPING, EDGE_GRID_MAPPING, CORNER_GRID_MAPPING,
-  GRID_MAPPING, EDGE_GRIDS, INIT_BLOCKS
+  GRID_MAPPING, TOP_FACE_MAPPING, EDGE_GRIDS, INIT_BLOCKS
 } from './consts'
 import * as RULES from './rules'
 
@@ -28,6 +28,13 @@ const isPairSolved = (cube, pair) => {
 const isOrientationSolved = (cube) => {
   return TOP_BLOCKS.every(coord => cube.getBlock(coord).colors[U] === COLOR_U)
 }
+
+const isPermutationSolved = (colors) => (
+  colors[NW][B] === colors[N][B] && colors[N][B] === colors[NE][B] &&
+  colors[NE][R] === colors[E][R] & colors[E][R] === colors[SE][R] &&
+  colors[SE][F] === colors[S][F] && colors[S][F] === colors[SW][F] &&
+  colors[SW][L] === colors[W][L] && colors[W][L] === colors[SW][L]
+)
 
 const findCrossCoords = cube => EDGE_COORDS.filter(coord => {
   const block = cube.getBlock(coord)
@@ -62,6 +69,12 @@ const preparePair = (cube, pair, moves = []) => {
     return preparePair(cube, pair, [...moves, ...sideMoves])
   }
   return moves
+}
+
+const getTopColors = (cube) => {
+  const result = []
+  TOP_BLOCKS.forEach(coord => result.push([...cube.getBlock(coord).colors]))
+  return result
 }
 
 const getTopFaceMove = ([x0, y0, z0], [x1, y1, z1]) => {
@@ -166,7 +179,7 @@ const tryPairRules = (cube, pair) => {
         const mappedMoves = movesRelativeTo(topCornerCoord, RULES.F2L[j].moves)
         const result = [...preMoves, ...topMoves[i], ...mappedMoves]
         cube.move(result)
-        if (!isPairSolved(cube, pair)) console.error(`Error F2L rule at ${j}`)
+        if (!isPairSolved(cube, pair)) console.error(`Error F2L at ${j}`)
         return result
       }
     }
@@ -188,11 +201,42 @@ const tryOrientationRules = (cube) => {
   for (let i = 0; i < topMoves.length; i++) {
     const testCube = new Cube(null, [...cube.moves, ...topMoves[i]])
     for (let j = 0; j < RULES.OLL.length; j++) {
-      if (matchOrientationRule(testCube, RULES.OLL[j])) {
-        const result = [...topMoves[i], ...RULES.OLL[j].moves]
+      const rule = RULES.OLL[j]
+      if (matchOrientationRule(testCube, rule)) {
+        const result = [...topMoves[i], ...rule.moves]
         cube.move(result)
-        if (!isOrientationSolved(cube)) {
-          console.error(`Error OLL rule id ${RULES.OLL[j].id}`)
+        if (!isOrientationSolved(cube)) console.error(`Error OLL id ${rule.id}`)
+        return result
+      }
+    }
+  }
+  return null // rule not found
+}
+
+const matchPermutationRule = (cube, { match }) => {
+  const oldColors = getTopColors(cube); const newColors = getTopColors(cube)
+  Object.keys(match).forEach(fromGrid => {
+    const toGrid = match[fromGrid]
+    for (let i = 0; i < TOP_FACE_MAPPING[fromGrid].length; i++) {
+      newColors[toGrid][TOP_FACE_MAPPING[toGrid][i]] =
+      oldColors[fromGrid][TOP_FACE_MAPPING[fromGrid][i]]
+    }
+  })
+  return isPermutationSolved(newColors)
+}
+
+const tryPermutationRules = (cube) => {
+  if (isPermutationSolved(getTopColors(cube))) return []
+
+  const topMoves = [[], ['U'], ['U', 'U'], ["U'"]]
+  for (let i = 0; i < topMoves.length; i++) {
+    const testCube = new Cube(null, [...cube.moves, ...topMoves[i]])
+    for (let j = 0; j < RULES.PLL.length; j++) {
+      if (matchPermutationRule(testCube, RULES.PLL[j])) {
+        const result = [...topMoves[i], ...RULES.PLL[j].moves]
+        cube.move(result)
+        if (!isPermutationSolved(getTopColors(cube))) {
+          console.error(`Error PLL name ${RULES.PLL[j].name}`)
         }
         return result
       }
@@ -296,5 +340,10 @@ export class Solver {
   solveOLL () {
     const clonedCube = new Cube(null, this.cube.moves)
     return tryOrientationRules(clonedCube)
+  }
+
+  solvePLL () {
+    const clonedCube = new Cube(null, this.cube.moves)
+    return tryPermutationRules(clonedCube)
   }
 }

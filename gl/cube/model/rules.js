@@ -265,3 +265,16 @@ export const OLL = [
   match: rule.match,
   moves: rule.moves.replace(/(\(|\))/g, '').split(' ')
 }))
+
+// https://www.speedsolving.com/wiki/index.php/PLL
+export const PLL = [
+  {
+    name: 'A-PLL b',
+    match: { [NE]: SW, [SW]: SE, [SE]: NE },
+    moves: "R B' R F F R' B R F F R R"
+  }
+].map(rule => ({
+  name: rule.name,
+  match: rule.match,
+  moves: rule.moves.replace(/(\(|\))/g, '').split(' ')
+}))

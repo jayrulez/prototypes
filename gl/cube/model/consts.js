@@ -136,6 +136,17 @@ export const TOP_BLOCKS = [
   [1, 1, 1], [1, 1, -1], [-1, 1, -1], [-1, 1, 1]
 ]
 
+export const TOP_FACE_MAPPING = {
+  [NW]: [L, B],
+  [NE]: [B, R],
+  [SE]: [R, F],
+  [SW]: [F, L],
+  [N]: [R],
+  [E]: [R],
+  [S]: [F],
+  [W]: [L]
+}
+
 export const INIT_BLOCKS = () => {
   const BLOCK_WIDTH = 1.9
   const BLOCK_MARGIN = 0.05
