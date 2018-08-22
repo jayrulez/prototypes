@@ -17,10 +17,17 @@ export class Cube {
   }
 
   animate (move = null, duration = 500) {
-    if (!move || this.__ANIMATING) return
-    this.__ANIMATING = true
+    if (!move || this.__ANIMATING) throw new Error('Unable to animate!')
 
-    const k = move.includes("'") ? 1 : -1
+    // Recursively calling with poped moves, then animate from "inner" to here.
+    if (Array.isArray(move) && move.length > 1) {
+      const lastMove = move.pop()
+      return this.animate(move).then(() => this.animate(lastMove))
+    } else if (move.length === 1) move = move[0]
+
+    this.__ANIMATING = true
+    let k = move.includes("'") ? 1 : -1
+    if (/B|D|L/.test(move)) k = k * -1
     const beginTime = +new Date()
     return new Promise((resolve, reject) => {
       const tick = () => {
@@ -107,9 +114,10 @@ export class Cube {
     return this
   }
 
-  shuffle (n = 20) {
+  shuffle (n = 20, animate = false) {
     const notations = ['F', 'B', 'U', 'D', 'R', 'L']
-    return this.move(
+    const runner = animate ? this.animate.bind(this) : this.move.bind(this)
+    return runner(
       [...Array(n)].map(() => notations[parseInt(Math.random() * 6)])
     )
   }
