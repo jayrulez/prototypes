@@ -5,6 +5,7 @@ import { F, B, U, D, R, L, INIT_BLOCKS } from './consts'
 
 export class Cube {
   constructor (canvas, moves = []) {
+    [this.rX, this.rY] = [0, 0]
     this.blocks = INIT_BLOCKS()
     this.moves = []
     moves.forEach(n => this.move(n))
@@ -13,6 +14,30 @@ export class Cube {
     this.gl = canvas.getContext('webgl')
     this.programInfo = initProgram(this.gl)
     this.gl.useProgram(this.programInfo.program)
+  }
+
+  animate (move = null, duration = 1000) {
+    if (!move) return Promise.resolve()
+
+    const k = move.includes("'") ? 1 : -1
+    const _this = this
+    const beginTime = +new Date()
+    return new Promise((resolve, reject) => {
+      const tick = () => {
+        const diff = +new Date() - beginTime
+        const percentage = diff / duration
+        const face = move.replace("'", '')
+        if (percentage < 1) {
+          _this.render(this.rX, this.rY, face, 90 * percentage * k)
+          window.requestAnimationFrame(tick)
+        } else {
+          _this.move(move)
+          _this.render(this.rX, this.rY, null, 0)
+          resolve()
+        }
+      }
+      window.requestAnimationFrame(tick)
+    })
   }
 
   getBlock ([x, y, z]) {

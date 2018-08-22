@@ -8,9 +8,13 @@ const solver = new Solver(cube)
 
 const $rangeX = document.getElementById('range-x')
 const $rangeY = document.getElementById('range-y')
-const renderCube = () => cube.render($rangeX.value, $rangeY.value)
+const renderCube = () => {
+  cube.rX = parseInt($rangeX.value); cube.rY = parseInt($rangeY.value)
+  cube.render($rangeX.value, $rangeY.value)
+}
 
 $rangeX.addEventListener('input', renderCube)
 $rangeY.addEventListener('input', renderCube)
+cube.render()
 window.cube = cube; window.solver = solver
 // Try `cube.render()` and `solver.solve()` in console!
