@@ -1,5 +1,5 @@
 import { initProgram } from '../renderer/shaders'
-import { getBuffer } from '../renderer/buffers'
+import { getBuffer } from '../renderer/buffer'
 import { renderFrame } from '../renderer/render'
 import { F, B, U, D, R, L, INIT_BLOCKS } from './consts'
 
@@ -42,10 +42,8 @@ export class Cube {
 
   render (rX = 0, rY = 0) {
     if (!this.gl) throw new Error('Missing WebGL context!')
-    this.buffers = this.blocks.map(
-      ({ colors, positions }) => getBuffer(this.gl, colors, positions)
-    )
-    renderFrame(this.gl, this.programInfo, this.buffers, rX, rY)
+    this.buffer = getBuffer(this.gl, this.blocks)
+    renderFrame(this.gl, this.programInfo, this.buffer, rX, rY)
   }
 
   rotate (center, clockwise = true) {

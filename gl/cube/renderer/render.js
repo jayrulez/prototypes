@@ -32,12 +32,12 @@ const draw = (gl, programInfo, mats, buffer) => {
 
   {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.indices)
-    const [offset, type, vertexCount] = [0, gl.UNSIGNED_SHORT, 36]
+    const [offset, type, vertexCount] = [0, gl.UNSIGNED_SHORT, 36 * 27]
     gl.drawElements(gl.TRIANGLES, vertexCount, type, offset)
   }
 }
 
-export const renderFrame = (gl, programInfo, buffers, rX, rY) => {
+export const renderFrame = (gl, programInfo, buffer, rX, rY) => {
   const { clientWidth, clientHeight } = gl.canvas
   const mats = getMats(clientWidth, clientHeight, rX, rY)
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
@@ -46,7 +46,5 @@ export const renderFrame = (gl, programInfo, buffers, rX, rY) => {
   gl.depthFunc(gl.LEQUAL)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-  for (let i = 0; i < buffers.length; i++) {
-    draw(gl, programInfo, mats, buffers[i])
-  }
+  draw(gl, programInfo, mats, buffer)
 }
