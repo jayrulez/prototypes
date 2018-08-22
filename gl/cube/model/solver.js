@@ -233,13 +233,14 @@ const tryPermutationRules = (cube) => {
   if (isPermutationSolved(getTopColors(cube))) return []
 
   const preMoves = [[], ['U'], ['U', 'U'], ["U'"]]
-  let solveMoves = []
+  let solveMoves = []; let matched = false
   for (let i = 0; i < preMoves.length; i++) {
     const testCube = new Cube(null, [...cube.moves, ...preMoves[i]])
     for (let j = 0; j < RULES.PLL.length; j++) {
       if (matchPermutationRule(testCube, RULES.PLL[j])) {
         solveMoves = [...preMoves[i], ...RULES.PLL[j].moves]
         cube.move(solveMoves)
+        matched = true
         if (!isPermutationSolved(getTopColors(cube))) {
           console.error(`Error PLL name ${RULES.PLL[j].name}`)
         }
@@ -247,6 +248,7 @@ const tryPermutationRules = (cube) => {
       }
     }
   }
+  if (!matched) return null
   const postMoves = [[], ['U'], ['U', 'U'], ["U'"]]
   for (let i = 0; i < postMoves.length; i++) {
     const testCube = new Cube(null, [...cube.moves, ...postMoves[i]])
@@ -254,7 +256,7 @@ const tryPermutationRules = (cube) => {
       return [...solveMoves, ...postMoves[i]]
     }
   }
-  return null // rule not found
+  return null
 }
 
 const topEdgeToBottom = (cube, edgeCoord) => {

@@ -15,6 +15,7 @@ const renderCube = () => {
 
 const flat = arr => {
   if (arr.includes(null)) return []
+  else if (arr.every(x => typeof x === 'string')) return arr
   return arr.reduce((a, b) => [...a, ...b], [])
 }
 
