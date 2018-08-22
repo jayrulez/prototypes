@@ -5,7 +5,7 @@ import { F, B, U, D, R, L, INIT_BLOCKS } from './consts'
 
 export class Cube {
   constructor (canvas, moves = []) {
-    [this.rX, this.rY] = [0, 0]
+    [this.rX, this.rY, this.__ANIMATING] = [0, 0, false]
     this.blocks = INIT_BLOCKS()
     this.moves = []
     moves.forEach(n => this.move(n))
@@ -16,11 +16,11 @@ export class Cube {
     this.gl.useProgram(this.programInfo.program)
   }
 
-  animate (move = null, duration = 1000) {
-    if (!move) return Promise.resolve()
+  animate (move = null, duration = 500) {
+    if (!move || this.__ANIMATING) return
+    this.__ANIMATING = true
 
     const k = move.includes("'") ? 1 : -1
-    const _this = this
     const beginTime = +new Date()
     return new Promise((resolve, reject) => {
       const tick = () => {
@@ -28,11 +28,12 @@ export class Cube {
         const percentage = diff / duration
         const face = move.replace("'", '')
         if (percentage < 1) {
-          _this.render(this.rX, this.rY, face, 90 * percentage * k)
+          this.render(this.rX, this.rY, face, 90 * percentage * k)
           window.requestAnimationFrame(tick)
         } else {
-          _this.move(move)
-          _this.render(this.rX, this.rY, null, 0)
+          this.move(move)
+          this.render(this.rX, this.rY, null, 0)
+          this.__ANIMATING = false
           resolve()
         }
       }

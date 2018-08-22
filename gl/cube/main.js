@@ -15,6 +15,6 @@ const renderCube = () => {
 
 $rangeX.addEventListener('input', renderCube)
 $rangeY.addEventListener('input', renderCube)
-cube.render()
+cube.rX = 30; cube.rY = -45; cube.render(30, -45)
 window.cube = cube; window.solver = solver
 // Try `cube.render()` and `solver.solve()` in console!

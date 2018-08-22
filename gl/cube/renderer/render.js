@@ -40,7 +40,7 @@ const draw = (gl, programInfo, mats, buffer) => {
 export const renderFrame = (gl, programInfo, buffer, rX, rY) => {
   const { clientWidth, clientHeight } = gl.canvas
   const mats = getMats(clientWidth, clientHeight, rX, rY)
-  gl.clearColor(0.0, 0.0, 0.0, 1.0)
+  gl.clearColor(0.0, 0.0, 0.0, 0.0)
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)
   gl.depthFunc(gl.LEQUAL)
