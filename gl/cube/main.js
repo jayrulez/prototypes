@@ -13,6 +13,22 @@ const renderCube = () => {
   cube.render($rangeX.value, $rangeY.value)
 }
 
+const flat = arr => {
+  if (arr.includes(null)) return []
+  return arr.reduce((a, b) => [...a, ...b], [])
+}
+
+const rules = [
+  { id: 'btn-shuffle', ops: () => cube.shuffle(20, true) },
+  { id: 'btn-cross', ops: () => cube.animate(flat(solver.solveCross())) },
+  { id: 'btn-f2l', ops: () => cube.animate(flat(solver.solveF2L() || [])) },
+  { id: 'btn-oll', ops: () => cube.animate(flat(solver.solveOLL() || [])) },
+  { id: 'btn-pll', ops: () => cube.animate(flat(solver.solvePLL() || [])) }
+]
+rules.forEach(rule => {
+  document.getElementById(rule.id).addEventListener('click', rule.ops)
+})
+
 $rangeX.addEventListener('input', renderCube)
 $rangeY.addEventListener('input', renderCube)
 cube.rX = 30; cube.rY = -45; cube.render(30, -45)

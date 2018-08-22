@@ -6,13 +6,19 @@
   <style>
     html, body { margin: 0; padding: 0; background: black; }
     body { display: flex; flex-direction: column; align-items: center; }
-    .hud { display: flex; margin: auto; height: 50px; }
+    .hud { display: flex; margin: auto; height: 30px; }
   </style>
   <body>
     <canvas id="glcanvas" width="640" height="480"></canvas>
     <div class="hud">
       <input type="range" min="-180" max="180" value="-45" id="range-y">
       <input type="range" min="-180" max="180" value="30" id="range-x">
+      <div style="width: 10px; height: 10px"></div>
+      <button id="btn-shuffle">Shuffle</button>
+      <button id="btn-cross">Cross</button>
+      <button id="btn-f2l">F2L</button>
+      <button id="btn-oll">OLL</button>
+      <button id="btn-pll">PLL</button>
     </div>
     <script src="./main.js"></script>
   </body>

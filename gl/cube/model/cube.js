@@ -17,6 +17,7 @@ export class Cube {
   }
 
   animate (move = null, duration = 500) {
+    if (move && move.length === 0) return Promise.resolve()
     if (!move || this.__ANIMATING) throw new Error('Unable to animate!')
 
     // Recursively calling with poped moves, then animate from "inner" to here.
