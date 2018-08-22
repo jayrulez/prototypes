@@ -40,9 +40,9 @@ export class Cube {
     return this
   }
 
-  render (rX = 0, rY = 0) {
+  render (rX = 0, rY = 0, moveFace = null, moveAngle = 0) {
     if (!this.gl) throw new Error('Missing WebGL context!')
-    this.buffer = getBuffer(this.gl, this.blocks)
+    this.buffer = getBuffer(this.gl, this.blocks, moveFace, moveAngle)
     renderFrame(this.gl, this.programInfo, this.buffer, rX, rY)
   }
 
