@@ -1,11 +1,11 @@
 export const COLORS = {
-  WHITE: [1.0, 1.0, 1.0, 1.0],
+  WHITE: [0.9, 0.9, 0.9, 1.0],
   GREEN: [0.0, 1.0, 0.0, 1.0],
   RED: [1.0, 0.0, 0.0, 1.0],
   BLUE: [0.0, 0.0, 1.0, 1.0],
   ORANGE: [1.0, 0.5, 0.0, 1.0],
   YELLOW: [1.0, 1.0, 0.0, 1.0],
-  EMPTY: [0.5, 0.5, 0.5, 1.0]
+  EMPTY: [0.0, 0.0, 0.0, 0.0]
 }
 
 export const [
@@ -148,8 +148,8 @@ export const TOP_FACE_MAPPING = {
 }
 
 export const INIT_BLOCKS = () => {
-  const BLOCK_WIDTH = 1.9
-  const BLOCK_MARGIN = 0.05
+  const BLOCK_WIDTH = 1.8
+  const BLOCK_MARGIN = 0.1
   const positionsFromCoords = (x, y, z) => {
     const diff = BLOCK_WIDTH + 2 * BLOCK_MARGIN
     const positions = BASE_POSITIONS

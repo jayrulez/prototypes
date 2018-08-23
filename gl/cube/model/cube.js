@@ -11,7 +11,7 @@ export class Cube {
     moves.forEach(n => this.move(n))
 
     if (!canvas) return
-    this.gl = canvas.getContext('webgl')
+    this.gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
     this.programInfo = initProgram(this.gl)
     this.gl.useProgram(this.programInfo.program)
   }
