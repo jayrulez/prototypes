@@ -2,16 +2,40 @@
 import { Cube } from './model/cube'
 import { Solver } from './model/solver'
 
-const canvas = document.querySelector('#glcanvas')
-const cube = new Cube(canvas, JSON.parse(localStorage.moves || '[]'))
+const $canvas = document.querySelector('#glcanvas')
+const cube = new Cube($canvas, JSON.parse(localStorage.moves || '[]'))
 const solver = new Solver(cube)
 
-const $rangeX = document.getElementById('range-x')
-const $rangeY = document.getElementById('range-y')
-const renderCube = () => {
-  cube.rX = parseInt($rangeX.value); cube.rY = parseInt($rangeY.value)
-  cube.render($rangeX.value, $rangeY.value)
-}
+const isMobile = window.orientation > -1
+const [E_START, E_MOVE, E_END] = isMobile
+  ? ['touchstart', 'touchmove', 'touchend']
+  : ['mousedown', 'mousemove', 'mouseup']
+
+let [rX, rY] = [30, -45]
+
+$canvas.addEventListener(E_START, e => {
+  e.preventDefault()
+  const _e = isMobile ? e.touches[0] : e
+  const [baseX, baseY] = [_e.clientX, _e.clientY]
+  const [_rX, _rY] = [rX, rY]
+
+  const onMove = e => {
+    const _e = isMobile ? e.touches[0] : e
+    const [moveX, moveY] = [_e.clientX, _e.clientY]
+    const baseSize = document.body.clientWidth / 2
+    const percentX = (moveX - baseX) / baseSize
+    const percentY = (moveY - baseY) / baseSize
+    rX = _rX + 180 * percentY; rY = _rY + 180 * percentX
+    cube.rX = rX; cube.rY = rY
+    if (!cube.__ANIMATING) cube.render(rX, rY)
+  }
+  const onEnd = e => {
+    document.removeEventListener(E_MOVE, onMove)
+    document.removeEventListener(E_END, onEnd)
+  }
+  document.addEventListener(E_MOVE, onMove)
+  document.addEventListener(E_END, onEnd)
+})
 
 const flat = arr => {
   if (arr.includes(null)) return []
@@ -30,8 +54,5 @@ rules.forEach(rule => {
   document.getElementById(rule.id).addEventListener('click', rule.ops)
 })
 
-$rangeX.addEventListener('input', renderCube)
-$rangeY.addEventListener('input', renderCube)
-cube.rX = 30; cube.rY = -45; cube.render(30, -45)
+cube.rX = rX; cube.rY = rY; cube.render(rX, rY)
 window.cube = cube; window.solver = solver
-// Try `cube.render()` and `solver.solve()` in console!

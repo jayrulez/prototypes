@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <title>Cube Demo</title>
   </head>
   <style>
@@ -9,11 +10,8 @@
     .hud { display: flex; margin: auto; height: 30px; }
   </style>
   <body>
-    <canvas id="glcanvas" width="640" height="480"></canvas>
+    <canvas id="glcanvas" width="960" height="720" style="width: 100%; max-width: 960px;"></canvas>
     <div class="hud">
-      <input type="range" min="-180" max="180" value="-45" id="range-y">
-      <input type="range" min="-180" max="180" value="30" id="range-x">
-      <div style="width: 10px; height: 10px"></div>
       <button id="btn-shuffle">Shuffle</button>
       <button id="btn-cross">Cross</button>
       <button id="btn-f2l">F2L</button>
