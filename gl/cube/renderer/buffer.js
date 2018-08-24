@@ -1,4 +1,4 @@
-import { rotateX, rotateY, rotateZ } from 'gl-matrix/src/gl-matrix/vec3'
+import { rotateX, rotateY, rotateZ } from './math'
 
 const coordInFace = (coord, face) => {
   return {

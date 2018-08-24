@@ -2,8 +2,5 @@
   "name": "cube-demo",
   "version": "1.0.0",
   "main": "main.js",
-  "license": "MIT",
-  "dependencies": {
-    "gl-matrix": "^2.7.1"
-  }
+  "license": "MIT"
 }
