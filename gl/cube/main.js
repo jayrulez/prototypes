@@ -56,3 +56,4 @@ rules.forEach(rule => {
 
 cube.rX = rX; cube.rY = rY; cube.render(rX, rY)
 window.cube = cube; window.solver = solver
+document.getElementById('share').src = $canvas.toDataURL()
