@@ -1,0 +1,11 @@
+{
+  "name": "sharpen",
+  "version": "0.0.0",
+  "main": "main.js",
+  "author": "doodlewind",
+  "dependencies": {
+    "fabric": "^2.3.6",
+    "glfx": "^0.0.4",
+    "pica": "^4.1.1"
+  }
+}

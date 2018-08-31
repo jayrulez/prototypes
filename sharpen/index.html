@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sharpen Test</title>
+    <style>
+      #container { display: flex; width: 512px; }
+    </style>
+  </head>
+  <body>
+    <div class="control">
+      <button id="glfx">glfx-usm</button>
+      <button id="pica">pica-lanczos</button>
+      <button id="fabric">fabric-lanczos</button>
+    </div>
+    <div class="container">
+      <img id="input" src="lena.gif" hidden>
+      <canvas id="pica-output" width="512" height="512"></canvas>
+      <div id="glfx-output"></div>
+      <canvas id="a" width="512" height="512"></canvas>
+      <canvas id="b" width="512" height="512"></canvas>
+      <canvas id="c" width="512" height="512"></canvas>
+      <canvas id="d" width="512" height="512"></canvas>
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>
