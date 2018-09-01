@@ -3,7 +3,7 @@
 
 // `uTaps` generated with following JS, `scale` is image scale ratio:
 /* js
-[...Array(n)].map((x, i) => lanczosFn(i * scale))
+[...Array(15)].map((x, i) => lanczosFn((i + 1) * scale))
 */
 
 // The `lanczosFn` shapes as below with `filterWindow` = 16, `lobes` = 3:
@@ -13,7 +13,7 @@ function lanczosFn (x) {
   if (x < 1.19209290E-07 && x > -1.19209290E-07) return 1.0
   x *= Math.PI
   const xx = x / lobes
-  return (sin(x) / x) * sin(xx) / xx
+  return (Math.sin(x) / x) * Math.sin(xx) / xx
 }
 */
 
