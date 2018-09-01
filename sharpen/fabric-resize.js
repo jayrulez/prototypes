@@ -40,7 +40,7 @@ export const main = () => {
 
   fabric.Image.fromURL(baseImg.src, function (img) {
     const r = canvas.getRetinaScaling()
-    oImg = img.set({ left: 400, top: 250 }).scale(0.2)
+    oImg = img.set({ left: 256, top: 256 }).scale(0.2)
     lanczosFilter.scaleX = lanczosFilter.scaleY = oImg.scaleX * r
     oImg.lockScalingFlip = true
     oImg.minScaleLimit = 0.025
@@ -92,8 +92,8 @@ export const main = () => {
   function updateFor (valueX, valueY) {
     const w = oImg._element.width
     const h = oImg._element.height
-    const fW = Math.floor(550 * valueX)
-    const fH = Math.floor(400 * valueY)
+    const fW = Math.floor(512 * valueX)
+    const fH = Math.floor(512 * valueY)
     let sx = p.x * valueX
     let sy = p.y * valueY
     if (sx + fW > w) { sx = w - fW }
@@ -102,14 +102,14 @@ export const main = () => {
       oImg._originalElement,
       sx / valueX,
       sy / valueY,
-      550,
-      400,
+      512,
+      512,
       0,
       0,
-      550 * valueX,
-      400 * valueY
+      512 * valueX,
+      512 * valueY
     )
-    baselineCtx.drawImage(baselineCanvas, 0, 0, fW, fH, 0, 0, 550, 400)
-    resampledCtx.drawImage(oImg._element, sx, sy, fW, fH, 0, 0, 550, 400)
+    baselineCtx.drawImage(baselineCanvas, 0, 0, fW, fH, 0, 0, 512, 512)
+    resampledCtx.drawImage(oImg._element, sx, sy, fW, fH, 0, 0, 512, 512)
   }
 }
