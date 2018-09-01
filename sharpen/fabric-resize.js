@@ -1,20 +1,24 @@
 import { fabric } from 'fabric'
 
 export const main = () => {
-  const canvas1 = document.getElementById('c')
-  const canvas2 = document.getElementById('b')
-  const ctx = canvas1.getContext('2d')
-  const ctx2 = canvas2.getContext('2d')
-  ctx.imageSmoothingEnabled = false
-  ctx2.imageSmoothingEnabled = false
+  const originalCanvas = document.getElementById('playground')
+  const resampledCanvas = document.getElementById('resampled')
+  const baselineCanvas = document.getElementById('baseline')
+  originalCanvas.hidden = false
+  resampledCanvas.hidden = false
+  baselineCanvas.hidden = false
 
-  const canvas = new fabric.Canvas('a', {
+  const baselineCtx = baselineCanvas.getContext('2d')
+  const resampledCtx = resampledCanvas.getContext('2d')
+  baselineCtx.imageSmoothingEnabled = false
+  resampledCtx.imageSmoothingEnabled = false
+
+  const canvas = new fabric.Canvas(originalCanvas, {
     imageSmoothingEnabled: false,
     enableRetinaScaling: false,
     fireRightClick: true,
     stopContextMenu: true
   })
-  // create a rectangle object
 
   const lanczosFilter = new fabric.Image.filters.Resize({
     scaleX: 1,
@@ -23,6 +27,7 @@ export const main = () => {
     lanczosLobes: 3
   })
 
+  // Draggable rectangle object
   let oImg
   let p = { x: 0, y: 0 }
 
@@ -93,8 +98,18 @@ export const main = () => {
     let sy = p.y * valueY
     if (sx + fW > w) { sx = w - fW }
     if (sy + fH > h) { sy = h - fH }
-    ctx.drawImage(oImg._originalElement, sx / valueX, sy / valueY, 550, 400, 0, 0, 550 * valueX, 400 * valueY)
-    ctx.drawImage(canvas1, 0, 0, fW, fH, 0, 0, 550, 400)
-    ctx2.drawImage(oImg._element, sx, sy, fW, fH, 0, 0, 550, 400)
+    baselineCtx.drawImage(
+      oImg._originalElement,
+      sx / valueX,
+      sy / valueY,
+      550,
+      400,
+      0,
+      0,
+      550 * valueX,
+      400 * valueY
+    )
+    baselineCtx.drawImage(baselineCanvas, 0, 0, fW, fH, 0, 0, 550, 400)
+    resampledCtx.drawImage(oImg._element, sx, sy, fW, fH, 0, 0, 550, 400)
   }
 }
