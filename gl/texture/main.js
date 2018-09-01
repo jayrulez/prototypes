@@ -12,7 +12,6 @@ const gl = document.querySelector('#glcanvas').getContext('webgl')
 
 // Init shader program.
 const programInfo = initProgram(gl)
-console.log(programInfo)
 
 // Init postion buffer.
 const buffers = initBuffers(gl)
