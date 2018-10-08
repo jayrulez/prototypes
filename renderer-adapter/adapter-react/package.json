@@ -1,10 +1,9 @@
 {
-  "name": "renderer-binding",
+  "name": "adapter-react",
   "version": "1.0.0",
   "main": "index.js",
   "license": "GPL",
   "dependencies": {
-    "performance-now": "^2.1.0",
     "pixi.js": "^4.8.2",
     "react": "^16.5.2",
     "react-reconciler": "^0.15.0"
