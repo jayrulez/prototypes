@@ -1,0 +1,12 @@
+{
+  "name": "prototypes",
+  "version": "0.0.0",
+  "main": "scaffold.js",
+  "repository": "git@github.com:doodlewind/prototypes.git",
+  "author": "Yifeng Wang <i@ewind.us>",
+  "scripts": {
+    "new": "./new.js"
+  },
+  "private": true,
+  "license": "UNLICENSED"
+}
