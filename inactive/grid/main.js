@@ -1,5 +1,20 @@
 console.clear()
 
+const autoGridByCell = (grids, gap) => {
+  return grids.map(grid => {
+    const { left, top, width, height } = grid
+    const center = [left + width / 2, top + height / 2]
+    const newWidth = width - gap
+    const newHeight = height - gap
+    return {
+      left: center[0] - (newWidth / 2),
+      top: center[1] - (newHeight / 2),
+      width: newWidth,
+      height: newHeight
+    }
+  })
+}
+
 const convert = (pxStr) => parseInt(pxStr.replace('px', ''))
 
 // const inRange = (val, upper, lower) => lower >= val && val <= upper
@@ -46,4 +61,7 @@ document.getElementById('test').onclick = () => {
   // const dir = 'right' // ['left', 'top', 'right', 'bottom']
   const tmpCells = rightTo(cells[removeIndex], cells)
   console.log(tmpCells)
+  console.log(
+    autoGridByCell([{ width: 800, height: 600, left: 0, top: 0 }], 10)
+  )
 }
