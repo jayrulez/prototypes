@@ -8,5 +8,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "immer": "^1.7.2"
+  },
+  "devDependencies": {
+    "babel-preset-stage-0": "^6.24.1"
   }
 }
