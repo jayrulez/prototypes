@@ -1,6 +1,4 @@
-// FIXME
-const hashFunc = str => str
-  .split('').map(s => s.charCodeAt(0)).reduce((a, b) => a + b, 0)
+import { hashFunc } from './hash'
 
 const hash2State = (hashNode, chunks) => {
   const { hash, children } = hashNode
