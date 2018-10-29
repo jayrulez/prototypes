@@ -22,9 +22,10 @@ const state2Hash = (stateNode, chunks) => {
 
 export class History {
   constructor (options = {}) {
-    const { rules = [], mergeDuration = 50 } = options
+    const { rules = [], mergeDuration = 50, maxLength = 100 } = options
     this.rules = rules
     this.mergeDuration = mergeDuration
+    this.maxLength = maxLength
 
     this.$index = 0
     this.$hashTries = []
@@ -35,12 +36,13 @@ export class History {
     this.$debounceTime = null
   }
 
-  get hasUndo () {
-    return false
+  get hasRedo () {
+    return this.$index < this.$hashTries.length - 1
   }
 
-  get hasRedo () {
-    return false
+  get hasUndo () {
+    const lowerBound = Math.max(this.$hashTries.length - this.maxLength, 0)
+    return this.$index > lowerBound
   }
 
   get () {
