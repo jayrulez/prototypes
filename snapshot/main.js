@@ -1,4 +1,4 @@
-import { Snapshot } from './snapshot'
+import { History } from './history'
 
 console.clear()
 
@@ -19,6 +19,6 @@ window.state = {
   ]
 }
 
-const snapshot = new Snapshot()
-window.snapshot = snapshot
-// snapshot.pushSync(window.state)
+const history = new History()
+window.test = history
+// test.push(window.state)

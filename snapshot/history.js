@@ -11,23 +11,28 @@ const state2Hash = (stateNode, chunks) => {
   const sanitizedState = { ...stateNode }
   delete sanitizedState.children
   const chunk = JSON.stringify(sanitizedState)
-  const hash = hashFunc(chunk)
-  chunks[hash] = chunk
+  const hashKey = hashFunc(chunk)
+  chunks[hashKey] = chunk
   const hashNode = {
-    hash,
+    hash: hashKey,
     children: stateNode.children.map(node => state2Hash(node, chunks))
   }
   return hashNode
 }
 
-export class Snapshot {
+export class History {
   constructor (options = {}) {
-    const { rules = [] } = options
+    const { rules = [], mergeDuration = 50 } = options
     this.rules = rules
+    this.mergeDuration = mergeDuration
 
     this.$index = 0
     this.$hashTries = []
     this.$chunks = {}
+
+    this.$pendingState = null
+    this.$pendingPromise = null
+    this.$debounceTime = null
   }
 
   get hasUndo () {
@@ -45,14 +50,34 @@ export class Snapshot {
     return hash2State(currentTrie, this.$chunks)
   }
 
-  // @return Snapshot
+  // State => History
   pushSync (state) {
     this.$hashTries.push(state2Hash(state, this.$chunks))
     this.$index = this.$hashTries.length - 1
+    return this
   }
 
-  // @return Promise<Snapshot>
-  pushAsync () {}
+  // State => Promise<History>
+  push (state) {
+    const currentTime = +new Date()
+    if (!this.$pendingState) {
+      this.$pendingState = state
+      this.$debounceTime = currentTime
+      this.$pendingPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.pushSync(this.$pendingState)
+          this.$pendingState = null
+          this.$debounceTime = null
+          resolve(this)
+          this.$pendingPromise = null
+        }, this.mergeDuration)
+      })
+      return this.$pendingPromise
+    } else if (currentTime - this.$debounceTime < this.mergeDuration) {
+      this.$pendingState = state
+      return this.$pendingPromise
+    } else return Promise.reject(new Error('Invalid push ops'))
+  }
 
   undo () {}
 
