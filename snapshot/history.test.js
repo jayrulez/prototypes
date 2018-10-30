@@ -23,3 +23,25 @@ test('can init history', () => {
   history.pushSync(state)
   expect(history.get()).toEqual(state)
 })
+
+test('has correct undo/redo flag', () => {
+  const history = new History()
+  expect(history.hasUndo).toBeFalsy()
+  expect(history.hasRedo).toBeFalsy()
+
+  history.pushSync(state)
+  expect(history.hasUndo).toBeFalsy()
+  expect(history.hasRedo).toBeFalsy()
+
+  history.pushSync(state)
+  expect(history.hasUndo).toBeTruthy()
+  expect(history.hasRedo).toBeFalsy()
+
+  history.undo()
+  expect(history.hasUndo).toBeFalsy()
+  expect(history.hasRedo).toBeTruthy()
+
+  history.redo()
+  expect(history.hasUndo).toBeTruthy()
+  expect(history.hasRedo).toBeFalsy()
+})

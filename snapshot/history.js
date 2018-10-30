@@ -41,18 +41,19 @@ export class History {
     // No redo when pointing to last item.
     if (this.$index === this.$hashTrees.length - 1) return false
 
-    // Only has redo if all items after $index are null.
-    // They can be null when we undo multi states then push a new one.
-    let allEmptyAfterIndex = true
+    // Only has redo if there're valid items after index.
+    // There can be no redo even if index less than states' length,
+    // when we undo multi states then push a new one.
+    let hasItemAfterIndex = false
     for (let i = this.$index + 1; i < this.$hashTrees.length; i++) {
-      if (this.$hashTrees[i] !== null) allEmptyAfterIndex = false
+      if (this.$hashTrees[i] !== null) hasItemAfterIndex = true
     }
-    return allEmptyAfterIndex
+    return hasItemAfterIndex
   }
 
   // Boolean
   get hasUndo () {
-    // Only has undo if we have items before $index.
+    // Only has undo if we have items before index.
     const lowerBound = Math.max(this.$hashTrees.length - this.maxLength, 0)
     return this.$index > lowerBound
   }
