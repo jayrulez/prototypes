@@ -91,7 +91,7 @@ test('support max length', () => {
   expect(history.hasRedo).toBeFalsy()
 
   for (let i = 0; i < 5; i++) {
-    expect(history.$hashTrees[i]).toBeNull()
+    expect(history.$records[i]).toBeNull()
   }
 
   for (let i = 0; i < 5; i++) {
@@ -114,7 +114,7 @@ test('can clear redo records', () => {
   history.pushSync(state)
 
   for (let i = history.$index + 1; i < 10; i++) {
-    expect(history.$hashTrees[i]).toBeNull()
+    expect(history.$records[i]).toBeNull()
   }
   expect(history.hasUndo).toBeTruthy()
   expect(history.hasRedo).toBeFalsy()
@@ -129,12 +129,12 @@ test('support reset', () => {
   }
   expect(history.$index).toBe(9)
   expect(Object.keys(history.$chunks).length).toBeGreaterThan(0)
-  expect(history.$hashTrees.length).toBeGreaterThan(0)
+  expect(history.$records.length).toBeGreaterThan(0)
 
   history.reset()
   expect(history.$index).toBe(-1)
   expect(Object.keys(history.$chunks).length).toBe(0)
-  expect(history.$hashTrees.length).toBe(0)
+  expect(history.$records.length).toBe(0)
 })
 
 test('support async push', () => {

@@ -29,7 +29,7 @@ export class History {
     this.maxLength = options.maxLength
 
     this.$index = -1
-    this.$hashTrees = []
+    this.$records = []
     this.$chunks = {}
 
     this.$pendingState = null
@@ -40,28 +40,28 @@ export class History {
   // Boolean
   get hasRedo () {
     // No redo when pointing to last record.
-    if (this.$index === this.$hashTrees.length - 1) return false
+    if (this.$index === this.$records.length - 1) return false
 
     // Only has redo if there're valid records after index.
     // There can be no redo even if index less than states' length,
     // when we undo multi states then push a new one.
-    let hasrecordAfterIndex = false
-    for (let i = this.$index + 1; i < this.$hashTrees.length; i++) {
-      if (this.$hashTrees[i] !== null) hasrecordAfterIndex = true
+    let hasRecordAfterIndex = false
+    for (let i = this.$index + 1; i < this.$records.length; i++) {
+      if (this.$records[i] !== null) hasRecordAfterIndex = true
     }
-    return hasrecordAfterIndex
+    return hasRecordAfterIndex
   }
 
   // Boolean
   get hasUndo () {
     // Only has undo if we have records before index.
-    const lowerBound = Math.max(this.$hashTrees.length - this.maxLength, 0)
+    const lowerBound = Math.max(this.$records.length - this.maxLength, 0)
     return this.$index > lowerBound
   }
 
   // Void => State
   get () {
-    const currentTree = this.$hashTrees[this.$index]
+    const currentTree = this.$records[this.$index]
     if (!currentTree) return null
 
     return hash2State(currentTree, this.$chunks)
@@ -71,14 +71,14 @@ export class History {
   pushSync (state) {
     const hashTree = state2Hash(state, this.$chunks)
     this.$index++
-    this.$hashTrees[this.$index] = hashTree
+    this.$records[this.$index] = hashTree
     // Clear redo records.
-    for (let i = this.$index + 1; i < this.$hashTrees.length; i++) {
-      this.$hashTrees[i] = null
+    for (let i = this.$index + 1; i < this.$records.length; i++) {
+      this.$records[i] = null
     }
     // Clear first valid record if max length reached.
     if (this.$index >= this.maxLength) {
-      this.$hashTrees[this.$index - this.maxLength] = null
+      this.$records[this.$index - this.maxLength] = null
     }
 
     return this
@@ -121,9 +121,9 @@ export class History {
   // Void => History
   reset () {
     this.$index = -1
-    this.$hashTrees.forEach(tree => { tree = null })
+    this.$records.forEach(tree => { tree = null })
     Object.keys(this.$chunks).forEach(key => { this.$chunks[key] = null })
-    this.$hashTrees = []
+    this.$records = []
     this.$chunks = {}
 
     this.$pendingState = null
