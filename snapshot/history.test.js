@@ -136,3 +136,19 @@ test('support reset', () => {
   expect(Object.keys(history.$chunks).length).toBe(0)
   expect(history.$hashTrees.length).toBe(0)
 })
+
+test('support async push', () => {
+  const history = new History({ mergeDuration: 5 })
+  const state = getState()
+
+  for (let i = 0; i < 100; i++) {
+    history.push(state)
+  }
+  expect(history.get()).toBeNull()
+
+  return new Promise(
+    (resolve, reject) => setTimeout(resolve, 10)
+  ).then(() => {
+    expect(history.get()).toEqual(state)
+  })
+})
