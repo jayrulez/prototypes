@@ -137,6 +137,15 @@ test('support reset', () => {
   expect(history.$records.length).toBe(0)
 })
 
+test('return promise with async push', () => {
+  const history = new History({ mergeDuration: 0 })
+  const state = getState()
+
+  return history.push(state).then(h => {
+    expect(h.get()).toEqual(state)
+  })
+})
+
 test('support async push', () => {
   const history = new History({ mergeDuration: 5 })
   const state = getState()
