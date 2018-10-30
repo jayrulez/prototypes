@@ -28,7 +28,7 @@ export class History {
     this.maxLength = maxLength
 
     this.$index = 0
-    this.$hashTries = []
+    this.$hashTrees = []
     this.$chunks = {}
 
     this.$pendingState = null
@@ -38,27 +38,27 @@ export class History {
 
   // Boolean
   get hasRedo () {
-    return this.$index < this.$hashTries.length - 1
+    return this.$index < this.$hashTrees.length - 1
   }
 
   // Boolean
   get hasUndo () {
-    const lowerBound = Math.max(this.$hashTries.length - this.maxLength, 0)
+    const lowerBound = Math.max(this.$hashTrees.length - this.maxLength, 0)
     return this.$index > lowerBound
   }
 
   // Void => State
   get () {
-    const currentTrie = this.$hashTries[this.$index]
-    if (!currentTrie) return null
+    const currentTree = this.$hashTrees[this.$index]
+    if (!currentTree) return null
 
-    return hash2State(currentTrie, this.$chunks)
+    return hash2State(currentTree, this.$chunks)
   }
 
   // State => History
   pushSync (state) {
-    this.$hashTries.push(state2Hash(state, this.$chunks))
-    this.$index = this.$hashTries.length - 1
+    this.$hashTrees.push(state2Hash(state, this.$chunks))
+    this.$index = this.$hashTrees.length - 1
     return this
   }
 
