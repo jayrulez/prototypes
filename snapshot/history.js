@@ -27,7 +27,7 @@ export class History {
     this.mergeDuration = mergeDuration
     this.maxLength = maxLength
 
-    this.$index = 0
+    this.$index = -1
     this.$hashTrees = []
     this.$chunks = {}
 
@@ -38,11 +38,21 @@ export class History {
 
   // Boolean
   get hasRedo () {
-    return this.$index < this.$hashTrees.length - 1
+    // No redo when pointing to last item.
+    if (this.$index === this.$hashTrees.length - 1) return false
+
+    // Only has redo if all items after $index are null.
+    // They can be null when we undo multi states then push a new one.
+    let allEmptyAfterIndex = true
+    for (let i = this.$index + 1; i < this.$hashTrees.length; i++) {
+      if (this.$hashTrees[i] !== null) allEmptyAfterIndex = false
+    }
+    return allEmptyAfterIndex
   }
 
   // Boolean
   get hasUndo () {
+    // Only has undo if we have items before $index.
     const lowerBound = Math.max(this.$hashTrees.length - this.maxLength, 0)
     return this.$index > lowerBound
   }
@@ -57,8 +67,13 @@ export class History {
 
   // State => History
   pushSync (state) {
-    this.$hashTrees.push(state2Hash(state, this.$chunks))
-    this.$index = this.$hashTrees.length - 1
+    const hashTree = state2Hash(state, this.$chunks)
+    this.$index++
+    this.$hashTrees[this.$index] = hashTree
+    // Clear redo items.
+    for (let i = this.$index + 1; i < this.$hashTrees.length; i++) {
+      this.$hashTrees[i] = null
+    }
     return this
   }
 
@@ -84,9 +99,29 @@ export class History {
     } else return Promise.reject(new Error('Invalid push ops'))
   }
 
-  undo () {}
+  // Void => History
+  undo () {
+    if (this.hasUndo) this.$index--
+    return this
+  }
 
-  redo () {}
+  // Void => History
+  redo () {
+    if (this.hasRedo) this.$index++
+    return this
+  }
 
-  reset () {}
+  // Void => History
+  reset () {
+    this.$index = -1
+    this.$hashTrees.forEach(tree => { tree = null })
+    Object.keys(this.$chunks).forEach(key => { this.$chunks[key] = null })
+    this.$hashTrees = []
+    this.$chunks = {}
+
+    this.$pendingState = null
+    this.$pendingPromise = null
+    this.$debounceTime = null
+    return this
+  }
 }
