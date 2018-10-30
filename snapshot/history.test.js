@@ -119,3 +119,20 @@ test('can clear redo records', () => {
   expect(history.hasUndo).toBeTruthy()
   expect(history.hasRedo).toBeFalsy()
 })
+
+test('support reset', () => {
+  const history = new History()
+  const state = getState()
+
+  for (let i = 0; i < 10; i++) {
+    history.pushSync(state)
+  }
+  expect(history.$index).toBe(9)
+  expect(Object.keys(history.$chunks).length).toBeGreaterThan(0)
+  expect(history.$hashTrees.length).toBeGreaterThan(0)
+
+  history.reset()
+  expect(history.$index).toBe(-1)
+  expect(Object.keys(history.$chunks).length).toBe(0)
+  expect(history.$hashTrees.length).toBe(0)
+})
