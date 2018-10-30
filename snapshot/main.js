@@ -19,6 +19,6 @@ window.state = {
   ]
 }
 
-const history = new History()
+const history = new History({ mergeDuration: 5 })
 window.test = history
-// test.push(window.state)
+// test.push(state)

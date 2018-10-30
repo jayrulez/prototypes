@@ -1,32 +1,13 @@
-import { hashFunc } from './hash'
-
-const hash2State = (hashNode, chunks) => {
-  const { hash, children } = hashNode
-  const stateNode = JSON.parse(chunks[hash])
-  stateNode.children = children.map(node => hash2State(node, chunks))
-  return stateNode
-}
-
-const state2Hash = (stateNode, chunks) => {
-  const sanitizedState = { ...stateNode }
-  delete sanitizedState.children
-  const chunk = JSON.stringify(sanitizedState)
-  const hashKey = hashFunc(chunk)
-  chunks[hashKey] = chunk
-  const hashNode = {
-    hash: hashKey,
-    children: stateNode.children.map(node => state2Hash(node, chunks))
-  }
-  return hashNode
-}
+import { hash2State, state2Hash } from './transform'
 
 export class History {
   constructor (options = {
-    rules: [], mergeDuration: 50, maxLength: 100
+    rules: [], mergeDuration: 50, maxLength: 100, rootFilter: () => true
   }) {
-    this.rules = options.rules
-    this.mergeDuration = options.mergeDuration
-    this.maxLength = options.maxLength
+    this.rules = options.rules || []
+    this.mergeDuration = options.mergeDuration || 50
+    this.maxLength = options.maxLength || 100
+    this.rootFilter = options.rootFilter || (() => true)
 
     this.$index = -1
     this.$records = []
@@ -64,12 +45,14 @@ export class History {
     const currentTree = this.$records[this.$index]
     if (!currentTree) return null
 
-    return hash2State(currentTree, this.$chunks)
+    return hash2State(currentTree, this.$chunks, true)
   }
 
   // State => History
   pushSync (state) {
-    const hashTree = state2Hash(state, this.$chunks)
+    const hashTree = state2Hash(
+      state, this.$chunks, this.rules, this.rootFilter, true
+    )
     this.$index++
     this.$records[this.$index] = hashTree
     // Clear redo records.
