@@ -1,7 +1,7 @@
 /* global test expect */
 import { History } from './history'
 
-const state = {
+const getState = () => ({
   id: 0,
   name: 'root',
   children: [
@@ -16,10 +16,11 @@ const state = {
       ]
     }
   ]
-}
+})
 
 test('can init history', () => {
   const history = new History()
+  const state = getState()
   history.pushSync(state)
   expect(history.get()).toEqual(state)
 })
@@ -29,6 +30,7 @@ test('has correct undo/redo flag', () => {
   expect(history.hasUndo).toBeFalsy()
   expect(history.hasRedo).toBeFalsy()
 
+  const state = getState()
   history.pushSync(state)
   expect(history.hasUndo).toBeFalsy()
   expect(history.hasRedo).toBeFalsy()
@@ -43,5 +45,37 @@ test('has correct undo/redo flag', () => {
 
   history.redo()
   expect(history.hasUndo).toBeTruthy()
+  expect(history.hasRedo).toBeFalsy()
+})
+
+test('can get state after undo', () => {
+  const history = new History()
+  const state = getState()
+  history.pushSync(state)
+  state.name = 'x'
+  history.pushSync(state)
+  state.name = 'y'
+  history.pushSync(state)
+
+  expect(history.get().name).toEqual('y')
+  expect(history.undo().get().name).toEqual('x')
+  expect(history.undo().get().name).toEqual('root')
+})
+
+test('can get state with redundant api call', () => {
+  const history = new History()
+  const state = getState()
+  history.pushSync(state)
+  state.name = 'x'
+  history.pushSync(state)
+  state.name = 'y'
+  history.pushSync(state)
+
+  history.undo().undo().undo().undo().undo()
+  expect(history.get().name).toEqual('root')
+  expect(history.hasUndo).toBeFalsy()
+
+  history.redo().redo().redo().redo().redo()
+  expect(history.get().name).toEqual('y')
   expect(history.hasRedo).toBeFalsy()
 })
