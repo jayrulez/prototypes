@@ -21,11 +21,12 @@ const state2Hash = (stateNode, chunks) => {
 }
 
 export class History {
-  constructor (options = {}) {
-    const { rules = [], mergeDuration = 50, maxLength = 100 } = options
-    this.rules = rules
-    this.mergeDuration = mergeDuration
-    this.maxLength = maxLength
+  constructor (options = {
+    rules: [], mergeDuration: 50, maxLength: 100
+  }) {
+    this.rules = options.rules
+    this.mergeDuration = options.mergeDuration
+    this.maxLength = options.maxLength
 
     this.$index = -1
     this.$hashTrees = []
@@ -38,22 +39,22 @@ export class History {
 
   // Boolean
   get hasRedo () {
-    // No redo when pointing to last item.
+    // No redo when pointing to last record.
     if (this.$index === this.$hashTrees.length - 1) return false
 
-    // Only has redo if there're valid items after index.
+    // Only has redo if there're valid records after index.
     // There can be no redo even if index less than states' length,
     // when we undo multi states then push a new one.
-    let hasItemAfterIndex = false
+    let hasrecordAfterIndex = false
     for (let i = this.$index + 1; i < this.$hashTrees.length; i++) {
-      if (this.$hashTrees[i] !== null) hasItemAfterIndex = true
+      if (this.$hashTrees[i] !== null) hasrecordAfterIndex = true
     }
-    return hasItemAfterIndex
+    return hasrecordAfterIndex
   }
 
   // Boolean
   get hasUndo () {
-    // Only has undo if we have items before index.
+    // Only has undo if we have records before index.
     const lowerBound = Math.max(this.$hashTrees.length - this.maxLength, 0)
     return this.$index > lowerBound
   }
@@ -71,10 +72,15 @@ export class History {
     const hashTree = state2Hash(state, this.$chunks)
     this.$index++
     this.$hashTrees[this.$index] = hashTree
-    // Clear redo items.
+    // Clear redo records.
     for (let i = this.$index + 1; i < this.$hashTrees.length; i++) {
       this.$hashTrees[i] = null
     }
+    // Clear first valid record if max length reached.
+    if (this.$index >= this.maxLength) {
+      this.$hashTrees[this.$index - this.maxLength] = null
+    }
+
     return this
   }
 
