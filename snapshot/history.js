@@ -36,15 +36,18 @@ export class History {
     this.$debounceTime = null
   }
 
+  // Boolean
   get hasRedo () {
     return this.$index < this.$hashTries.length - 1
   }
 
+  // Boolean
   get hasUndo () {
     const lowerBound = Math.max(this.$hashTries.length - this.maxLength, 0)
     return this.$index > lowerBound
   }
 
+  // Void => State
   get () {
     const currentTrie = this.$hashTries[this.$index]
     if (!currentTrie) return null

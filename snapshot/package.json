@@ -9,7 +9,13 @@
   "dependencies": {
     "immer": "^1.7.2"
   },
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
-    "babel-preset-stage-0": "^6.24.1"
+    "babel-jest": "^23.6.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-preset-stage-0": "^6.24.1",
+    "jest": "^23.6.0"
   }
 }
