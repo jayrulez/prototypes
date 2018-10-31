@@ -44,7 +44,7 @@ export class History {
     return record2State(currentTree, this.$chunks)
   }
 
-  // (State, Number) => History
+  // (State, Number?) => History
   pushSync (state, pickIndex = -1) {
     const latestRecord = this.$records[this.$index] || null
     const record = state2Record(
@@ -64,15 +64,15 @@ export class History {
     return this
   }
 
-  // State => Promise<History>
-  push (state) {
+  // (State, Number?) => Promise<History>
+  push (state, pickIndex = -1) {
     const currentTime = +new Date()
     if (!this.$pendingState) {
       this.$pendingState = state
       this.$debounceTime = currentTime
       this.$pendingPromise = new Promise((resolve, reject) => {
         setTimeout(() => {
-          this.pushSync(this.$pendingState)
+          this.pushSync(this.$pendingState, pickIndex)
           this.$pendingState = null
           this.$debounceTime = null
           resolve(this)
