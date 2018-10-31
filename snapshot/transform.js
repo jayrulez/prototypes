@@ -28,7 +28,9 @@ export const state2Record = (
   return {
     hashes,
     rule,
-    children: children.map(node => state2Record(node, chunkPool, rules, null))
+    children: children && children.map(
+      node => state2Record(node, chunkPool, rules, null)
+    )
   }
 }
 
@@ -37,6 +39,6 @@ export const record2State = (recordNode, chunkPool) => {
   const chunks = hashes.map(hash => JSON.parse(chunkPool[hash]))
   return fromRecord({
     chunks,
-    children: children.map(node => record2State(node, chunkPool))
+    children: children && children.map(node => record2State(node, chunkPool))
   })
 }
