@@ -81,3 +81,40 @@ test('custom match children props', () => {
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
 })
+
+test('support node splitting', () => {
+  const state = {
+    type: 'container',
+    children: [
+      { type: 'image', left: 100, top: 100, image: 'foo' },
+      { type: 'image', left: 200, top: 200, image: 'bar' },
+      { type: 'image', left: 300, top: 300, image: 'baz' }
+    ]
+  }
+
+  const rule = {
+    match: ({ type }) => type === 'image',
+    toRecord: node => ({
+      chunks: [
+        { ...node, image: undefined },
+        node.image
+      ],
+      children: null
+    }),
+    fromRecord: ({ chunks, children }) => ({
+      ...chunks[0],
+      image: chunks[1]
+    })
+  }
+
+  const chunks = {}
+  const record = state2Record(state, chunks, [rule], false)
+  const resultState = record2State(record, chunks)
+  expect(resultState).toEqual(state)
+})
+
+// TODO support multi rules
+
+// TODO support single object
+
+// TODO support incremental chunk update
