@@ -6,9 +6,6 @@
   "author": "Yifeng Wang <i@ewind.us>",
   "private": true,
   "license": "UNLICENSED",
-  "dependencies": {
-    "immer": "^1.7.2"
-  },
   "scripts": {
     "test": "jest"
   },
