@@ -24,8 +24,8 @@ export class History {
     if (this.$index === this.$records.length - 1) return false
 
     // Only has redo if there're valid records after index.
-    // There can be no redo even if index less than states' length,
-    // when we undo multi states then push a new one.
+    // There can be no redo even if index less than records' length,
+    // when we undo multi records then push a new one.
     let hasRecordAfterIndex = false
     for (let i = this.$index + 1; i < this.$records.length; i++) {
       if (this.$records[i] !== null) hasRecordAfterIndex = true
