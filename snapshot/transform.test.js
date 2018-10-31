@@ -18,6 +18,7 @@ test('transform between state and record', () => {
       }
     ]
   }
+
   const chunks = {}
   const record = state2Record(state, chunks, [], false)
   const resultState = record2State(record, chunks)
@@ -38,8 +39,45 @@ test('transform invalid children data', () => {
       }
     ]
   }
+
   const chunks = {}
   const record = state2Record(state, chunks, [], false)
+  const resultState = record2State(record, chunks)
+  expect(resultState).toEqual(state)
+})
+
+test('custom match children props', () => {
+  const state = {
+    id: 0,
+    name: 'root',
+    elements: [
+      { id: 1, name: 'a', elements: [] },
+      { id: 2, name: 'b', elements: [] },
+      {
+        id: 3,
+        name: 'c',
+        elements: [
+          { id: 4, name: 'd', elements: [] },
+          { id: 5, name: 'e', elements: [] }
+        ]
+      }
+    ]
+  }
+
+  const rule = {
+    match: () => true,
+    toRecord: node => ({
+      chunks: [{ ...node, elements: undefined }],
+      children: node.elements
+    }),
+    fromRecord: ({ chunks, children }) => ({
+      ...chunks[0],
+      elements: children
+    })
+  }
+
+  const chunks = {}
+  const record = state2Record(state, chunks, [rule], false)
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
 })
