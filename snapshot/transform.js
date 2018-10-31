@@ -2,35 +2,42 @@ import { hashFunc } from './hash'
 
 const defaultRule = {
   match: () => true,
-  serialize: node => ({ ...node, children: undefined }),
-  deserialize: node => node,
-  getChildren: node => node.children
+  // StateNode => { Chunks, Children }
+  toRecord: node => ({
+    chunks: [{ ...node, children: undefined }], children: node.children
+  }),
+  // { Chunks, Children } => StateNode
+  fromRecord: ({ chunks, children }) => ({ ...chunks[0], children })
 }
 
-export const state2Hash = (
-  stateNode, chunks, rules, rootFilter, isRoot
+export const state2Record = (
+  stateNode, chunkPool, rules, rootFilter
 ) => {
   const rule = rules.find(({ match }) => match(stateNode)) || defaultRule
-  const { serialize, getChildren } = rule
+  const { toRecord } = rule
 
-  const sanitizedNode = serialize(stateNode)
-  const chunk = JSON.stringify(sanitizedNode)
-  const hashKey = hashFunc(chunk)
-  chunks[hashKey] = chunk
-  const hashNode = {
-    hash: hashKey,
-    rule,
-    children: getChildren(stateNode)
-      .map(node => state2Hash(node, chunks, rules, false))
+  const { chunks, children } = toRecord(stateNode)
+  const hashes = []
+  for (let i = 0; i < chunks.length; i++) {
+    const chunkStr = JSON.stringify(chunks[i])
+    const hashKey = hashFunc(chunkStr)
+    hashes.push(hashKey)
+    chunkPool[hashKey] = chunkStr
   }
-  return hashNode
+
+  const record = {
+    hashes,
+    rule,
+    children: children.map(node => state2Record(node, chunkPool, rules, null))
+  }
+  return record
 }
 
-export const hash2State = (
-  hashNode, chunks, isRoot
-) => {
-  const { hash, children } = hashNode
-  const stateNode = JSON.parse(chunks[hash])
-  stateNode.children = children.map(node => hash2State(node, chunks))
-  return stateNode
+export const record2State = (hashNode, chunkPool) => {
+  const { hashes, rule: { fromRecord }, children } = hashNode
+  const chunks = hashes.map(hash => JSON.parse(chunkPool[hash]))
+  return fromRecord({
+    chunks,
+    children: children.map(node => record2State(node, chunkPool))
+  })
 }

@@ -1,4 +1,4 @@
-import { hash2State, state2Hash } from './transform'
+import { record2State, state2Record } from './transform'
 
 export class History {
   constructor (options = {
@@ -44,14 +44,13 @@ export class History {
   get () {
     const currentTree = this.$records[this.$index]
     if (!currentTree) return null
-
-    return hash2State(currentTree, this.$chunks, true)
+    return record2State(currentTree, this.$chunks)
   }
 
   // State => History
   pushSync (state) {
-    const hashTree = state2Hash(
-      state, this.$chunks, this.rules, this.rootFilter, true
+    const hashTree = state2Record(
+      state, this.$chunks, this.rules, this.rootFilter
     )
     this.$index++
     this.$records[this.$index] = hashTree
