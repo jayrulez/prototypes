@@ -111,9 +111,52 @@ test('support node splitting', () => {
   const record = state2Record(state, chunks, [rule], false)
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
+  expect(Object.keys(chunks).length).toEqual(1 + 3 * 2) // root + 2 * leaves
 })
 
-// TODO support multi rules
+test('support multi rules', () => {
+  const state = {
+    type: 'container',
+    elements: [
+      { type: 'image', left: 100, top: 100, image: 'foo' },
+      { type: 'image', left: 200, top: 200, image: 'bar' },
+      { type: 'image', left: 300, top: 300, image: 'baz' }
+    ]
+  }
+
+  const rules = [
+    {
+      match: ({ type }) => type === 'image',
+      toRecord: node => ({
+        chunks: [
+          { ...node, image: undefined },
+          node.image
+        ],
+        children: null
+      }),
+      fromRecord: ({ chunks, children }) => ({
+        ...chunks[0],
+        image: chunks[1]
+      })
+    },
+    {
+      match: ({ type }) => type === 'container',
+      toRecord: node => ({
+        chunks: [{ ...node, elements: undefined }],
+        children: node.elements
+      }),
+      fromRecord: ({ chunks, children }) => ({
+        ...chunks[0],
+        elements: children
+      })
+    }
+  ]
+
+  const chunks = {}
+  const record = state2Record(state, chunks, rules, false)
+  const resultState = record2State(record, chunks)
+  expect(resultState).toEqual(state)
+})
 
 // TODO support single object
 
