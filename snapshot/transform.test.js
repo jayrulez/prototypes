@@ -158,6 +158,14 @@ test('support multi rules', () => {
   expect(resultState).toEqual(state)
 })
 
-// TODO support single object
+test('support single object', () => {
+  const state = {
+    type: 'image', left: 100, top: 100, image: 'foo'
+  }
+  const chunks = {}
+  const record = state2Record(state, chunks, [], false)
+  const resultState = record2State(record, chunks)
+  expect(resultState).toEqual(state)
+})
 
 // TODO support incremental chunk update
