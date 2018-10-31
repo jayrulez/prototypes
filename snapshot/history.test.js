@@ -161,3 +161,21 @@ test('support async push', () => {
     expect(history.get()).toEqual(state)
   })
 })
+
+test('support pick index', () => {
+  const history = new History()
+  const state = getState()
+  history.pushSync(state)
+  state.children[0].id = 100
+  history.pushSync(state, 0)
+  expect(history.get()).toEqual(state)
+})
+
+test('can return wrong output when picking wrong index', () => {
+  const history = new History()
+  const state = getState()
+  history.pushSync(state)
+  state.children[0].id = 100
+  history.pushSync(state, 1)
+  expect(history.get()).not.toEqual(state)
+})
