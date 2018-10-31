@@ -20,7 +20,7 @@ test('transform between state and record', () => {
   }
 
   const chunks = {}
-  const record = state2Record(state, chunks, [], false)
+  const record = state2Record(state, chunks)
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
 })
@@ -41,7 +41,7 @@ test('transform invalid children data', () => {
   }
 
   const chunks = {}
-  const record = state2Record(state, chunks, [], false)
+  const record = state2Record(state, chunks)
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
 })
@@ -77,7 +77,7 @@ test('custom match children props', () => {
   }
 
   const chunks = {}
-  const record = state2Record(state, chunks, [rule], false)
+  const record = state2Record(state, chunks, [rule])
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
 })
@@ -108,7 +108,7 @@ test('support node splitting', () => {
   }
 
   const chunks = {}
-  const record = state2Record(state, chunks, [rule], false)
+  const record = state2Record(state, chunks, [rule])
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
   expect(Object.keys(chunks).length).toEqual(1 + 3 * 2) // root + 2 * leaves
@@ -153,7 +153,7 @@ test('support multi rules', () => {
   ]
 
   const chunks = {}
-  const record = state2Record(state, chunks, rules, false)
+  const record = state2Record(state, chunks, rules)
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
 })
@@ -163,7 +163,7 @@ test('support single object', () => {
     type: 'image', left: 100, top: 100, image: 'foo'
   }
   const chunks = {}
-  const record = state2Record(state, chunks, [], false)
+  const record = state2Record(state, chunks)
   const resultState = record2State(record, chunks)
   expect(resultState).toEqual(state)
 })
@@ -187,9 +187,28 @@ test('support incremental chunk update', () => {
   }
 
   const chunks = {}
-  state2Record(state, chunks, [], false)
+  state2Record(state, chunks)
   expect(Object.keys(chunks).length).toEqual(6)
   state.id = 100
-  state2Record(state, chunks, [], false)
+  state2Record(state, chunks)
   expect(Object.keys(chunks).length).toEqual(7)
+})
+
+test('support record root children copy', () => {
+  const state = {
+    id: 0,
+    name: 'root',
+    children: [
+      { id: 1, name: 'a', children: [] },
+      { id: 2, name: 'b', children: [] },
+      { id: 3, name: 'c', children: [] }
+    ]
+  }
+
+  const chunks = {}
+  const record = state2Record(state, chunks)
+  state.children[0].id = 100
+  const newRecord = state2Record(state, chunks, [], record, 0)
+  const resultState = record2State(newRecord, chunks)
+  expect(resultState).toEqual(state)
 })

@@ -12,12 +12,13 @@ const defaultRule = {
 }
 
 export const state2Record = (
-  stateNode, chunkPool, rules, rootFilter
+  stateNode, chunkPool, rules = [], prevRecord = null, pickIndex = -1
 ) => {
   const rule = rules.find(({ match }) => match(stateNode)) || defaultRule
   const { toRecord } = rule
 
   const { chunks, children } = toRecord(stateNode)
+  const recordChildren = children
   const hashes = []
   for (let i = 0; i < chunks.length; i++) {
     const chunkStr = JSON.stringify(chunks[i])
@@ -26,12 +27,19 @@ export const state2Record = (
     chunkPool[hashKey] = chunkStr
   }
 
-  return {
-    hashes,
-    rule,
-    children: children && children.map(
-      node => state2Record(node, chunkPool, rules, null)
+  if (pickIndex !== -1 && Array.isArray(prevRecord && prevRecord.children)) {
+    const childrenCopy = [...prevRecord.children]
+    childrenCopy[pickIndex] = state2Record(
+      recordChildren[pickIndex], chunkPool, rules
     )
+    return { hashes, rule, children: childrenCopy }
+  } else {
+    return {
+      hashes,
+      rule,
+      children: children &&
+        children.map(node => state2Record(node, chunkPool, rules))
+    }
   }
 }
 
