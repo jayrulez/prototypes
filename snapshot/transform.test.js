@@ -168,4 +168,28 @@ test('support single object', () => {
   expect(resultState).toEqual(state)
 })
 
-// TODO support incremental chunk update
+test('support incremental chunk update', () => {
+  const state = {
+    id: 0,
+    name: 'root',
+    children: [
+      { id: 1, name: 'a', children: [] },
+      { id: 2, name: 'b', children: [] },
+      {
+        id: 3,
+        name: 'c',
+        children: [
+          { id: 4, name: 'd', children: [] },
+          { id: 5, name: 'e', children: [] }
+        ]
+      }
+    ]
+  }
+
+  const chunks = {}
+  state2Record(state, chunks, [], false)
+  expect(Object.keys(chunks).length).toEqual(6)
+  state.id = 100
+  state2Record(state, chunks, [], false)
+  expect(Object.keys(chunks).length).toEqual(7)
+})
