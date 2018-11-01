@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "test": "jest --coverage",
+    "benchmark": "parcel benchmark/index.html",
     "build": "parcel build src/index.js"
   },
   "files": [
