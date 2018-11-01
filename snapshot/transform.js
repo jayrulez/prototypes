@@ -1,8 +1,6 @@
 import { hashFunc } from './hash'
 
 const defaultRule = {
-  // StateNode => Boolean
-  match: node => true,
   // StateNode => { Chunks, Children }
   toRecord: node => ({
     chunks: [{ ...node, children: undefined }], children: node.children

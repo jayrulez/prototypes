@@ -11,6 +11,7 @@ export class History {
     this.$chunks = {}
 
     this.$pendingState = null
+    this.$pendingPickIndex = null
     this.$pendingPromise = null
     this.$debounceTime = null
   }
@@ -69,11 +70,13 @@ export class History {
     const currentTime = +new Date()
     if (!this.$pendingState) {
       this.$pendingState = state
+      this.$pendingPickIndex = pickIndex
       this.$debounceTime = currentTime
       this.$pendingPromise = new Promise((resolve, reject) => {
         setTimeout(() => {
-          this.pushSync(this.$pendingState, pickIndex)
+          this.pushSync(this.$pendingState, this.$pendingPickIndex)
           this.$pendingState = null
+          this.$pendingPickIndex = null
           this.$debounceTime = null
           resolve(this)
           this.$pendingPromise = null
@@ -82,6 +85,7 @@ export class History {
       return this.$pendingPromise
     } else if (currentTime - this.$debounceTime < this.mergeDuration) {
       this.$pendingState = state
+      this.$pendingPickIndex = pickIndex
       return this.$pendingPromise
     } else return Promise.reject(new Error('Invalid push ops'))
   }

@@ -146,6 +146,15 @@ test('return promise with async push', () => {
   })
 })
 
+test('may reject on async push', () => {
+  const history = new History({ mergeDuration: 0 })
+  const state = getState()
+  history.push(state)
+  history.$debounceTime = null
+  return expect(history.push(state)).rejects
+    .toEqual(new Error('Invalid push ops'))
+})
+
 test('support async push', () => {
   const history = new History({ mergeDuration: 5 })
   const state = getState()
