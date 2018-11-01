@@ -39,7 +39,7 @@ history.redo().get() // { a: 2, b: 2 }
 Main class for state management, supported options:
 
 * `rules` - Optional rules array for optimizing data transforming.
-* `mergeDuration` - Debounce time for `push` in milliseconds, `50` by default.
+* `wait` - Debounce time for `push` in milliseconds, `50` by default.
 * `maxLength` - Max length saving history states, `100` by default.
 
 #### `push`
@@ -103,7 +103,7 @@ Defines whether a rule can be matched. For example, if you're saving a vDOM stat
 For matched node, `chunks` is the serializable data we transform it into, and `children` picks out its children for further traversing (By default we traverse the `children` field in each state node). Usually one chunk is enough, but you can split a node into multi chunks in this manner:
 
 ```js
-// Suppose `image` is a heavy field, we can split it into a single chunk.
+// Suppose `image` is a heavy field, we can split it into a standalone chunk.
 const state = {
   type: 'container',
   children: [
