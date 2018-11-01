@@ -111,6 +111,7 @@ export class History {
     this.$chunks = {}
 
     this.$pendingState = null
+    this.$pendingPickIndex = null
     this.$pendingPromise = null
     this.$debounceTime = null
     return this
