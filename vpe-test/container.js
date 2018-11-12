@@ -1,4 +1,5 @@
 import fontList from './font-list.json'
+import './setup'
 
 export default {
   template: (`
