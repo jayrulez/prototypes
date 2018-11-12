@@ -5,17 +5,8 @@ import './vue-poster-editor.css'
 
 Vue.use(VuePosterEditor)
 
-const template = (`
-  <div id="app">
-    <Container />
-  </div>
-`)
-
 void new Vue({
   el: '#app',
-  template,
-  components: {
-    Container
-  },
-  methods: {}
+  template: `<Container />`,
+  components: { Container }
 })
