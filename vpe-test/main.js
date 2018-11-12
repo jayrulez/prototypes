@@ -7,6 +7,6 @@ Vue.use(VuePosterEditor)
 
 void new Vue({
   el: '#app',
-  template: `<Container />`,
+  template: `<div id="#app"><Container /></div>`,
   components: { Container }
 })

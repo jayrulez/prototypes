@@ -1,0 +1,28 @@
+[
+  {
+      "id": 229,
+      "name": "SourceHanSansSC-Regular",
+      "alias": "思源黑体 Regular",
+      "family": "Source Han Sans SC Regular",
+      "style": "normal",
+      "weight": 400,
+      "ttf": "https://st0.dancf.com/csc/3/fonts/229/20180421-093200-1.ttf",
+      "woff": "https://st0.dancf.com/csc/3/fonts/229/20180421-093200-2.woff",
+      "ttf_size": 3226988,
+      "woff_size": 2706008,
+      "preview": {
+          "url": "https://st0.dancf.com/csc/3/fonts/229/20180421-093200-3.svg",
+          "width": 352.00000000000006,
+          "height": 80
+      },
+      "platforms": 255,
+      "clients": 127,
+      "commercial": 0,
+      "price": 0,
+      "status": 1,
+      "deleted": 0,
+      "priority": 91,
+      "created_at": null,
+      "updated_at": 1526866339
+  }
+]
