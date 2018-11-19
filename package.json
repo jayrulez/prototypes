@@ -5,7 +5,7 @@
   "repository": "git@github.com:doodlewind/prototypes.git",
   "author": "Yifeng Wang <i@ewind.us>",
   "scripts": {
-    "new": "./new.js"
+    "new": "node new.js"
   },
   "private": true,
   "license": "UNLICENSED"
