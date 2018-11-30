@@ -1,3 +1,4 @@
+/* global arguments */
 /* eslint-disable no-extend-native */
 Function.prototype.before = function (fn) {
   const _this = this

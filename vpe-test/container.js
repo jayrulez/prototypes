@@ -18,6 +18,7 @@ export default {
     }
   },
   mounted () {
+    window.editor = this.editor
     this.editor.$on('load', () => {
       console.log('TODO record events')
     })
