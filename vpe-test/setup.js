@@ -1,20 +1,27 @@
 /* eslint-env browser */
 /* global monitorEvents */
-/* eslint-disable no-extend-native */
 
-Function.prototype.before = function (hookFn) {
-  const _this = this
+function withBefore (originalFn, hookFn) {
   return function () {
     if (hookFn.apply(this, arguments) === false) {
       return false
     }
-    return _this.apply(this, arguments)
+    return originalFn.apply(this, arguments)
   }
 }
 
-const hookEvents = ['mousedown', 'mousemove', 'mouseup', 'click']
+const hookEvents = [
+  'mousedown',
+  'mousemove',
+  'mouseup',
+  'mousewheel',
+  'click',
+  'keydown',
+  'keypress',
+  'keyup'
+]
 
-console.log = console.log.before(function () {
+console.log = withBefore(console.log, function () {
   const isHookedLog = (
     hookEvents.includes(arguments[0]) &&
     arguments[1] instanceof MouseEvent
