@@ -1,10 +1,10 @@
 /* eslint-env browser */
 /* global monitorEvents */
 
-function withBefore (originalFn, hookFn) {
+function hookBefore (originalFn, hookFn) {
   return function () {
     if (hookFn.apply(this, arguments) === false) {
-      return false
+      return
     }
     return originalFn.apply(this, arguments)
   }
@@ -21,7 +21,7 @@ const hookEvents = [
   'keyup'
 ]
 
-console.log = withBefore(console.log, function () {
+console.log = hookBefore(console.log, function () {
   const isHookedLog = (
     hookEvents.includes(arguments[0]) &&
     arguments[1] instanceof MouseEvent
