@@ -55,3 +55,36 @@ test('can batch adjust items within affected items scope', () => {
     items[7]
   ])
 })
+
+test('can adjust single item', () => {
+  expect(batchAdjustAffected(items, items, [items[0]], 1)).toEqual([
+    items[1],
+    items[0],
+    items[2],
+    items[3],
+    items[4],
+    items[5],
+    items[6],
+    items[7]
+  ])
+  expect(batchAdjustAffected(items, items, [items[0]], -1)).toEqual([
+    items[0],
+    items[1],
+    items[2],
+    items[3],
+    items[4],
+    items[5],
+    items[6],
+    items[7]
+  ])
+  expect(batchAdjustAffected(items, items, [items[1]], -1)).toEqual([
+    items[1],
+    items[0],
+    items[2],
+    items[3],
+    items[4],
+    items[5],
+    items[6],
+    items[7]
+  ])
+})
