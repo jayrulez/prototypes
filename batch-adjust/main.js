@@ -1,5 +1,5 @@
-import { adjustAffectedItems } from './adjust'
+import { batchAdjustAffected } from './adjust'
 
 document.getElementById('btn').onclick = () => {
-  adjustAffectedItems()
+  batchAdjustAffected()
 }

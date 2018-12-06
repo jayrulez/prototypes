@@ -3,19 +3,15 @@ export const batchAdjust = (items = [], groupedItems = [], diff = 0) => {
 
   let upperBound, lowerBound
   if (diff > 0) {
-    const lastGroupedItem = groupedItems[groupedItems.length - 1]
-    upperBound = Math.min(
-      items.length - 1, items.indexOf(lastGroupedItem) + diff
-    )
-    lowerBound = upperBound - groupedItems.length
+    const lastGrouped = groupedItems[groupedItems.length - 1]
+    upperBound = Math.min(items.length - 1, items.indexOf(lastGrouped) + diff)
+    lowerBound = upperBound - (groupedItems.length - 1)
   } else if (diff < 0) {
-    const firstGroupedItem = groupedItems[0]
-    lowerBound = Math.max(
-      0, items.indexOf(firstGroupedItem) - diff
-    )
-    upperBound = lowerBound + groupedItems.length
+    const firstGrouped = groupedItems[0]
+    lowerBound = Math.max(0, items.indexOf(firstGrouped) + diff)
+    upperBound = lowerBound + (groupedItems.length - 1)
   }
-  const ungroupedItems = items.filter(item => groupedItems.includes(item))
+  const ungroupedItems = items.filter(item => !groupedItems.includes(item))
   const results = []
   let [i, j] = [0, 0]
   while (results.length < items.length) {
@@ -30,14 +26,14 @@ export const batchAdjust = (items = [], groupedItems = [], diff = 0) => {
   return results
 }
 
-export const adjustAffectedItems = (
+export const batchAdjustAffected = (
   items = [], affectedItems = [], groupedItems = [], diff = 0
 ) => {
   const subItems = items.filter(item => affectedItems.includes(item))
-  const affectedIndexes = affectedItems.map(item => items.indexOf(item))
+  const affectedIndexes = subItems.map(item => items.indexOf(item))
 
   const adjustedSubItems = batchAdjust(subItems, groupedItems, diff)
-  const results = items
+  const results = [...items]
   affectedIndexes.forEach((affectedIndex, subItemIndex) => {
     results[affectedIndex] = adjustedSubItems[subItemIndex]
   })
