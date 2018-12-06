@@ -6,7 +6,7 @@ export const batchAdjust = (items = [], groupedItems = [], diff = 0) => {
     const lastGrouped = groupedItems[groupedItems.length - 1]
     upperBound = Math.min(items.length - 1, items.indexOf(lastGrouped) + diff)
     lowerBound = upperBound - (groupedItems.length - 1)
-  } else if (diff < 0) {
+  } else {
     const firstGrouped = groupedItems[0]
     lowerBound = Math.max(0, items.indexOf(firstGrouped) + diff)
     upperBound = lowerBound + (groupedItems.length - 1)

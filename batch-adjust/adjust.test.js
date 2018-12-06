@@ -18,6 +18,7 @@ test('can batch adjust items', () => {
   ]
   const groupedItems = [items[1], items[4]]
 
+  expect(batchAdjust()).toEqual([])
   expect(batchAdjust(affectedItems, groupedItems, 0)).toEqual(affectedItems)
   expect(batchAdjust(affectedItems, groupedItems, -1)).toEqual([
     items[1], items[4], items[0], items[2], items[3], items[5]
@@ -32,6 +33,7 @@ test('can batch adjust items within affected items scope', () => {
     items[1], items[3], items[3], items[4], items[5], items[6]
   ]
   const groupedItems = [items[1], items[4]]
+  expect(batchAdjustAffected()).toEqual([])
   expect(batchAdjustAffected(items, affectedItems, groupedItems, -1)).toEqual([
     items[0],
     items[1],
