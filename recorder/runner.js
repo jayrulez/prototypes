@@ -11,7 +11,7 @@ const puppeteer = require('puppeteer-core')
   })
   const page = await browser.newPage()
   await page.setViewport({ width, height })
-  await page.goto('https://baidu.com')
+  await page.goto('http://localhost:1234')
 
   const dimensions = await page.evaluate(() => {
     return {
@@ -21,7 +21,7 @@ const puppeteer = require('puppeteer-core')
     }
   })
 
-  await page.screenshot({ path: 'baidu.png' })
+  await page.screenshot({ path: 'test.png' })
 
   console.log('Dimensions:', dimensions)
 
