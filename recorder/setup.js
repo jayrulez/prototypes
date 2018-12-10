@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global monitorEvents */
+/* global monitorEvents copy */
 
 function withHookBefore (originalFn, hookFn) {
   return function () {
@@ -21,6 +21,20 @@ const hookEvents = [
   'keyup'
 ]
 
+const log = {
+  startTime: +new Date(),
+  viewport: { width: null, height: null },
+  url: null,
+  events: {
+    click: [],
+    mouse: [],
+    wheel: [],
+    key: []
+  }
+}
+
+window.log = log
+
 console.log = withHookBefore(console.log, function () {
   const isHookedLog = (
     hookEvents.includes(arguments[0]) &&
@@ -31,10 +45,27 @@ console.log = withHookBefore(console.log, function () {
     return true
   }
 
-  console.info(`${arguments[0]} hooked!`)
+  const type = arguments[0]
+  console.info(`${type} hooked!`)
+  const ts = +new Date() - log.startTime
+  if (type.includes('wheel')) {
+    log.events.wheel.push({ ts })
+  } else if (type.includes('mouse')) {
+    log.events.mouse.push({ ts })
+  } else if (type.includes('key')) {
+    log.events.key.push({ ts })
+  } else if (type === 'click') {
+    log.events.click.push({ ts })
+  } else {
+    console.error(`${type} event unmatched`)
+  }
   return false
 })
 
 window.init = () => {
   hookEvents.forEach(name => monitorEvents(document, name))
+}
+
+window.copyLog = () => {
+  copy(log)
 }
