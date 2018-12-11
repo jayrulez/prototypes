@@ -21,16 +21,14 @@ const hookEvents = [
   'keyup'
 ]
 
+const events = {}
+hookEvents.forEach(key => { events[key] = [] })
+
 const log = {
-  startTime: +new Date(),
+  startTime: null,
   viewport: { width: null, height: null },
   url: null,
-  events: {
-    click: [],
-    mouse: [],
-    wheel: [],
-    key: []
-  }
+  events
 }
 
 window.log = log
@@ -46,16 +44,16 @@ console.log = withHookBefore(console.log, function () {
   }
 
   const type = arguments[0]
+  const e = arguments[1]
   console.info(`${type} hooked!`)
   const ts = +new Date() - log.startTime
+
   if (type.includes('wheel')) {
-    log.events.wheel.push({ ts })
-  } else if (type.includes('mouse')) {
-    log.events.mouse.push({ ts })
+    log.events[type].push({ ts })
+  } else if (type.includes('mouse') || type === 'click') {
+    log.events[type].push({ ts, x: e.pageX, y: e.pageY })
   } else if (type.includes('key')) {
-    log.events.key.push({ ts })
-  } else if (type === 'click') {
-    log.events.click.push({ ts })
+    log.events[type].push({ ts, key: e.key })
   } else {
     console.error(`${type} event unmatched`)
   }
@@ -63,9 +61,17 @@ console.log = withHookBefore(console.log, function () {
 })
 
 window.init = () => {
+  log.startTime = +new Date()
+  log.viewport = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  }
+  log.url = window.location.href
+
   hookEvents.forEach(name => monitorEvents(document, name))
 }
 
 window.copyLog = () => {
+  // TODO post processing for events
   copy(log)
 }
