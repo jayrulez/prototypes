@@ -1,9 +1,12 @@
 const puppeteer = require('puppeteer-core')
+const os = require('os')
 
 ;(async () => {
   const [width, height] = [500, 400]
   const browser = await puppeteer.launch({
-    executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+    executablePath: os.platform() === 'darwin'
+      ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+      : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
     args: [
       `--window-size=${width},${height}`
     ],
@@ -13,17 +16,7 @@ const puppeteer = require('puppeteer-core')
   await page.setViewport({ width, height })
   await page.goto('http://localhost:1234')
 
-  const dimensions = await page.evaluate(() => {
-    return {
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight,
-      deviceScaleFactor: window.devicePixelRatio
-    }
-  })
-
   await page.screenshot({ path: 'test.png' })
-
-  console.log('Dimensions:', dimensions)
 
   await browser.close()
 })()
