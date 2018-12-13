@@ -7,3 +7,7 @@ let count = 0
 $btn.onclick = () => {
   $content.innerHTML = String(count++)
 }
+
+$content.addEventListener('mouseenter', () => {
+  $content.innerHTML = String(count++)
+})
