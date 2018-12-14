@@ -5,7 +5,8 @@ export const mergeEvents = (eventStore) => {
     .reduce((a, b) => [...a, ...b], [])
     .sort((a, b) => a.ts - b.ts)
   for (let i = 0; i < events.length; i++) {
-    events[i].interval = i === 0 ? 0 : events[i].ts - events[i - 1].ts
+    events[i].interval = i === 0
+      ? events[i].ts : events[i].ts - events[i - 1].ts
   }
   return events
 }
