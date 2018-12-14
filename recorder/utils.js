@@ -1,4 +1,4 @@
-export const mergeEvents = (eventStore) => {
+const mergeEvents = (eventStore) => {
   const eventTypes = Object.keys(eventStore)
   const events = eventTypes
     .map(type => eventStore[type].map(event => ({ ...event, type })))
@@ -9,4 +9,8 @@ export const mergeEvents = (eventStore) => {
       ? events[i].ts : events[i].ts - events[i - 1].ts
   }
   return events
+}
+
+module.exports = {
+  mergeEvents
 }

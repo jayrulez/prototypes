@@ -1,12 +1,10 @@
 const puppeteer = require('puppeteer-core')
 const os = require('os')
-// Put recorded JSON here.
+const { mergeEvents } = require('./utils')
 const log = require('./log.json')
 
-const wait = (task, delay) => new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve(task())
-  }, delay)
+const wait = (delay) => new Promise((resolve, reject) => {
+  setTimeout(() => resolve(), delay)
 })
 
 ;(async () => {
@@ -24,9 +22,21 @@ const wait = (task, delay) => new Promise((resolve, reject) => {
   await page.setViewport({ width, height })
   await page.goto(log.url)
 
-  await Promise.all(log.events.click.map(e => {
-    return wait(() => page.mouse.click(e.x, e.y), e.ts)
-  }))
+  const events = mergeEvents(log.events)
+
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i]
+    const { type, x, y, interval } = event
+    await wait(interval)
+
+    if (type === 'mousemove') {
+      await page.mouse.move(x, y)
+    } else if (type === 'mousedown') {
+      await page.mouse.down()
+    } else if (type === 'mouseup') {
+      await page.mouse.up()
+    }
+  }
 
   await page.screenshot({ path: 'test.png' })
   await browser.close()
