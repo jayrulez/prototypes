@@ -1,0 +1,9 @@
+{
+  "name": "ecr",
+  "version": "0.0.0",
+  "description": "VCR for Events",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Yifeng Wang",
+  "license": "MIT"
+}
