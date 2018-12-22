@@ -1,7 +1,7 @@
 # Recorder PoC
 
-* TODO add keyboard / mousewheel events demo
-* TODO replay keyboard / mousewheel events
+* TODO add keyboard events demo
+* TODO replay keyboard events
 * TODO event minifiy
 * TODO record UI
 * TOOD CLI interface specifing log file
