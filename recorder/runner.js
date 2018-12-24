@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer-core')
 const os = require('os')
-const { mergeEvents } = require('./utils')
 const log = require('./log.json')
 
 const wait = (delay) => new Promise((resolve, reject) => {
@@ -22,22 +21,31 @@ const wait = (delay) => new Promise((resolve, reject) => {
   await page.setViewport({ width, height })
   await page.goto(log.url)
 
-  const events = mergeEvents(log.events)
+  const { events } = log
+  for (let i = 0; i < events.length; i++) {
+    events[i].interval = i === 0
+      ? events[i].ts : events[i].ts - events[i - 1].ts
+  }
 
   for (let i = 0; i < events.length; i++) {
     const event = events[i]
-    const { type, x, y, interval } = event
+    const { type, x, y, interval, code } = event
     await wait(interval)
 
+    // TODO figure out processing for keypress
     if (type === 'mousemove') {
       await page.mouse.move(x, y)
     } else if (type === 'mousedown') {
       await page.mouse.down()
     } else if (type === 'mouseup') {
       await page.mouse.up()
+    } else if (type === 'keydown') {
+      await page.keyboard.down(code)
+    } else if (type === 'keyup') {
+      await page.keyboard.up(code)
     }
   }
 
-  await page.screenshot({ path: 'test.png' })
+  await page.screenshot({ path: 'snapshot.png' })
   await browser.close()
 })()

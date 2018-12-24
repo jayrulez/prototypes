@@ -14,3 +14,7 @@ $btn.onclick = () => {
 $content.addEventListener('mouseenter', () => {
   $content.innerHTML = String(count++)
 })
+
+document.addEventListener('keydown', () => {
+  $content.innerHTML = String(count++)
+})
