@@ -1,6 +1,8 @@
 /* eslint-env browser */
 /* global monitorEvents copy */
 
+const MOUSEMOVE_RANGE = 'drag'
+
 function withHookBefore (originalFn, hookFn) {
   return function () {
     if (hookFn.apply(this, arguments) === false) {
@@ -15,7 +17,7 @@ const hookEvents = [
   'mousemove',
   'mouseup',
   // 'mousewheel',
-  'click',
+  // 'click',
   'keydown',
   'keypress',
   'keyup'
@@ -67,6 +69,26 @@ window.init = () => {
 }
 
 window.copyLog = () => {
-  // TODO post processing for events
+  if (MOUSEMOVE_RANGE === 'drag') {
+    const filteredEvents = []
+
+    let mousePressed = false
+    for (let i = 0; i < log.events.length; i++) {
+      const event = log.events[i]
+      if (event.type === 'mousedown') {
+        mousePressed = true
+        filteredEvents.push(event)
+      } else if (event.type === 'mouseup') {
+        mousePressed = false
+        filteredEvents.push(event)
+      } else if (event.type === 'mousemove') {
+        mousePressed && filteredEvents.push(event)
+      } else {
+        filteredEvents.push(event)
+      }
+    }
+
+    log.events = filteredEvents
+  }
   copy(log)
 }

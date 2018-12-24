@@ -36,6 +36,8 @@ const wait = (delay) => new Promise((resolve, reject) => {
     if (type === 'mousemove') {
       await page.mouse.move(x, y)
     } else if (type === 'mousedown') {
+      // HACK may lead to redundant move events
+      await page.mouse.move(x, y)
       await page.mouse.down()
     } else if (type === 'mouseup') {
       await page.mouse.up()
