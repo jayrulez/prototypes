@@ -1,7 +1,9 @@
 /* eslint-env browser */
 /* global monitorEvents copy */
+import { groupItem } from './utils'
 
 const MOUSEMOVE_RANGE = 'drag'
+const THROTTLE_MOUSEMOVE = true
 
 function withHookBefore (originalFn, hookFn) {
   return function () {
@@ -87,8 +89,19 @@ window.copyLog = () => {
         filteredEvents.push(event)
       }
     }
-
     log.events = filteredEvents
   }
+
+  if (THROTTLE_MOUSEMOVE) {
+    const groupedEvents = groupItem(log.events, (a, b) => a.type === b.type)
+    log.events = groupedEvents
+      .map(group => {
+        if (group[0].type !== 'mousemove') return group
+        // TODO fine-grained throttle
+        return group.length <= 2 ? group : [group[0], group[group.length - 1]]
+      })
+      .reduce((a, b) => [...a, ...b])
+  }
+
   copy(log)
 }
