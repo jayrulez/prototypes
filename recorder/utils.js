@@ -1,16 +1,16 @@
-const mergeEvents = (eventStore) => {
-  const eventTypes = Object.keys(eventStore)
-  const events = eventTypes
-    .map(type => eventStore[type].map(event => ({ ...event, type })))
-    .reduce((a, b) => [...a, ...b], [])
-    .sort((a, b) => a.ts - b.ts)
-  for (let i = 0; i < events.length; i++) {
-    events[i].interval = i === 0
-      ? events[i].ts : events[i].ts - events[i - 1].ts
+const groupItem = (items, eq) => {
+  if (items.length === 0) return []
+  const groups = [[items[0]]]
+
+  for (let i = 1; i < items.length; i++) {
+    const lastGroup = groups[groups.length - 1]
+    const lastItem = lastGroup[lastGroup.length - 1]
+    if (eq(lastItem, items[i])) lastGroup.push(items[i])
+    else groups.push([items[i]])
   }
-  return events
+  return groups
 }
 
 module.exports = {
-  mergeEvents
+  groupItem
 }

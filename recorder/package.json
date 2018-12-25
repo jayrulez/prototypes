@@ -5,6 +5,7 @@
   "main": "main.js",
   "license": "UNLICENSED",
   "devDependencies": {
+    "jest": "^23.6.0",
     "puppeteer-core": "^1.11.0"
   }
 }
