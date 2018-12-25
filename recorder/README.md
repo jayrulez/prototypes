@@ -1,6 +1,5 @@
 # Recorder PoC
 
-* TODO event minifiy
 * TODO record UI
 * TOOD CLI interface specifing log file
 * TODO auto screenshot
