@@ -6,6 +6,10 @@
   "keywords": [],
   "author": "Yifeng Wang",
   "license": "MIT",
+  "scripts": {
+    "dev": "node bin/puppeteer-runner.js",
+    "example:click": "parcel examples/click/app/index.html"
+  },
   "devDependencies": {
     "jest": "^23.6.0",
     "puppeteer-core": "^1.11.0"

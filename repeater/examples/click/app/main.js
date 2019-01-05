@@ -1,4 +1,4 @@
-import './setup'
+import '../../../recorder'
 
 const $btn = document.getElementById('btn')
 const $content = document.getElementById('content')

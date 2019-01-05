@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer-core')
 const os = require('os')
-const log = require('./log.json')
+const log = require('../examples/click/test/give-me-five.json')
 
 const wait = (delay) => new Promise((resolve, reject) => {
   setTimeout(() => resolve(), delay)
@@ -48,6 +48,7 @@ const wait = (delay) => new Promise((resolve, reject) => {
     }
   }
 
-  await page.screenshot({ path: 'snapshot.png' })
+  // TODO
+  // await page.screenshot({ path: 'snapshot.png' })
   await browser.close()
 })()
