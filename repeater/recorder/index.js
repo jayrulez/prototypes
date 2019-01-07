@@ -21,7 +21,7 @@ const hookEvents = [
   // 'mousewheel',
   // 'click',
   'keydown',
-  'keypress',
+  // 'keypress',
   'keyup'
 ]
 
