@@ -14,11 +14,9 @@ function withHookBefore (originalFn, hookFn) {
 
 function withArgsHook (originalFn, argsGetter) {
   return function () {
-    const hookedArgs = argsGetter.apply(this, arguments)
-    if (Array.isArray(hookedArgs)) {
-      for (let i = 0; i < hookedArgs.length; i++) {
-        arguments[i] = hookedArgs[i]
-      }
+    const _args = argsGetter.apply(this, arguments)
+    if (Array.isArray(_args)) {
+      for (let i = 0; i < _args.length; i++) arguments[i] = _args[i]
     }
     return originalFn.apply(this, arguments)
   }
