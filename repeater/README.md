@@ -2,9 +2,7 @@
 
 * TODO record UI
 * TOOD CLI interface specifing log file
-* TODO auto screenshot
 * TODO image / log file management (lifecycle design)
-* TODO image comparison
 * TODO test coverage
 * TODO ENV and CI config
 
@@ -12,8 +10,7 @@
 # Recorder doesn't need CLI by default.
 # Take screenshot in extension.
 
-# Use log.json and snapshot.png by default.
-worldline test my-log-path
+repeater test my-log-path
 ```
 
 
