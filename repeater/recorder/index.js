@@ -12,6 +12,18 @@ function withHookBefore (originalFn, hookFn) {
   }
 }
 
+function withArgsHook (originalFn, argsGetter) {
+  return function () {
+    const hookedArgs = argsGetter.apply(this, arguments)
+    if (Array.isArray(hookedArgs)) {
+      for (let i = 0; i < hookedArgs.length; i++) {
+        arguments[i] = hookedArgs[i]
+      }
+    }
+    return originalFn.apply(this, arguments)
+  }
+}
+
 const hookEvents = [
   'mousedown',
   'mousemove',
@@ -32,6 +44,17 @@ const log = {
 
 window.log = log
 
+EventTarget.prototype.addEventListener = withArgsHook(
+  EventTarget.prototype.addEventListener,
+  function (type, listener, options) {
+    const hookedListener = withHookBefore(listener, function () {
+      console.log('hooked')
+    })
+    if (hookEvents.includes(type)) return [type, hookedListener, options]
+  }
+)
+
+/*
 console.log = withHookBefore(console.log, function () {
   const isHookedLog = (
     hookEvents.includes(arguments[0]) &&
@@ -54,6 +77,7 @@ console.log = withHookBefore(console.log, function () {
   }
   return false
 })
+*/
 
 window.init = (throttleMouseMove = false, range = 'drag') => {
   MOUSEMOVE_RANGE = range
