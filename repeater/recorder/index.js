@@ -1,9 +1,7 @@
 /* eslint-env browser */
 /* global monitorEvents copy */
-import { groupItem } from './utils'
-
-const MOUSEMOVE_RANGE = 'drag'
-const THROTTLE_MOUSEMOVE = true
+let MOUSEMOVE_RANGE = 'drag'
+let THROTTLE_MOUSEMOVE = true
 
 function withHookBefore (originalFn, hookFn) {
   return function () {
@@ -40,9 +38,7 @@ console.log = withHookBefore(console.log, function () {
     arguments[1] instanceof Event
   )
 
-  if (!isHookedLog) {
-    return true
-  }
+  if (!isHookedLog) return true
 
   const type = arguments[0]
   const e = arguments[1]
@@ -59,7 +55,9 @@ console.log = withHookBefore(console.log, function () {
   return false
 })
 
-window.init = () => {
+window.init = (throttleMouseMove = false, range = 'drag') => {
+  MOUSEMOVE_RANGE = range
+  THROTTLE_MOUSEMOVE = throttleMouseMove
   log.startTime = +new Date()
   log.viewport = {
     width: window.innerWidth,
@@ -71,6 +69,45 @@ window.init = () => {
 }
 
 window.copyLog = () => {
+  const groupItem = (items, eq) => {
+    if (items.length === 0) return []
+    const groups = [[items[0]]]
+
+    for (let i = 1; i < items.length; i++) {
+      const lastGroup = groups[groups.length - 1]
+      const lastItem = lastGroup[lastGroup.length - 1]
+      if (eq(lastItem, items[i])) lastGroup.push(items[i])
+      else groups.push([items[i]])
+    }
+    return groups
+  }
+
+  const mergeDoubleClick = (events = []) => {
+    const results = []
+    let i = 0
+    while (true) {
+      const subEvents = events.slice(i, i + 4)
+      if (
+        subEvents.length === 4 &&
+        subEvents[0].type === 'mousedown' &&
+        subEvents[1].type === 'mouseup' &&
+        subEvents[2].type === 'mousedown' &&
+        subEvents[3].type === 'mouseup' &&
+        subEvents[3].ts - subEvents[0].ts < 500 &&
+        subEvents.every(e => e.x === subEvents[0].x && e.y === subEvents[0].y)
+      ) {
+        results.push({ ...subEvents[0], type: 'dblclick' })
+        i += 4
+      } else {
+        results.push(events[i])
+        i++
+      }
+
+      if (i >= events.length) break
+    }
+    return results
+  }
+
   if (MOUSEMOVE_RANGE === 'drag') {
     const filteredEvents = []
 
@@ -102,6 +139,10 @@ window.copyLog = () => {
       })
       .reduce((a, b) => [...a, ...b])
   }
+
+  // Merge double click events, or else puppeteer can't simulate it.
+  const clickMergedEvents = mergeDoubleClick(log.events)
+  log.events = clickMergedEvents
 
   copy(log)
 }
