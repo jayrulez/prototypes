@@ -160,6 +160,9 @@ window.copyLog = () => {
   const clickMergedEvents = mergeDoubleClick(log.events)
   log.events = clickMergedEvents
 
+  // Minify float timestamp number (in miliseconds).
+  log.events.forEach(x => { x.ts = parseInt(x.ts) })
+
   copy(log)
 }
 
