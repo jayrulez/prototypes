@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global monitorEvents copy */
+/* global copy */
 let MOUSEMOVE_RANGE = 'drag'
 let THROTTLE_MOUSEMOVE = true
 
@@ -27,7 +27,7 @@ const hookEvents = [
   'mousemove',
   'mouseup',
   // 'mousewheel',
-  // 'click',
+  'click',
   'keydown',
   // 'keypress',
   'keyup'
@@ -45,37 +45,28 @@ window.log = log
 EventTarget.prototype.addEventListener = withArgsHook(
   EventTarget.prototype.addEventListener,
   function (type, listener, options) {
-    const hookedListener = withHookBefore(listener, function () {
-      console.log('hooked')
+    const hookedListener = withHookBefore(listener, function (e) {
+      const { type, timeStamp } = e
+      const ts = timeStamp
+
+      const lastEvent = log.events[log.events.length - 1]
+      // Filter redundant events.
+      if (lastEvent && lastEvent.ts === ts && lastEvent.type === type) {
+        return
+      }
+
+      if (type.includes('mouse') || type === 'click') {
+        log.events.push({ ts, type, x: e.pageX, y: e.pageY })
+      } else if (type.includes('key')) {
+        log.events.push({ ts, type, code: e.code })
+      } else {
+        console.error(`${type} event unmatched`)
+      }
+      console.log(this, type, timeStamp, 'hooked')
     })
     if (hookEvents.includes(type)) return [type, hookedListener, options]
   }
 )
-
-/*
-console.log = withHookBefore(console.log, function () {
-  const isHookedLog = (
-    hookEvents.includes(arguments[0]) &&
-    arguments[1] instanceof Event
-  )
-
-  if (!isHookedLog) return true
-
-  const type = arguments[0]
-  const e = arguments[1]
-  console.info(`${type} hooked!`)
-  const ts = +new Date() - log.startTime
-
-  if (type.includes('mouse') || type === 'click') {
-    log.events.push({ ts, type, x: e.pageX, y: e.pageY })
-  } else if (type.includes('key')) {
-    log.events.push({ ts, type, code: e.code })
-  } else {
-    console.error(`${type} event unmatched`)
-  }
-  return false
-})
-*/
 
 window.init = (throttleMouseMove = false, range = 'drag') => {
   MOUSEMOVE_RANGE = range
@@ -87,7 +78,7 @@ window.init = (throttleMouseMove = false, range = 'drag') => {
   }
   log.url = window.location.href
 
-  hookEvents.forEach(name => monitorEvents(document, name))
+  hookEvents.forEach(name, addEventListener(name, () => {}))
 }
 
 window.copyLog = () => {

@@ -7,6 +7,10 @@ document.addEventListener('click', () => {
   $content.innerHTML = String(count++)
 })
 
+$content.addEventListener('click', () => {
+  // redundant listener with noop
+})
+
 document.addEventListener('keydown', () => {
   $content.innerHTML = String(count++)
 })
