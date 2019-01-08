@@ -27,7 +27,7 @@ const hookEvents = [
   'mousemove',
   'mouseup',
   // 'mousewheel',
-  'click',
+  // 'click',
   'keydown',
   // 'keypress',
   'keyup'
@@ -42,33 +42,35 @@ const log = {
 
 window.log = log
 
-EventTarget.prototype.addEventListener = withArgsHook(
-  EventTarget.prototype.addEventListener,
-  function (type, listener, options) {
-    const hookedListener = withHookBefore(listener, function (e) {
-      const { type, timeStamp } = e
-      const ts = timeStamp
+const hookEventListener = function () {
+  EventTarget.prototype.addEventListener = withArgsHook(
+    EventTarget.prototype.addEventListener,
+    function (type, listener, options) {
+      const hookedListener = withHookBefore(listener, function (e) {
+        const { type, timeStamp } = e
+        const ts = timeStamp
 
-      const lastEvent = log.events[log.events.length - 1]
-      // Filter redundant events.
-      if (lastEvent && lastEvent.ts === ts && lastEvent.type === type) {
-        return
-      }
+        const lastEvent = log.events[log.events.length - 1]
+        // Filter redundant events.
+        if (lastEvent && lastEvent.ts === ts && lastEvent.type === type) {
+          return
+        }
 
-      if (type.includes('mouse') || type === 'click') {
-        log.events.push({ ts, type, x: e.pageX, y: e.pageY })
-      } else if (type.includes('key')) {
-        log.events.push({ ts, type, code: e.code })
-      } else {
-        console.error(`${type} event unmatched`)
-      }
-      console.log(this, type, timeStamp, 'hooked')
-    })
-    if (hookEvents.includes(type)) return [type, hookedListener, options]
-  }
-)
+        if (type.includes('mouse') || type === 'click') {
+          log.events.push({ ts, type, x: e.pageX, y: e.pageY })
+        } else if (type.includes('key')) {
+          log.events.push({ ts, type, code: e.code })
+        } else {
+          console.error(`${type} event unmatched`)
+        }
+        console.log(type, 'hooked')
+      })
+      if (hookEvents.includes(type)) return [type, hookedListener, options]
+    }
+  )
+}
 
-window.init = (throttleMouseMove = false, range = 'drag') => {
+const init = (throttleMouseMove = false, range = 'drag') => {
   MOUSEMOVE_RANGE = range
   THROTTLE_MOUSEMOVE = throttleMouseMove
   log.startTime = +new Date()
@@ -78,8 +80,12 @@ window.init = (throttleMouseMove = false, range = 'drag') => {
   }
   log.url = window.location.href
 
-  hookEvents.forEach(name, addEventListener(name, () => {}))
+  hookEventListener()
+  hookEvents.forEach(name => document.addEventListener(name, () => {}))
 }
+
+// Must be called first to init hook.
+init()
 
 window.copyLog = () => {
   const groupItem = (items, eq) => {
