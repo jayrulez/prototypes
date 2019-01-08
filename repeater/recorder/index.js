@@ -1,7 +1,7 @@
 /* eslint-env browser */
 /* global copy */
-let MOUSEMOVE_RANGE = 'drag'
-let THROTTLE_MOUSEMOVE = true
+let MOVE_RECORD_RANGE = 'drag'
+let THROTTLE_DRAG_MOVE = true
 
 function withHookBefore (originalFn, hookFn) {
   return function () {
@@ -70,9 +70,9 @@ const hookEventListener = function () {
   )
 }
 
-const init = (throttleMouseMove = false, range = 'drag') => {
-  MOUSEMOVE_RANGE = range
-  THROTTLE_MOUSEMOVE = throttleMouseMove
+const init = (throttleDragMove = false, range = 'drag') => {
+  MOVE_RECORD_RANGE = range
+  THROTTLE_DRAG_MOVE = throttleDragMove
   log.startTime = +new Date()
   log.viewport = {
     width: window.innerWidth,
@@ -124,7 +124,7 @@ window.copyLog = () => {
     return results
   }
 
-  if (MOUSEMOVE_RANGE === 'drag') {
+  if (MOVE_RECORD_RANGE === 'drag') {
     const filteredEvents = []
 
     let mousePressed = false
@@ -145,7 +145,7 @@ window.copyLog = () => {
     log.events = filteredEvents
   }
 
-  if (THROTTLE_MOUSEMOVE) {
+  if (THROTTLE_DRAG_MOVE) {
     const groupedEvents = groupItem(log.events, (a, b) => a.type === b.type)
     log.events = groupedEvents
       .map(group => {
