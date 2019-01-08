@@ -7,7 +7,7 @@
   "author": "Yifeng Wang",
   "license": "MIT",
   "scripts": {
-    "dev": "node bin/puppeteer-runner.js",
+    "dev": "node bin/index.js",
     "example:click": "parcel examples/click/app/index.html"
   },
   "devDependencies": {
