@@ -84,9 +84,6 @@ const init = (throttleMouseMove = false, range = 'drag') => {
   hookEvents.forEach(name => document.addEventListener(name, () => {}))
 }
 
-// Must be called first to init hook.
-init()
-
 window.copyLog = () => {
   const groupItem = (items, eq) => {
     if (items.length === 0) return []
@@ -165,3 +162,6 @@ window.copyLog = () => {
 
   copy(log)
 }
+
+// Must be called first to init hook.
+init()
