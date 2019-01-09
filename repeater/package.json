@@ -13,8 +13,9 @@
     "dev": "node bin/index.js",
     "example:click": "parcel examples/click/app/index.html"
   },
-  "devDependencies": {
+  "dependencies": {
     "jest": "^23.6.0",
-    "puppeteer-core": "^1.11.0"
+    "puppeteer-core": "^1.11.0",
+    "runtime-hooks": "1.0.0"
   }
 }

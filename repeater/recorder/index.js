@@ -1,26 +1,8 @@
 /* eslint-env browser */
 /* global copy */
+import { withHookBefore, hookArgs } from 'runtime-hooks'
 let MOUSEMOVE_RANGE = 'drag'
 let THROTTLE_MOUSEMOVE = true
-
-function withHookBefore (originalFn, hookFn) {
-  return function () {
-    if (hookFn.apply(this, arguments) === false) {
-      return
-    }
-    return originalFn.apply(this, arguments)
-  }
-}
-
-function withArgsHook (originalFn, argsGetter) {
-  return function () {
-    const _args = argsGetter.apply(this, arguments)
-    if (Array.isArray(_args)) {
-      for (let i = 0; i < _args.length; i++) arguments[i] = _args[i]
-    }
-    return originalFn.apply(this, arguments)
-  }
-}
 
 const hookEvents = [
   'mousedown',
@@ -43,7 +25,7 @@ const log = {
 window.log = log
 
 const hookEventListener = function () {
-  EventTarget.prototype.addEventListener = withArgsHook(
+  EventTarget.prototype.addEventListener = hookArgs(
     EventTarget.prototype.addEventListener,
     function (type, listener, options) {
       const hookedListener = withHookBefore(listener, function (e) {
