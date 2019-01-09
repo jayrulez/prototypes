@@ -6,7 +6,7 @@ const wait = (delay) => new Promise((resolve) => {
   setTimeout(() => resolve(), delay)
 })
 
-const run = async (log, name) => {
+const run = async (log) => {
   const [width, height] = [log.viewport.width, log.viewport.height]
   const browser = await puppeteer.launch({
     executablePath: os.platform() === 'darwin'

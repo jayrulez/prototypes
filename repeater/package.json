@@ -4,16 +4,17 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "repeater": "bin/index.js"
+    "repeater": "bin/repeater.js"
   },
-  "keywords": [],
+  "keywords": ["repeater", "visual regression test", "unit test"],
   "author": "Yifeng Wang",
   "license": "MIT",
   "scripts": {
-    "dev": "node bin/index.js",
+    "dev": "repeater examples/click/test/give-me-five.json",
     "example:click": "parcel examples/click/app/index.html"
   },
   "dependencies": {
+    "commander": "^2.19.0",
     "jest": "^23.6.0",
     "puppeteer-core": "^1.11.0",
     "runtime-hooks": "1.0.0"
