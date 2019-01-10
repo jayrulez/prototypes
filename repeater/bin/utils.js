@@ -1,5 +1,6 @@
 const fs = require('fs')
 const { join, basename } = require('path')
+const glob = require('glob')
 const os = require('os')
 
 const ensureRepeaterDir = () => {
@@ -9,21 +10,43 @@ const ensureRepeaterDir = () => {
 
 const getActionByJSON = (name, update) => {
   const jsonPath = join(process.cwd(), name)
-  if (!fs.existsSync(jsonPath)) return 'not-found'
+  if (!fs.existsSync(jsonPath)) return { type: 'single-not-found' }
 
-  if (update) return 'update-single'
+  if (update) return { type: 'single-update' }
 
   const screenshotPath = jsonPath.replace('.json', '.png')
-  return fs.existsSync(screenshotPath) ? 'update-single' : 'test-single'
+  return fs.existsSync(screenshotPath)
+    ? { type: 'single-update' }
+    : { type: 'single-test' }
 }
 
 const getActionByDir = (name, update) => {
-  // const dir = join(process.cwd(), name)
-  return 'todo'
+  const cwd = join(process.cwd(), name)
+  if (!fs.existsSync(cwd)) return Promise.resolve('batch-not-found')
+
+  return new Promise((resolve, reject) => {
+    glob('**/*.{json,png}', { cwd }, (err, matches) => {
+      if (err) return resolve({ type: 'batch-error' })
+
+      const matchedLogNames = matches
+        .filter(name => name.includes('.json'))
+        .map(name => name.replace('.json', ''))
+      const allLogHasScreenshot = matchedLogNames.every(logName => (
+        matches.some(name => name.includes(logName) && name.includes('.png'))
+      ))
+
+      if (allLogHasScreenshot && !update) return resolve({ type: 'batch-test' })
+
+      if (update) return resolve({ type: 'batch-update' })
+
+      return resolve({ type: 'batch-invalid' })
+    })
+  })
 }
 
 const getActionByName = (name, update) => name.includes('.json')
-  ? getActionByJSON(name, update) : getActionByDir(name, update)
+  ? Promise.resolve(getActionByJSON(name, update))
+  : getActionByDir(name, update)
 
 const getDefaultChromiumPath = () => {
   return os.platform() === 'darwin'
