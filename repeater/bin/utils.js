@@ -28,25 +28,28 @@ const getActionByDir = (name, update) => {
     glob('**/*.{json,png}', { cwd }, (err, matches) => {
       if (err) return resolve({ type: 'batch-error' })
 
-      const matchedLogNames = matches
-        .filter(name => name.includes('.json'))
-        .map(name => name.replace('.json', ''))
+      const matchedLogs = matches.filter(name => name.includes('.json'))
+      const matchedLogNames = matchedLogs.map(log => log.replace('.json', ''))
       const allLogHasScreenshot = matchedLogNames.every(logName => (
         matches.some(name => name.includes(logName) && name.includes('.png'))
       ))
 
-      if (allLogHasScreenshot && !update) return resolve({ type: 'batch-test' })
+      if (allLogHasScreenshot && !update) {
+        return resolve({ type: 'batch-test', files: matchedLogs })
+      }
 
-      if (update) return resolve({ type: 'batch-update' })
+      if (update) {
+        return resolve({ type: 'batch-update', files: matchedLogs })
+      }
 
       return resolve({ type: 'batch-invalid' })
     })
   })
 }
 
-const getActionByName = (name, update) => name.includes('.json')
-  ? Promise.resolve(getActionByJSON(name, update))
-  : getActionByDir(name, update)
+const getActionByLocation = (location, update) => location.includes('.json')
+  ? Promise.resolve(getActionByJSON(location, update))
+  : getActionByDir(location, update)
 
 const getDefaultChromiumPath = () => {
   return os.platform() === 'darwin'
@@ -56,12 +59,12 @@ const getDefaultChromiumPath = () => {
 
 const getJSONByPath = filePath => JSON.parse(fs.readFileSync(filePath, 'utf8'))
 
-const getLogNameByPath = filePath => basename(filePath).replace('.json', '')
+const getLogNameByLocation = filePath => basename(filePath).replace('.json', '')
 
 module.exports = {
   ensureRepeaterDir,
-  getActionByName,
+  getActionByLocation,
   getDefaultChromiumPath,
   getJSONByPath,
-  getLogNameByPath
+  getLogNameByLocation
 }

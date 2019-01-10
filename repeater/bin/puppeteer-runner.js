@@ -1,7 +1,10 @@
 const puppeteer = require('puppeteer-core')
 const os = require('os')
 const { join } = require('path')
-const { ensureRepeaterDir } = require('./utils')
+const {
+  ensureRepeaterDir,
+  getJSONByPath
+} = require('./utils')
 
 const wait = (delay) => new Promise((resolve) => {
   setTimeout(() => resolve(), delay)
@@ -9,7 +12,7 @@ const wait = (delay) => new Promise((resolve) => {
 
 // Run log JSON and save screenshot to repeater's tmp dir.
 // Logs can have multi window sizes, so new browser instance is required.
-const run = async (log, name) => {
+const runLog = async (log, name) => {
   const [width, height] = [log.viewport.width, log.viewport.height]
   const browser = await puppeteer.launch({
     executablePath: os.platform() === 'darwin'
@@ -64,6 +67,14 @@ const run = async (log, name) => {
   await browser.close()
 }
 
+const batchRun = async (logNames, location) => {
+  const filePaths = logNames.map(name => join(process.cwd(), location, name))
+  const logs = filePaths.map(getJSONByPath)
+  // TODO
+  return logs
+}
+
 module.exports = {
-  run
+  batchRun,
+  runLog
 }

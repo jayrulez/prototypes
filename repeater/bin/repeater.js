@@ -2,19 +2,19 @@
 const { join } = require('path')
 const program = require('commander')
 const {
-  getActionByName,
+  getActionByLocation,
   getDefaultChromiumPath,
   getJSONByPath,
-  getLogNameByPath
+  getLogNameByLocation
 } = require('./utils')
-const { run } = require('./puppeteer-runner')
+const { batchRun, runLog } = require('./puppeteer-runner')
 const pkg = require('../package.json')
 
 const defaultPath = getDefaultChromiumPath()
 
 program
   .version(pkg.version)
-  .usage('<name> [options]')
+  .usage('<location> [options]')
   .option('--update', '', false)
   .option('--concurrency [concurrency]', 'Test runner concurrency', 4)
   .option('--chromium-path [path]', 'Chromium revision path', defaultPath)
@@ -23,20 +23,20 @@ program
 ;(async () => {
   // program.concurrency
   // program.chromiumPath
-  const name = program.args[0] || ''
-  const action = await getActionByName(name, program.update)
+  const location = program.args[0] || ''
+  const action = await getActionByLocation(location, program.update)
   console.log('Repeater action:', action.type)
 
   switch (action.type) {
     case 'single-not-found': {
-      console.log('Invalid test name!')
+      console.log('Invalid test location!')
       process.exitCode = 1
       break
     }
     case 'single-test': {
-      const filePath = join(process.cwd(), name)
+      const filePath = join(process.cwd(), location)
       const log = getJSONByPath(filePath)
-      run(log, getLogNameByPath(filePath))
+      runLog(log, getLogNameByLocation(filePath))
       break
     }
     case 'single-update': {
@@ -44,12 +44,12 @@ program
       break
     }
     case 'batch-not-found': {
-      console.log('Invalid test name!')
+      console.log('Invalid test location!')
       process.exitCode = 1
       break
     }
     case 'batch-error': {
-      console.log('Error opening test files')
+      console.log('Error opening test files!')
       process.exitCode = 1
       break
     }
@@ -63,7 +63,7 @@ program
       break
     }
     case 'batch-update': {
-      // TODO
+      await batchRun(action.files, location)
       break
     }
   }
