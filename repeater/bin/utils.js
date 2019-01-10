@@ -9,13 +9,9 @@ const ensureRepeaterDir = () => {
 
 const getActionByJSON = (name, update) => {
   const jsonPath = join(process.cwd(), name)
-  if (!fs.existsSync(jsonPath)) {
-    return 'not-found'
-  }
+  if (!fs.existsSync(jsonPath)) return 'not-found'
 
-  if (update) {
-    return 'update-single'
-  }
+  if (update) return 'update-single'
 
   const screenshotPath = jsonPath.replace('.json', '.png')
   return fs.existsSync(screenshotPath) ? 'update-single' : 'test-single'
@@ -26,10 +22,8 @@ const getActionByDir = (name, update) => {
   return 'todo'
 }
 
-const getActionByName = (name, update) => {
-  return name.includes('.json')
-    ? getActionByJSON(name, update) : getActionByDir(name, update)
-}
+const getActionByName = (name, update) => name.includes('.json')
+  ? getActionByJSON(name, update) : getActionByDir(name, update)
 
 const getDefaultChromiumPath = () => {
   return os.platform() === 'darwin'
@@ -39,9 +33,7 @@ const getDefaultChromiumPath = () => {
 
 const getJSONByPath = filePath => JSON.parse(fs.readFileSync(filePath, 'utf8'))
 
-const getLogNameByPath = filePath => {
-  return basename(filePath).replace('.json', '')
-}
+const getLogNameByPath = filePath => basename(filePath).replace('.json', '')
 
 module.exports = {
   ensureRepeaterDir,
