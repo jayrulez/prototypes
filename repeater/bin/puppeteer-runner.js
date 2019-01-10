@@ -1,9 +1,11 @@
 const puppeteer = require('puppeteer-core')
 const os = require('os')
 const { join } = require('path')
+const genericPool = require('generic-pool')
 const {
   ensureRepeaterDir,
-  getJSONByPath
+  getJSONByPath,
+  getLogNameByPath
 } = require('./utils')
 
 const wait = (delay) => new Promise((resolve) => {
@@ -12,17 +14,8 @@ const wait = (delay) => new Promise((resolve) => {
 
 // Run log JSON and save screenshot to repeater's tmp dir.
 // Logs can have multi window sizes, so new browser instance is required.
-const runLog = async (log, name) => {
+const runLog = async (browser, log, name) => {
   const [width, height] = [log.viewport.width, log.viewport.height]
-  const browser = await puppeteer.launch({
-    executablePath: os.platform() === 'darwin'
-      ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-      : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-    args: [
-      `--window-size=${width},${height}`
-    ],
-    headless: false
-  })
   const page = await browser.newPage()
   await page.setViewport({ width, height })
   await page.goto(log.url)
@@ -64,17 +57,52 @@ const runLog = async (log, name) => {
   ensureRepeaterDir()
   const screenshotPath = join(process.cwd(), `./.repeater/${name}.png`)
   await page.screenshot({ path: screenshotPath })
-  await browser.close()
+  console.log('screeenshot done')
 }
 
-const batchRun = async (logNames, location) => {
-  const filePaths = logNames.map(name => join(process.cwd(), location, name))
+const createChromePool = async () => {
+  const factory = {
+    create () {
+      return puppeteer.launch({
+        executablePath: os.platform() === 'darwin'
+          ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+          : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+        args: [
+          `--window-size=${global.chromeWidth},${global.chromeHeight}`
+        ],
+        headless: false
+      })
+    },
+    destroy (browser) { browser.close() }
+  }
+  const opts = { max: 3, acquireTimeoutMillis: 60e3, priorityRange: 3 }
+  global.chromePool = genericPool.createPool(factory, opts)
+
+  global.chromePool.on('factoryCreateError', console.error)
+  global.chromePool.on('factoryDestroyError', console.error)
+}
+
+const destroyChromePool = async () => {
+  global.chromePool.drain().then(() => {
+    global.chromePool.clear()
+  })
+}
+
+const batchRun = async (filePaths) => {
   const logs = filePaths.map(getJSONByPath)
-  // TODO
-  return logs
+  await createChromePool()
+  const promises = logs.map((log, i) => new Promise((resolve, reject) => {
+    global.chromeWidth = log.viewport.width
+    global.chromeHeight = log.viewport.height
+    global.chromePool.acquire().then(async (browser) => {
+      await runLog(browser, log, getLogNameByPath(filePaths[i]))
+      await global.chromePool.destroy(browser)
+    })
+  }))
+  await Promise.all(promises)
+  await destroyChromePool()
 }
 
 module.exports = {
-  batchRun,
-  runLog
+  batchRun
 }

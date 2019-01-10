@@ -3,11 +3,9 @@ const { join } = require('path')
 const program = require('commander')
 const {
   getActionByLocation,
-  getDefaultChromiumPath,
-  getJSONByPath,
-  getLogNameByLocation
+  getDefaultChromiumPath
 } = require('./utils')
-const { batchRun, runLog } = require('./puppeteer-runner')
+const { batchRun } = require('./puppeteer-runner')
 const pkg = require('../package.json')
 
 const defaultPath = getDefaultChromiumPath()
@@ -34,9 +32,7 @@ program
       break
     }
     case 'single-test': {
-      const filePath = join(process.cwd(), location)
-      const log = getJSONByPath(filePath)
-      runLog(log, getLogNameByLocation(filePath))
+      batchRun([join(process.cwd(), location)])
       break
     }
     case 'single-update': {
@@ -63,7 +59,9 @@ program
       break
     }
     case 'batch-update': {
-      await batchRun(action.files, location)
+      const filePaths = action.files
+        .map(name => join(process.cwd(), location, name))
+      await batchRun(filePaths)
       break
     }
   }

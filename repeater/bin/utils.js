@@ -59,12 +59,12 @@ const getDefaultChromiumPath = () => {
 
 const getJSONByPath = filePath => JSON.parse(fs.readFileSync(filePath, 'utf8'))
 
-const getLogNameByLocation = filePath => basename(filePath).replace('.json', '')
+const getLogNameByPath = filePath => basename(filePath).replace('.json', '')
 
 module.exports = {
   ensureRepeaterDir,
   getActionByLocation,
   getDefaultChromiumPath,
   getJSONByPath,
-  getLogNameByLocation
+  getLogNameByPath
 }
