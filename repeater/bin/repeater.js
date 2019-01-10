@@ -1,8 +1,12 @@
 #!/usr/bin/env node
-const fs = require('fs')
 const { join } = require('path')
 const program = require('commander')
-const { getDefaultChromiumPath, getActionByName } = require('./utils')
+const {
+  getActionByName,
+  getDefaultChromiumPath,
+  getJSONByPath,
+  getLogNameByPath
+} = require('./utils')
 const { run } = require('./puppeteer-runner')
 const pkg = require('../package.json')
 
@@ -27,9 +31,9 @@ switch (action) {
     break
   }
   case 'test-single': {
-    const fileName = join(process.cwd(), name)
-    const log = JSON.parse(fs.readFileSync(fileName, 'utf8'))
-    run(log)
+    const filePath = join(process.cwd(), name)
+    const log = getJSONByPath(filePath)
+    run(log, getLogNameByPath(filePath))
     break
   }
 }

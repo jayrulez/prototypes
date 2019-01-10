@@ -1,12 +1,14 @@
 const puppeteer = require('puppeteer-core')
 const os = require('os')
-// const path = require('path')
+const { join } = require('path')
+const { ensureRepeaterDir } = require('./utils')
 
 const wait = (delay) => new Promise((resolve) => {
   setTimeout(() => resolve(), delay)
 })
 
-const run = async (log) => {
+// Run log JSON and save screenshot to repeater's tmp dir.
+const run = async (log, name) => {
   const [width, height] = [log.viewport.width, log.viewport.height]
   const browser = await puppeteer.launch({
     executablePath: os.platform() === 'darwin'
@@ -55,9 +57,10 @@ const run = async (log) => {
     }
   }
 
-  // await page.screenshot({ path: path.join(__dirname, `./cases/${name}-screenshot-tmp.png`) })
+  ensureRepeaterDir()
+  const screenshotPath = join(process.cwd(), `./.repeater/${name}.png`)
+  await page.screenshot({ path: screenshotPath })
   await browser.close()
-  return true
 }
 
 module.exports = {
