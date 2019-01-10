@@ -6,16 +6,21 @@
   "bin": {
     "repeater": "bin/repeater.js"
   },
-  "keywords": ["repeater", "visual regression test", "unit test"],
+  "keywords": [
+    "repeater",
+    "visual regression test",
+    "unit test"
+  ],
   "author": "Yifeng Wang",
   "license": "MIT",
   "scripts": {
-    "dev": "repeater examples/click/test/give-me-five.json",
+    "dev": "repeater examples/click/test/five.json",
     "example:click": "parcel examples/click/app/index.html"
   },
   "dependencies": {
     "commander": "^2.19.0",
-    "jest": "^23.6.0",
+    "pixelmatch": "^4.0.2",
+    "pngjs": "^3.3.3",
     "puppeteer-core": "^1.11.0",
     "runtime-hooks": "1.0.0"
   }

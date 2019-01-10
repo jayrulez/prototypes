@@ -8,6 +8,7 @@ const wait = (delay) => new Promise((resolve) => {
 })
 
 // Run log JSON and save screenshot to repeater's tmp dir.
+// Logs can have multi window sizes, so new browser instance is required.
 const run = async (log, name) => {
   const [width, height] = [log.viewport.width, log.viewport.height]
   const browser = await puppeteer.launch({
