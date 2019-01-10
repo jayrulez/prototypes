@@ -13,14 +13,21 @@ const defaultPath = getDefaultChromiumPath()
 program
   .version(pkg.version)
   .usage('<location> [options]')
-  .option('--update', '', false)
+  .option('--update', 'Update existing screenshots', false)
   .option('--concurrency [concurrency]', 'Test runner concurrency', 4)
-  .option('--chromium-path [path]', 'Chromium revision path', defaultPath)
+  .option('--headless', 'Hide browser window')
+  .option('--timeout', 'Browser pool wait timeout', 60e3)
+  .option('--executable-path [path]', 'Chrome path', defaultPath)
   .parse(process.argv)
 
 ;(async () => {
-  // program.concurrency
-  // program.chromiumPath
+  const options = {
+    concurrency: parseInt(program.concurrency),
+    executablePath: program.executablePath,
+    timeout: parseInt(program.timeout),
+    headless: Boolean(program.headless)
+  }
+
   const location = program.args[0] || ''
   const action = await getActionByLocation(location, program.update)
   console.log('Repeater action:', action.type)
@@ -32,7 +39,7 @@ program
       break
     }
     case 'single-test': {
-      batchRun([join(process.cwd(), location)])
+      batchRun([join(process.cwd(), location)], options)
       break
     }
     case 'single-update': {
@@ -61,7 +68,7 @@ program
     case 'batch-update': {
       const filePaths = action.files
         .map(name => join(process.cwd(), location, name))
-      await batchRun(filePaths)
+      await batchRun(filePaths, options)
       break
     }
   }
