@@ -6,6 +6,7 @@ const {
   getDefaultChromiumPath
 } = require('./utils')
 const { batchRun } = require('./puppeteer-runner')
+const { batchTest } = require('./asserter')
 const pkg = require('../package.json')
 
 const defaultPath = getDefaultChromiumPath()
@@ -15,17 +16,19 @@ program
   .usage('<location> [options]')
   .option('--update', 'Update existing screenshots', false)
   .option('--concurrency [concurrency]', 'Test runner concurrency', 4)
+  .option('--pool-timeout [timeout]', 'Browser pool timeout in seconds', 60)
   .option('--headless', 'Hide browser window')
-  .option('--timeout', 'Browser pool wait timeout', 60e3)
   .option('--executable-path [path]', 'Chrome path', defaultPath)
+  .option('--diff-threshold [percentage]', 'For image diff, 0 to 100', 0.5)
   .parse(process.argv)
 
 ;(async () => {
   const options = {
     concurrency: parseInt(program.concurrency),
     executablePath: program.executablePath,
-    timeout: parseInt(program.timeout),
-    headless: Boolean(program.headless)
+    poolTimeout: parseInt(program.poolTimeout),
+    headless: Boolean(program.headless),
+    diffThreshold: parseFloat(program.diffThreshold)
   }
 
   const location = program.args[0] || ''
@@ -39,10 +42,14 @@ program
       break
     }
     case 'single-test': {
-      batchRun([join(process.cwd(), location)], options)
+      const filePaths = [join(process.cwd(), location)]
+      await batchRun(filePaths, options)
+      await batchTest(filePaths, options)
       break
     }
     case 'single-update': {
+      const filePaths = [join(process.cwd(), location)]
+      await batchRun(filePaths, options)
       // TODO
       break
     }
@@ -62,13 +69,17 @@ program
       break
     }
     case 'batch-test': {
-      // TODO
+      const filePaths = action.files
+        .map(name => join(process.cwd(), location, name))
+      await batchRun(filePaths, options)
+      await batchTest(filePaths, options)
       break
     }
     case 'batch-update': {
       const filePaths = action.files
         .map(name => join(process.cwd(), location, name))
       await batchRun(filePaths, options)
+      // TODO
       break
     }
   }

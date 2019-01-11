@@ -2,19 +2,26 @@ const fs = require('fs')
 const { join } = require('path')
 const { PNG } = require('pngjs')
 const pixelmatch = require('pixelmatch')
+const {
+  getLogNameByPath
+} = require('./utils')
 
-const readPNG = (caseName) => new Promise((resolve, reject) => {
-  const expectedName = join(__dirname, `./cases/${caseName}.png`)
-  const expectedImg = fs.createReadStream(expectedName).pipe(new PNG()).on('parsed', doneReading)
+const testImage = (filePath, options) => new Promise((resolve, reject) => {
+  const logName = getLogNameByPath(filePath)
+  const expectedPath = join(process.cwd(), './.repeater', `${logName}.png`)
+  const expectedImg = fs
+    .createReadStream(expectedPath).pipe(new PNG()).on('parsed', doneReading)
 
-  const actualName = join(__dirname, `./cases/${caseName}-screenshot-tmp.png`)
-  const actualImg = fs.createReadStream(actualName).pipe(new PNG()).on('parsed', doneReading)
+  const actualPath = filePath.replace('.json', '.png')
+  const actualImg = fs
+    .createReadStream(actualPath).pipe(new PNG()).on('parsed', doneReading)
 
   let filesRead = 0
 
   function doneReading () {
     if (++filesRead < 2) return
-    const diff = new PNG({ width: expectedImg.width, height: expectedImg.height })
+    const { width, height } = expectedImg
+    const diff = new PNG({ width, height })
 
     const mismatchedPixels = pixelmatch(
       expectedImg.data,
@@ -26,33 +33,31 @@ const readPNG = (caseName) => new Promise((resolve, reject) => {
     )
     const ratio = mismatchedPixels / (expectedImg.width * expectedImg.height)
 
-    const passed = ratio < 0.5 / 100 // 0.5% pixels as threshold
+    const pass = ratio < options.diffThreshold / 100
 
-    if (!passed) {
-      const diffName = join(__dirname, `./cases/${caseName}-fail-diff.png`)
-      diff.pack().pipe(fs.createWriteStream(diffName))
-        .on('finish', () => resolve({ result: false, ratio }))
-        .on('error', reject)
-    } else {
+    if (pass) {
+      console.log(`Test "${logName}" passed with ${ratio / 100}% difference.`)
       resolve({ result: true, ratio })
+    } else {
+      const diffPath = join(process.cwd(), `./.repeater/${logName}-diff.png`)
+      diff.pack().pipe(fs.createWriteStream(diffPath))
+        .on('finish', () => {
+          console.error(
+            `Test failed with ${(ratio * 100).toFixed(2)}% difference.`
+          )
+          console.error(`See ./.repeater/${logName}-diff.png for details.`)
+          reject(new Error({ result: false, ratio }))
+        })
+        .on('error', reject)
     }
   }
 })
 
-module.exports = {
-  readPNG
+const batchTest = async (filePaths, options) => {
+  const promises = filePaths.map(filePath => testImage(filePath, options))
+  try { await Promise.all(promises) } catch (e) { process.exitCode = 1 }
 }
 
-// // const cases = ['drag-mask', 'resize-mask']; // ...
-// const cases = fs
-//   .readdirSync(join(__dirname, './cases'))
-//   .filter(name => name.includes('.json'))
-//   .map(name => name.replace('.json', ''))
-
-// for (let i = 0; i < cases.length; i++) {
-//   const caseName = cases[i]
-//   test(caseName, async t => {
-//     const { result, ratio } = await readPNG(caseName)
-//     t.true(result, `Diff mismatched with ${(ratio * 100).toFixed(2)}% different pixels!\nSee ${caseName}-fail-diff.png for details.`)
-//   })
-// }
+module.exports = {
+  batchTest
+}

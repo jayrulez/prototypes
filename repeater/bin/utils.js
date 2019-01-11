@@ -3,6 +3,10 @@ const { join, basename } = require('path')
 const glob = require('glob')
 const os = require('os')
 
+const fileExists = filePath => {
+  try { return fs.statSync(filePath).isFile() } catch (err) { return false }
+}
+
 const ensureRepeaterDir = () => {
   const repeaterDir = join(process.cwd(), './.repeater')
   if (!fs.existsSync(repeaterDir)) fs.mkdirSync(repeaterDir)
@@ -10,14 +14,16 @@ const ensureRepeaterDir = () => {
 
 const getActionByJSON = (name, update) => {
   const jsonPath = join(process.cwd(), name)
-  if (!fs.existsSync(jsonPath)) return { type: 'single-not-found' }
+
+  if (!fileExists(jsonPath)) return { type: 'single-not-found' }
 
   if (update) return { type: 'single-update' }
 
   const screenshotPath = jsonPath.replace('.json', '.png')
-  return fs.existsSync(screenshotPath)
-    ? { type: 'single-update' }
-    : { type: 'single-test' }
+
+  return fileExists(screenshotPath)
+    ? { type: 'single-test' }
+    : { type: 'single-update' }
 }
 
 const getActionByDir = (name, update) => {

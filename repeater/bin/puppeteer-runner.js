@@ -52,11 +52,11 @@ const runLog = async (browser, log, name) => {
   }
   const screenshotPath = join(process.cwd(), `./.repeater/${name}.png`)
   await page.screenshot({ path: screenshotPath })
-  console.log(`screenshot for "${name}" is taken`)
+  console.log(`Screenshot for "${name}" is taken.`)
 }
 
 const createChromePool = async (userOptions) => {
-  const { executablePath, headless, timeout, concurrency } = userOptions
+  const { executablePath, headless, poolTimeout, concurrency } = userOptions
   const factory = {
     create () {
       return puppeteer.launch({
@@ -67,6 +67,7 @@ const createChromePool = async (userOptions) => {
     },
     destroy (browser) { browser.close() }
   }
+  const timeout = poolTimeout * 10e3
   const poolOptions = {
     max: concurrency, acquireTimeoutMillis: timeout, priorityRange: 3
   }
@@ -92,6 +93,7 @@ const batchRun = async (filePaths, userOptions) => {
     global.chromePool.acquire().then(async (browser) => {
       await runLog(browser, log, getLogNameByPath(filePaths[i]))
       await global.chromePool.destroy(browser)
+      resolve()
     })
   }))
   await Promise.all(promises)
