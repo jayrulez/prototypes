@@ -7,7 +7,7 @@ There're several pain points testing large web apps:
 
 * It's *hard* to write test cases for complex user operations.
 * It's *hard* to add test support for existing projects.
-* It's *hard* to ensure the final UI renders corrently.
+* It's *hard* to ensure the final UI renders correctly.
 
 But, it's always trivial to "run test by yourself", what if we simply automate this process? Imagine this happy path:
 
@@ -29,7 +29,35 @@ Install via NPM:
 npm install repeater.js
 ```
 
-Run test with repeater CLI:
+Repeater is mainly composed of two parts: **Recorder** to collect user events, and **Replayer** for runing tests.
+
+### Record Events
+To record events in existing project, include the script *before* any other modules:  
+
+``` js
+import 'repeater.js'
+import 'vue'
+// ...
+```
+
+Then after test page loaded, user events will be automatically recorded. To save a event log, open Chrome console and type `copyLog()`, paste it anywhere you like.
+
+> Chrome extension WIP.
+
+### Replay Tests
+Once event log saved, you can add screenshot with Repeater CLI:
+
+``` bash
+npx repeater path/to/log.json --update
+```
+
+This will take screenshot for you. To verify the test case, run:
+
+``` bash
+npx repeater path/to/log.json
+```
+
+Or batching tests:
 
 ``` bash
 npx repeater path/to/tests
@@ -37,7 +65,7 @@ npx repeater path/to/tests
 
 
 ## API
-TODO
+> CLI options WIP.
 
 
 ## Roadmap
