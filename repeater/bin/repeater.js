@@ -2,6 +2,7 @@
 const { join } = require('path')
 const program = require('commander')
 const {
+  batchUpdateScreenshot,
   getActionByLocation,
   getDefaultChromiumPath
 } = require('./utils')
@@ -50,7 +51,7 @@ program
     case 'single-update': {
       const filePaths = [join(process.cwd(), location)]
       await batchRun(filePaths, options)
-      // TODO
+      batchUpdateScreenshot(filePaths)
       break
     }
     case 'batch-not-found': {
@@ -79,7 +80,7 @@ program
       const filePaths = action.files
         .map(name => join(process.cwd(), location, name))
       await batchRun(filePaths, options)
-      // TODO
+      batchUpdateScreenshot(filePaths)
       break
     }
   }

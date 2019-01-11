@@ -3,6 +3,15 @@ const { join, basename } = require('path')
 const glob = require('glob')
 const os = require('os')
 
+const batchUpdateScreenshot = jsonPaths => {
+  const logNames = jsonPaths.map(getLogNameByPath)
+  logNames.forEach((logName, i) => {
+    const screenshotPath = join(process.cwd(), './.repeater', `${logName}.png`)
+    const distPath = jsonPaths[i].replace('.json', '.png')
+    fs.copyFileSync(screenshotPath, distPath)
+  })
+}
+
 const fileExists = filePath => {
   try { return fs.statSync(filePath).isFile() } catch (err) { return false }
 }
@@ -63,11 +72,12 @@ const getDefaultChromiumPath = () => {
     : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
 }
 
-const getJSONByPath = filePath => JSON.parse(fs.readFileSync(filePath, 'utf8'))
+const getJSONByPath = jsonPath => JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
 
 const getLogNameByPath = filePath => basename(filePath).replace('.json', '')
 
 module.exports = {
+  batchUpdateScreenshot,
   ensureRepeaterDir,
   getActionByLocation,
   getDefaultChromiumPath,

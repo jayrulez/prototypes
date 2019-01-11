@@ -14,7 +14,7 @@
   "author": "Yifeng Wang",
   "license": "MIT",
   "scripts": {
-    "poc": "repeater examples/click/test/five.json",
+    "poc": "repeater examples/click/test",
     "example:click": "parcel examples/click/app/index.html"
   },
   "dependencies": {
