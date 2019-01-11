@@ -15,7 +15,7 @@ const defaultPath = getDefaultChromiumPath()
 program
   .version(pkg.version)
   .usage('<location> [options]')
-  .option('--update', 'Update existing screenshots', false)
+  .option('--update', 'Update existing screenshots')
   .option('--concurrency [concurrency]', 'Test runner concurrency', 4)
   .option('--pool-timeout [timeout]', 'Browser pool timeout in seconds', 60)
   .option('--headless', 'Hide browser window')
