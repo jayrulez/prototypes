@@ -65,7 +65,20 @@ npx repeater path/to/tests
 
 
 ## API
-> CLI options WIP.
+Usage: `repeater <location> [options]`
+
+Options:
+
+``` text
+  -V, --version                  output the version number
+  --update                       update existing screenshots
+  --concurrency [concurrency]    test runner concurrency (default: 4)
+  --pool-timeout [timeout]       browser pool timeout in seconds (default: 60)
+  --headless                     hide browser window
+  --executable-path [path]       chrome path
+  --diff-threshold [percentage]  for image diff, 0 to 100 (default: 0.5)
+  -h, --help                     output usage information
+```
 
 
 ## Roadmap

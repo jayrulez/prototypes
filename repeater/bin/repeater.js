@@ -15,12 +15,12 @@ const defaultPath = getDefaultChromiumPath()
 program
   .version(pkg.version)
   .usage('<location> [options]')
-  .option('--update', 'Update existing screenshots')
-  .option('--concurrency [concurrency]', 'Test runner concurrency', 4)
-  .option('--pool-timeout [timeout]', 'Browser pool timeout in seconds', 60)
-  .option('--headless', 'Hide browser window')
-  .option('--executable-path [path]', 'Chrome path', defaultPath)
-  .option('--diff-threshold [percentage]', 'For image diff, 0 to 100', 0.5)
+  .option('--update', 'update existing screenshots')
+  .option('--concurrency [concurrency]', 'test runner concurrency', 4)
+  .option('--pool-timeout [timeout]', 'browser pool timeout in seconds', 60)
+  .option('--headless', 'hide browser window')
+  .option('--executable-path [path]', 'chrome path', defaultPath)
+  .option('--diff-threshold [percentage]', 'for image diff, 0 to 100', 0.5)
   .parse(process.argv)
 
 ;(async () => {
