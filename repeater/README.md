@@ -1,6 +1,8 @@
 # Repeater
 📼 Record browser events as visual test case.
 
+[中文介绍](./README-cn.md)
+
 
 ## Introduction
 There're several pain points testing large web apps:
@@ -17,9 +19,10 @@ But, it's always trivial to "run test by yourself", what if we simply automate t
 
 With this idea we invent Repeater, enabling a fresh way adding test cases. Core features:
 
-* Provides snippet to record user events in browser automatically.
-* Supports batch testing based on image diff, which can be accurate to pixels. 
-* Works out of the box. We use your installed Chrome as host environment. No native dependency, no binary bundles.
+* Non-aggressive user events recording in browser, with a customizable events stream filter.
+* Batch testing based on image diff, which can be accurate to pixels. Image is more readable then complete DOM snapshot, and even smaller!
+* Works out of the box. We use your installed Chrome as host environment. No native dependencies, no binary bundles.
+* Automation ready. Repeater supports configurable resources pool for advanced usage in CI environment.
 
 
 ## Usage
@@ -40,7 +43,7 @@ import 'vue'
 // ...
 ```
 
-Then after test page loaded, user events will be automatically recorded. To save a event log, open Chrome console and type `copyLog()`, paste it anywhere you like.
+Then after test page loaded, user events will be automatically recorded. To save a event log, open Chrome console and type `copyLog()`, then you can paste the result as JSON format.
 
 > Chrome extension WIP.
 
@@ -51,7 +54,7 @@ Once event log saved, you can add screenshot with Repeater CLI:
 npx repeater path/to/log.json --update
 ```
 
-This will take screenshot for you. To verify the test case, run:
+This will take screenshot for you via [Puppeteer](https://github.com/GoogleChrome/puppeteer). To verify the test case, run:
 
 ``` bash
 npx repeater path/to/log.json
@@ -84,7 +87,6 @@ Options:
 ## Roadmap
 * TODO record UI
 * TODO test coverage
-* TODO ENV and CI config
 
 
 ## Caveats
@@ -95,3 +97,5 @@ Chrome 51 no longer scrolls when the user-defined wheel event is dispatched. Per
 
 ## License
 MIT
+
+Code with ❤️ by Undefined FE team, Gaoding Inc. 2019.
