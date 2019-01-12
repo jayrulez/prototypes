@@ -66,14 +66,14 @@ npx repeater path/to/tests
 一些应用 Repeater 时的实践建议：
 
 * 可以为视觉测试提供单独的「静态」Demo 页，以便保证相同的输入总能渲染出相同的输出。
-* 如果多个测试用例需要不同的初始化过程，你可以在 Demo 页的 URL 参数中做出一些区分，以便于自动化。**Don't Repeat Yourself.**
+* 如果多个测试用例需要不同的初始化过程，可以在 Demo 页的 URL 参数中做出一些区分，以便于自动化。**Don't Repeat Yourself.**
 * 使用较小的浏览器窗口来截图。窗口越小，截图尺寸显著更小，且图片比对的敏感度更高。
 
 
 ## 注意事项
 
 ### 滚动事件
-Chrome 对滚动事件有非常特殊的处理，Puppeteer 目前也没有 first-class 的 API 实现该控制。
+Chrome 对滚动有非常特殊的优化处理，Puppeteer 目前也没有 first-class 的 API 实现该控制。这导致了滚动行为在回放上的困难。
 
 ### 外部状态
 UI 是充满副作用的。Repeater 只将用户输入事件作为唯一的数据源，因此你需要尽量确保外部状态的稳定。并且，这里也有一些限制。例如：
@@ -84,7 +84,7 @@ UI 是充满副作用的。Repeater 只将用户输入事件作为唯一的数�
 
 
 ## More
-更多相关信息，请参见主线维护的 [README 文档](./README.md)
+更多相关信息，请参阅主线维护的 [README 文档](./README.md)
 
 
 ## License
