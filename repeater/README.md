@@ -89,10 +89,25 @@ Options:
 * TODO test coverage
 
 
+## Best Practises
+Several points for better Repeater integration:
+
+* Build a "static" demo page for test, so that you can always get same render result with same inputs.
+* If multi test cases requires multi setup ways, you can simply identify them in demo page's URL and do the automation. **Don't Repeat Yourself.**
+* Use small browser window for screenshot. Smaller window size leads to significantly smaller screenshot size, and more sensitive image diff.
+
+
 ## Caveats
 
 ### Wheel Events
 Chrome 51 no longer scrolls when the user-defined wheel event is dispatched. Per the DOM spec (3.10) events are not action-causers, but notifications of an action already-in-process. Chrome was aware of this defect and has not finally fixed it.
+
+### External States
+UI is full of side effects. Repeater only records input events as data source, so you'll need to ensure external state can be stable. And there're also some limitations. For example:
+
+* Network state. If HTTP request returns different result, that can be a problem.
+* Clipboard state. Pasting from OS clipboard is unreliable.
+* IME state. Text inputs with IME may not be replayed correctly.
 
 
 ## License
