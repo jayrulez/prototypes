@@ -1,24 +1,11 @@
 /* eslint-env browser */
-/* global copy */
 
-const screenshot = () => {
-  const event = new CustomEvent('repeater-screenshot')
+const ready = (object) => {
+  const event = new CustomEvent('test-ready')
+  window.__TEST_OBJECCT__ = object
   dispatchEvent(event)
-  window.hasRepeaterScreenshot = true
-}
-
-const initHelpers = () => {
-  window.copyLog = () => {
-    addEventListener('repeater-copy-log', e => {
-      copy && copy(e.detail)
-    })
-
-    const event = new CustomEvent('repeater-extract-log')
-    dispatchEvent(event)
-  }
 }
 
 module.exports = {
-  screenshot,
-  initHelpers
+  ready
 }

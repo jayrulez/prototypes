@@ -1,7 +1,5 @@
 // Please `npm run example:canvas` and install parcel before test.
-import { screenshot, initHelpers } from '../../../index'
-
-initHelpers()
+import { ready } from '../../index'
 
 const draw = () => {
   const canvas = document.getElementById('canvas')
@@ -18,9 +16,10 @@ const draw = () => {
   context.lineWidth = 5
   context.strokeStyle = '#003300'
   context.stroke()
+
+  ready(context)
 }
 
 setTimeout(() => {
   draw()
-  screenshot()
 }, 1000)

@@ -31,9 +31,21 @@ const destroyChromePool = async () => {
 
 const run = async (options) => {
   await createChromePool(options)
+  global.chromeWidth = 300
+  global.chromeHeight = 300
   await global.chromePool.acquire().then(async (browser) => {
-    // TODO
-    console.log(browser)
+    const page = await browser.newPage()
+    await page.goto('http://localhost:1234')
+    const testObj = await page.evaluate(() => {
+      return new Promise((resolve, reject) => {
+        window.addEventListener('test-ready', () => {
+          // FIXME non-serializable
+          // resolve(window.__TEST_OBJECT__)
+        })
+      })
+    })
+    // Log in browser console.
+    console.log(testObj)
     await global.chromePool.destroy(browser)
   })
   await destroyChromePool()
