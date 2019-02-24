@@ -3,8 +3,13 @@ const elements = [
   { type: 'rect', name: 'b', width: 20, height: 50, left: 100, top: 20 }
 ]
 
-document.getElementById('btn').onclick = () => {
-  const $canvas = document.getElementById('canvas')
-  const context = $canvas.getContext('2d')
+const $canvas = document.getElementById('canvas')
+const context = $canvas.getContext('2d')
+
+const draw = (context, elements) => {
   console.log(context, elements)
+}
+
+document.getElementById('btn').onclick = () => {
+  draw(context, elements)
 }
