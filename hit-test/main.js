@@ -1,13 +1,19 @@
 const elements = [
-  { type: 'rect', name: 'a', width: 150, height: 50, left: 30, top: 0 },
-  { type: 'rect', name: 'b', width: 20, height: 50, left: 100, top: 20 }
+  { type: 'rect', name: 'a', width: 150, height: 50, x: 30, y: 0 },
+  { type: 'rect', name: 'b', width: 20, height: 50, x: 100, y: 20 }
 ]
 
 const $canvas = document.getElementById('canvas')
 const context = $canvas.getContext('2d')
 
 const draw = (context, elements) => {
-  console.log(context, elements)
+  elements.forEach(element => {
+    if (element.type === 'rect') {
+      context.fillStyle = 'red'
+      const { x, y, width, height } = element
+      context.fillRect(x, y, width, height)
+    }
+  })
 }
 
 document.getElementById('btn').onclick = () => {
