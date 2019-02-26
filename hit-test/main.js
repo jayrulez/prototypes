@@ -1,4 +1,4 @@
-import { HitTester } from './hit-test'
+import { getRandomColor, HitTester } from './hit-test'
 
 const elements = [
   { type: 'rect', name: 'a', width: 150, height: 50, x: 30, y: 0 },
@@ -9,7 +9,7 @@ const $canvas = document.getElementById('canvas')
 const context = $canvas.getContext('2d')
 elements.forEach(element => {
   if (element.type === 'rect') {
-    context.fillStyle = 'black'
+    context.fillStyle = getRandomColor()
     const { x, y, width, height } = element
     context.fillRect(x, y, width, height)
   }

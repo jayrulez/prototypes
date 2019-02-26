@@ -1,4 +1,4 @@
-const getRandomColor = () => '#' + Math.random().toString(16).substr(-6)
+export const getRandomColor = () => '#' + Math.random().toString(16).substr(-6)
 
 const getNewColor = (colorMap = {}) => {
   let [max, count] = [100, 0]
