@@ -15,36 +15,33 @@ const rgbToHex = ([r, g, b]) => '#' + [r, g, b].map(x => {
   return hex.length === 1 ? '0' + hex : hex
 }).join('')
 
-const draw = (ctx, colorMap = {}, elements) => {
-  elements.forEach(element => {
-    const newColor = getNewColor(colorMap)
-    colorMap[newColor] = elements
-    const { x, y, width, height } = element
-
-    if (element.type === 'rect') {
-      ctx.fillStyle = newColor
-      ctx.fillRect(x, y, width, height)
-    } else if (element.type === 'image') {
-      // TODO
-    }
-  })
-}
-
-export class HitTester {
+export class LayerPicker {
   constructor (width, height) {
-    this.canvas = document.createElement('canvas')
-    this.canvas.width = width
-    this.canvas.height = height
-    this.ctx = this.canvas.getContext('2d')
+    this.hitCanvas = document.createElement('canvas')
+    this.hitCanvas.width = width
+    this.hitCanvas.height = height
+    this.hitCtx = this.hitCanvas.getContext('2d')
+    this.clipCanvas = document.createElement('canvas')
+    this.clipCtx = this.clipCanvas.getContext('2d')
     this.colorMap = {}
   }
 
-  update (elements) {
-    draw(this.ctx, this.colorMap, elements)
+  update (layers) {
+    layers.forEach(layer => {
+      const newColor = getNewColor(this.colorMap)
+      this.colorMap[newColor] = layer
+      const { x, y, width, height } = layer
+      if (layer.type === 'rect') {
+        this.hitCtx.fillStyle = newColor
+        this.hitCtx.fillRect(x, y, width, height)
+      } else if (layer.type === 'image') {
+        // TODO
+      }
+    })
   }
 
   detect (x, y) {
-    const rgb = this.ctx.getImageData(x, y, 1, 1).data
+    const rgb = this.hitCtx.getImageData(x, y, 1, 1).data
     const hexColor = rgbToHex(rgb)
     return this.colorMap[hexColor] || null
   }
