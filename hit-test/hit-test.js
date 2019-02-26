@@ -5,7 +5,7 @@ const getNewColor = (colorMap = {}) => {
   while (true) {
     const newColor = getRandomColor()
     count++
-    if (!colorMap[newColor]) return newColor
+    if (!colorMap[newColor] && newColor !== '#ffffff') return newColor
     if (count > max) throw new Error('Could not generate new hit test color.')
   }
 }
