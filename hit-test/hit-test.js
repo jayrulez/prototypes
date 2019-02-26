@@ -35,7 +35,15 @@ export class LayerPicker {
         this.hitCtx.fillStyle = newColor
         this.hitCtx.fillRect(x, y, width, height)
       } else if (layer.type === 'image') {
-        // TODO
+        this.clipCanvas.width = width
+        this.clipCanvas.height = height
+        this.clipCtx.save()
+        this.clipCtx.drawImage(layer.$el, 0, 0, width, height)
+        this.clipCtx.globalCompositeOperation = 'source-in'
+        this.clipCtx.fillStyle = newColor
+        this.clipCtx.fillRect(0, 0, width, height)
+        this.clipCtx.restore()
+        this.hitCtx.drawImage(this.clipCanvas, 0, 0)
       }
     })
   }

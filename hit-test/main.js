@@ -37,6 +37,7 @@ $img.onload = () => {
     const result = picker.detect(e.layerX, e.layerY)
     console.log(result)
     document.body.appendChild(picker.hitCanvas)
+    document.body.appendChild(picker.clipCanvas)
   })
 }
 $img.src = brushImgSrc
