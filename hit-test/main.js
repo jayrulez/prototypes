@@ -14,6 +14,15 @@ $img.onload = () => {
       x: 0,
       y: 0,
       $el: $img
+    },
+    {
+      type: 'image',
+      name: 'brush-2',
+      width: $img.naturalWidth,
+      height: $img.naturalHeight,
+      x: 100,
+      y: 100,
+      $el: $img
     }
   ]
 

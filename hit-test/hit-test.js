@@ -43,7 +43,7 @@ export class LayerPicker {
         this.clipCtx.fillStyle = newColor
         this.clipCtx.fillRect(0, 0, width, height)
         this.clipCtx.restore()
-        this.hitCtx.drawImage(this.clipCanvas, 0, 0)
+        this.hitCtx.drawImage(this.clipCanvas, x, y)
       }
     })
   }
