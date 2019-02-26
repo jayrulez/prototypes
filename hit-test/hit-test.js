@@ -15,15 +15,17 @@ const rgbToHex = ([r, g, b]) => '#' + [r, g, b].map(x => {
   return hex.length === 1 ? '0' + hex : hex
 }).join('')
 
-const draw = (context, colorMap = {}, elements) => {
+const draw = (ctx, colorMap = {}, elements) => {
   elements.forEach(element => {
     const newColor = getNewColor(colorMap)
-    colorMap[newColor] = element
+    colorMap[newColor] = elements
+    const { x, y, width, height } = element
 
     if (element.type === 'rect') {
-      context.fillStyle = newColor
-      const { x, y, width, height } = element
-      context.fillRect(x, y, width, height)
+      ctx.fillStyle = newColor
+      ctx.fillRect(x, y, width, height)
+    } else if (element.type === 'image') {
+      // TODO
     }
   })
 }
@@ -33,16 +35,16 @@ export class HitTester {
     this.canvas = document.createElement('canvas')
     this.canvas.width = width
     this.canvas.height = height
-    this.context = this.canvas.getContext('2d')
+    this.ctx = this.canvas.getContext('2d')
     this.colorMap = {}
   }
 
   update (elements) {
-    draw(this.context, this.colorMap, elements)
+    draw(this.ctx, this.colorMap, elements)
   }
 
   detect (x, y) {
-    const rgb = this.context.getImageData(x, y, 1, 1).data
+    const rgb = this.ctx.getImageData(x, y, 1, 1).data
     const hexColor = rgbToHex(rgb)
     return this.colorMap[hexColor] || null
   }

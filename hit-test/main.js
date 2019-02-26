@@ -36,6 +36,7 @@ $img.onload = () => {
   $canvas.addEventListener('click', (e) => {
     const result = hitTester.detect(e.layerX, e.layerY)
     console.log(result)
+    document.body.appendChild(hitTester.canvas)
   })
 }
 $img.src = brushImgSrc
