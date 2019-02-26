@@ -10,7 +10,7 @@ const getNewColor = (colorMap = {}) => {
   }
 }
 
-const rgbaToHex = ([r, g, b]) => '#' + [r, g, b].map(x => {
+const rgbToHex = ([r, g, b]) => '#' + [r, g, b].map(x => {
   const hex = x.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }).join('')
@@ -43,7 +43,7 @@ export class HitTester {
 
   detect (x, y) {
     const rgb = this.context.getImageData(x, y, 1, 1).data
-    const hexColor = rgbaToHex(rgb)
+    const hexColor = rgbToHex(rgb)
     return this.colorMap[hexColor] || null
   }
 }
