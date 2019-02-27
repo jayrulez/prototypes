@@ -1,7 +1,7 @@
 /* eslint-env browser */
 
-import { LayerPicker } from './layer-picker'
-import { getRandomColor, transformLayer } from './utils'
+import { LayerPicker } from '../src/layer-picker'
+import { getRandomColor, transformLayer } from '../src/utils'
 import alphaImgSrc from './alpha-test.png'
 
 const $img = document.getElementById('img-test')

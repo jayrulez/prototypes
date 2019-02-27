@@ -10,7 +10,7 @@ export const getNewColor = (colorMap = {}) => {
   }
 }
 
-export const rgbToHex = ([r, g, b]) => '#' + [r, g, b].map(x => {
+export const rgbToHex = (rgb) => '#' + [rgb[0], rgb[1], rgb[2]].map(x => {
   const hex = x.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }).join('')
