@@ -65,7 +65,7 @@ $img.onload = () => {
   picker.update(layers)
 
   $canvas.addEventListener('click', (e) => {
-    const result = picker.detect(e.layerX, e.layerY)
+    const result = picker.pick(e.layerX, e.layerY)
     console.log(result)
     document.body.appendChild(picker.hitCanvas)
     // document.body.appendChild(picker.clipCanvas)

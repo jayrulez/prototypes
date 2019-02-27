@@ -70,7 +70,7 @@ export class LayerPicker {
     }), Promise.resolve())
   }
 
-  detect (x, y) {
+  pick (x, y) {
     const rgb = this.hitCtx.getImageData(x, y, 1, 1).data
     const hexColor = rgbToHex(rgb)
     return this.colorMap[hexColor] || null
