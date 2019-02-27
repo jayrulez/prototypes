@@ -1,10 +1,11 @@
 /* eslint-env browser */
 
-import { getRandomColor, transformLayer, LayerPicker } from './hit-test'
-import brushImgSrc from './brush-test.png'
+import { LayerPicker } from './layer-picker'
+import { getRandomColor, transformLayer } from './utils'
+import alphaImgSrc from './alpha-test.png'
 
 const $img = document.getElementById('img-test')
-$img.src = brushImgSrc
+$img.src = alphaImgSrc
 $img.onload = () => {
   const layers = [
     { type: 'rect', name: 'rect-a', width: 150, height: 50, x: 30, y: 0 },
@@ -89,7 +90,7 @@ $img.onload = () => {
   picker.update(layers)
   console.timeEnd('updateLayers')
 
-  $canvas.addEventListener('click', (e) => {
+  $canvas.addEventListener('click', e => {
     const result = picker.pick(e.layerX, e.layerY)
     console.log(result)
     document.body.appendChild(picker.hitCanvas)
