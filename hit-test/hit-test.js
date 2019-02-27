@@ -1,3 +1,4 @@
+/* eslint-env browser */
 export const getRandomColor = () => '#' + Math.random().toString(16).substr(-6)
 
 const getNewColor = (colorMap = {}) => {
@@ -15,6 +16,17 @@ const rgbToHex = ([r, g, b]) => '#' + [r, g, b].map(x => {
   return hex.length === 1 ? '0' + hex : hex
 }).join('')
 
+const fillClip = (clipCanvas, clipCtx, img, color, width, height) => {
+  clipCanvas.width = width
+  clipCanvas.height = height
+  clipCtx.save()
+  clipCtx.drawImage(img, 0, 0, width, height)
+  clipCtx.globalCompositeOperation = 'source-in'
+  clipCtx.fillStyle = color
+  clipCtx.fillRect(0, 0, width, height)
+  clipCtx.restore()
+}
+
 export class LayerPicker {
   constructor (width, height) {
     this.hitCanvas = document.createElement('canvas')
@@ -30,23 +42,30 @@ export class LayerPicker {
     return layers.reduce((p, layer) => p.then(() => {
       const newColor = getNewColor(this.colorMap)
       this.colorMap[newColor] = layer
-      const { x, y, width, height } = layer
+      const { hitCtx, clipCanvas, clipCtx } = this
+      const { type, x, y, width, height } = layer
 
-      if (layer.type === 'rect') {
-        this.hitCtx.fillStyle = newColor
-        this.hitCtx.fillRect(x, y, width, height)
+      if (type === 'rect') {
+        hitCtx.fillStyle = newColor
+        hitCtx.fillRect(x, y, width, height)
         return Promise.resolve()
-      } else if (layer.type === 'image') {
-        this.clipCanvas.width = width
-        this.clipCanvas.height = height
-        this.clipCtx.save()
-        this.clipCtx.drawImage(layer.$el, 0, 0, width, height)
-        this.clipCtx.globalCompositeOperation = 'source-in'
-        this.clipCtx.fillStyle = newColor
-        this.clipCtx.fillRect(0, 0, width, height)
-        this.clipCtx.restore()
-        this.hitCtx.drawImage(this.clipCanvas, x, y)
+      } else if (type === 'image') {
+        fillClip(clipCanvas, clipCtx, layer.$el, newColor, width, height)
+        hitCtx.drawImage(clipCanvas, x, y)
         return Promise.resolve()
+      } else if (type === 'svg') {
+        const str = new XMLSerializer().serializeToString(layer.$el)
+        const img = new Image()
+
+        return new Promise((resolve, reject) => {
+          img.onload = () => {
+            fillClip(clipCanvas, clipCtx, img, newColor, width, height)
+            hitCtx.drawImage(clipCanvas, x, y)
+            resolve()
+          }
+          const prefix = 'data:image/svg+xml; charset=utf8, '
+          img.src = prefix + encodeURIComponent(str)
+        })
       }
     }), Promise.resolve())
   }
