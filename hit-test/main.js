@@ -49,18 +49,6 @@ $img.onload = () => {
       ctx.drawImage(layer.$el, x, y, width, height)
       return Promise.resolve()
     } else if (type === 'svg') {
-
-    }
-  }), Promise.resolve())
-  layers.forEach(layer => {
-    const { type, x, y, width, height } = layer
-
-    if (type === 'rect') {
-      ctx.fillStyle = getRandomColor()
-      ctx.fillRect(x, y, width, height)
-    } else if (type === 'image') {
-      ctx.drawImage(layer.$el, x, y, width, height)
-    } else if (type === 'svg') {
       const str = new XMLSerializer().serializeToString(layer.$el)
       const img = new Image()
       return new Promise((resolve, reject) => {
@@ -71,7 +59,7 @@ $img.onload = () => {
         img.src = 'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(str)
       })
     }
-  })
+  }), Promise.resolve())
 
   const picker = new LayerPicker($canvas.width, $canvas.height)
   picker.update(layers)
