@@ -27,13 +27,15 @@ export class LayerPicker {
   }
 
   update (layers) {
-    layers.forEach(layer => {
+    return layers.reduce((p, layer) => p.then(() => {
       const newColor = getNewColor(this.colorMap)
       this.colorMap[newColor] = layer
       const { x, y, width, height } = layer
+
       if (layer.type === 'rect') {
         this.hitCtx.fillStyle = newColor
         this.hitCtx.fillRect(x, y, width, height)
+        return Promise.resolve()
       } else if (layer.type === 'image') {
         this.clipCanvas.width = width
         this.clipCanvas.height = height
@@ -44,8 +46,9 @@ export class LayerPicker {
         this.clipCtx.fillRect(0, 0, width, height)
         this.clipCtx.restore()
         this.hitCtx.drawImage(this.clipCanvas, x, y)
+        return Promise.resolve()
       }
-    })
+    }), Promise.resolve())
   }
 
   detect (x, y) {
