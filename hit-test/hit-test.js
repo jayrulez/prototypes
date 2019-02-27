@@ -1,4 +1,5 @@
 /* eslint-env browser */
+
 export const getRandomColor = () => '#' + Math.random().toString(16).substr(-6)
 
 const getNewColor = (colorMap = {}) => {
@@ -27,6 +28,16 @@ const fillClip = (clipCanvas, clipCtx, img, color, width, height) => {
   clipCtx.restore()
 }
 
+export const transformLayer = (ctx, transform, x, y, width, height) => {
+  if (!transform) return
+  const { a, b, c, d, tx, ty } = transform
+  const [midX, midY] = [x + width / 2, y + height / 2]
+  ctx.save()
+  ctx.translate(midX, midY)
+  ctx.transform(a, b, c, d, tx, ty)
+  ctx.translate(-midX, -midY)
+}
+
 export class LayerPicker {
   constructor (width, height) {
     this.hitCanvas = document.createElement('canvas')
@@ -43,15 +54,19 @@ export class LayerPicker {
       const newColor = getNewColor(this.colorMap)
       this.colorMap[newColor] = layer
       const { hitCtx, clipCanvas, clipCtx } = this
-      const { type, x, y, width, height } = layer
+      const { type, x, y, width, height, transform } = layer
 
       if (type === 'rect') {
+        transformLayer(hitCtx, transform, x, y, width, height)
         hitCtx.fillStyle = newColor
         hitCtx.fillRect(x, y, width, height)
+        hitCtx.restore()
         return Promise.resolve()
       } else if (type === 'image') {
+        transformLayer(hitCtx, transform, x, y, width, height)
         fillClip(clipCanvas, clipCtx, layer.$el, newColor, width, height)
         hitCtx.drawImage(clipCanvas, x, y)
+        hitCtx.restore()
         return Promise.resolve()
       } else if (type === 'svg') {
         const str = new XMLSerializer().serializeToString(layer.$el)
@@ -59,8 +74,10 @@ export class LayerPicker {
 
         return new Promise((resolve, reject) => {
           img.onload = () => {
+            transformLayer(hitCtx, transform, x, y, width, height)
             fillClip(clipCanvas, clipCtx, img, newColor, width, height)
             hitCtx.drawImage(clipCanvas, x, y)
+            hitCtx.restore()
             resolve()
           }
           const prefix = 'data:image/svg+xml; charset=utf8, '
