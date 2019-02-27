@@ -1,6 +1,8 @@
 # Layer Picker
 A canvas-based hit detection lib.
 
+![demo](./demo/demo.png)
+
 ## Intro
 When you have multi "elements" with different shapes, it's non-trivial to pick an element by coordinate. This lib makes use of HTML5 canvas for genenal-purposed hit detection. Core features:
 
