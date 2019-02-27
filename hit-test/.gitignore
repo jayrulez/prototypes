@@ -2,5 +2,6 @@ node_modules
 libs
 .cache
 dist
+cypress/fixtures
 cypress/plugins
 cypress/support

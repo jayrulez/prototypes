@@ -28,7 +28,7 @@ $img.onload = () => {
     },
     {
       type: 'image',
-      name: 'brush',
+      name: 'image-1',
       width: $img.naturalWidth,
       height: $img.naturalHeight,
       x: 0,
@@ -37,7 +37,7 @@ $img.onload = () => {
     },
     {
       type: 'image',
-      name: 'brush-2',
+      name: 'image-2',
       width: $img.naturalWidth,
       height: $img.naturalHeight,
       x: 100,
@@ -86,13 +86,14 @@ $img.onload = () => {
   }), Promise.resolve())
 
   const picker = new LayerPicker($canvas.width, $canvas.height)
+  window.picker = picker
   console.time('updateLayers')
   picker.update(layers)
   console.timeEnd('updateLayers')
 
   $canvas.addEventListener('click', e => {
     const result = picker.pick(e.layerX, e.layerY)
-    console.log(result)
+    console.log(e.layerX, e.layerY, result)
     document.body.appendChild(picker.hitCanvas)
     // document.body.appendChild(picker.clipCanvas)
   })
