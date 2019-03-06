@@ -1,6 +1,6 @@
 {
   "name": "layer-picker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "libs/layer-picker.js",
   "repository": "git@github.com:gaoding-inc/layer-picker.git",
   "author": "Yifeng Wang <i@ewind.us>",

@@ -25,9 +25,6 @@ describe('Layer Picker', function () {
       // black image pixel
       expect(picker.pick(150, 150).name).to.equal('image-1')
 
-      // black image pixel
-      expect(picker.pick(150, 150).name).to.equal('image-1')
-
       // image overlay
       expect(picker.pick(180, 200).name).to.equal('image-2')
 

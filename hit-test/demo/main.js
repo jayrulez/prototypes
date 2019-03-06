@@ -85,11 +85,12 @@ $img.onload = () => {
     }
   }), Promise.resolve())
 
-  const picker = new LayerPicker($canvas.width, $canvas.height)
+  const picker = new LayerPicker()
   window.picker = picker
   console.time('updateLayers')
-  picker.update(layers)
-  console.timeEnd('updateLayers')
+  picker.update(layers, $canvas.width, $canvas.height).then(() => {
+    console.timeEnd('updateLayers')
+  })
 
   $canvas.addEventListener('click', e => {
     const result = picker.pick(e.layerX, e.layerY)
