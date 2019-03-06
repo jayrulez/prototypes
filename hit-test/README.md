@@ -25,8 +25,8 @@ Import & use:
 ``` js
 import { LayerPicker } from 'layer-picker'
 
-// Init picker with size.
-const picker = new LayerPicker(400, 300)
+// Init picker instance.
+const picker = new LayerPicker()
 
 // Provide layer info.
 const layers = [
@@ -34,8 +34,8 @@ const layers = [
   { type: 'rect', name: 'b', x: 50, y: 50, width: 100, height: 100 }
 ]
 
-// Build hit test bitmap.
-picker.update(layers).then(() => {
+// Build hit test bitmap with size.
+picker.update(layers, 400, 300).then(() => {
   // Enjoy fast hit test.
   picker.pick(0, 0) // null
   picker.pick(20, 20).name // 'a'

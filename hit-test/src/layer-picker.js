@@ -2,17 +2,18 @@
 import { getNewColor, rgbToHex, fillClip, transformLayer } from './utils'
 
 export class LayerPicker {
-  constructor (width, height) {
+  constructor () {
     this.hitCanvas = document.createElement('canvas')
-    this.hitCanvas.width = width
-    this.hitCanvas.height = height
     this.hitCtx = this.hitCanvas.getContext('2d')
     this.clipCanvas = document.createElement('canvas')
     this.clipCtx = this.clipCanvas.getContext('2d')
     this.colorMap = {}
   }
 
-  update (layers) {
+  update (layers, width, height) {
+    this.hitCanvas.width = width
+    this.hitCanvas.height = height
+    
     return layers.reduce((p, layer) => p.then(() => {
       const newColor = getNewColor(this.colorMap)
       this.colorMap[newColor] = layer
