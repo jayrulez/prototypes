@@ -1,3 +1,4 @@
+// zLayer should be linked
 import { Layer } from './node_modules/zlayer/src/index.js'
 import { OutlineFilter } from './node_modules/zlayer/src/filters/index.js'
 import { parseBitmap, getOutline } from './utils.js'
