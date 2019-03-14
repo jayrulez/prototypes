@@ -13,7 +13,7 @@ export class LayerPicker {
   update (layers, width, height) {
     this.hitCanvas.width = width
     this.hitCanvas.height = height
-    
+
     return layers.reduce((p, layer) => p.then(() => {
       const newColor = getNewColor(this.colorMap)
       this.colorMap[newColor] = layer
