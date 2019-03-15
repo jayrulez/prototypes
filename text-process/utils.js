@@ -1,5 +1,3 @@
-const buildPointGetter = (bitmap, height) => (x, y) => bitmap[y * height + x]
-
 // point in polygon
 export const pip = (point, vs) => {
   // https://github.com/substack/point-in-polygon
@@ -28,18 +26,21 @@ export const parseBitmap = canvas => {
 
   // reverse y order
   for (let i = width - 1; i >= 0; i--) {
+    const row = []
     for (let j = 0; j < height; j++) {
-      bitmap.push(pixels[(i * width + j) * 4] > 0 ? 1 : 0)
+      row.push(pixels[(i * width + j) * 4] > 0 ? 1 : 0)
     }
+    bitmap.push(row)
   }
   return { bitmap, width, height }
 }
 
-/*
-// extract outline starting from x and y
-const extractOutline = (bitmap, x, y) => {
-  const begin = [x, y]
-  let curr = begin
+const isFilled = (bitmap, x, y) => {
+  if (!bitmap[x]) return false
+  return !!bitmap[x][y]
+}
+
+const findNext = (bitmap, currX, currY) => {
   const seqs = [
     [0, -1], // n
     [1, -1], // ne
@@ -50,23 +51,35 @@ const extractOutline = (bitmap, x, y) => {
     [-1, 0], // w
     [-1, -1] // nw
   ]
-  return
-  const outline = []
-  while (true) {
-    for (let i = 0; i < seqs.length; i++) {
-      outline.push()
-    }
+  for (let i = 0; i < seqs.length; i++) {
+    const [newX, newY] = [currX + seqs[i][0], currY + seqs[i][1]]
+    if (isFilled(bitmap, newX, newY)) return [newX, newY]
   }
+  return null
 }
-*/
+
+// extract outline starting from x and y
+const extractOutline = (bitmap, x, y, height) => {
+  const begin = [x, y]
+  let curr = begin
+  const outline = [[begin]]
+  while (true) {
+    const newPoint = findNext(bitmap, curr[0], curr[1])
+    if (!newPoint) break
+
+    outline.push(newPoint)
+    bitmap[newPoint[0]][newPoint[1]] = 0
+    curr = newPoint
+  }
+  return outline
+}
 
 export const getOutline = (bitmap, width, height) => {
-  const get = buildPointGetter(bitmap, height)
-  for (let i = 0; i < height; i++) {
-    for (let j = 0; j < width; j++) {
-      if (get(i, j)) {
-        console.log(i, j)
-        // extractOutline(bitmap, j, i)
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (isFilled(bitmap, x, y)) {
+        const result = extractOutline(bitmap, x, y)
+        console.log(result)
         return
       }
     }
