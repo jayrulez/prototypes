@@ -3,8 +3,5 @@
   "version": "0.0.0",
   "main": "main.js",
   "license": "MIT",
-  "private": true,
-  "dependencies": {
-    "gl-matrix": "^3.0.0"
-  }
+  "private": true
 }
