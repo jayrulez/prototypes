@@ -14,9 +14,13 @@ void main() {
 `
 
 export const fragmentShader = `
-varying lowp vec4 vColor;
+precision highp float;
+varying vec4 vColor;
 
 void main() {
-  gl_FragColor = vColor;
+  float ambientFactor = 0.3;
+  vec3 lightColor = vec3(1.0, 0.8, 0.8);
+  vec3 ambientColor = ambientFactor * lightColor;
+  gl_FragColor = vec4(ambientColor, 1) * vColor;
 }
 `
