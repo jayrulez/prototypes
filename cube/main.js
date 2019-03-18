@@ -9,4 +9,8 @@ const programInfo = initProgram(gl, vertexShader, fragmentShader)
 
 const buffers = initBuffers(gl)
 
-draw(gl, programInfo, buffers)
+const drawFrame = () => {
+  draw(gl, programInfo, buffers)
+  window.requestAnimationFrame(drawFrame)
+}
+drawFrame()
