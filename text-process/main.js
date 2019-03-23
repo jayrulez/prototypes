@@ -9,7 +9,7 @@ const drawLayer = () => {
   ctx.font = '50px serif'
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
-  ctx.fillText('1', 25, 25)
+  ctx.fillText('1', 25, 30)
   const src = textCanvas.toDataURL()
 
   const layer = new Layer(document.getElementById('canvas-kernel'), {
