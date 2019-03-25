@@ -3,7 +3,7 @@ import {
 } from '../../libs/math/matrix.js'
 
 let delta = 0
-const getDelta = () => { delta += 1; return delta / 60 }
+const getDelta = () => { delta += 1; return delta / 60 / 3 }
 
 const drawCube = (gl, programInfo, buffers) => {
   gl.useProgram(programInfo.program)
@@ -71,11 +71,12 @@ const drawLine = (gl, programInfo, buffers) => {
   const { uniformLocations } = programInfo
   gl.uniformMatrix4fv(uniformLocations.projectionMat, false, projectionMat)
   gl.uniformMatrix4fv(uniformLocations.modelViewMat, false, modelViewMat)
+  gl.uniform4fv(uniformLocations.color, [0.9, 0.9, 0.9, 1])
   gl.drawArrays(gl.LINES, 0, buffers.length / 3)
 }
 
 export const draw = (gl, programInfos, buffers) => {
-  gl.clearColor(0.0, 0.0, 0.0, 1.0)
+  gl.clearColor(1.0, 1.0, 1.0, 1.0)
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
