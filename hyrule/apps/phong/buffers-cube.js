@@ -1,3 +1,4 @@
+
 export const initBuffers = gl => {
   const positions = [
     // Front face
@@ -119,6 +120,7 @@ export const initBuffers = gl => {
     normal: normalBuffer,
     position: positionBuffer,
     color: colorBuffer,
-    indices: indexBuffer
+    indices: indexBuffer,
+    length: indices.length
   }
 }
