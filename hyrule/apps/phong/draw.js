@@ -1,6 +1,6 @@
 import {
-  create, translate, rotate, perspective, transpose, invert
-} from './libs/math.js'
+  create, translate, rotate, perspective, invert, transpose
+} from '../../libs/math/matrix.js'
 
 let delta = 0
 const getDelta = () => { delta += 1; return delta / 60 }
@@ -21,7 +21,7 @@ export const draw = (gl, programInfo, buffers) => {
   const modelViewMat = create()
   translate(modelViewMat, modelViewMat, [-0.0, 0.0, -20.0])
 
-  const delta = getDelta()
+  const delta = getDelta() + Math.PI / 24
   rotate(modelViewMat, modelViewMat, delta, [1, 1, 0])
 
   const normalMat = create()
