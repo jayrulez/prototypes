@@ -1,10 +1,9 @@
 // Inline from gl-matrix
 // https://github.com/toji/gl-matrix
+import { ARRAY_TYPE, EPSILON } from './consts.js'
+import { normalize, subtract, cross } from './vector.js'
 
-const ARRAY_TYPE = (typeof Float32Array !== 'undefined') ? Float32Array : Array
-const EPSILON = 0.000001
-
-export function create () {
+export const create = () => {
   let out = new ARRAY_TYPE(16)
   if (ARRAY_TYPE !== Float32Array) {
     out[1] = 0
@@ -27,7 +26,7 @@ export function create () {
   return out
 }
 
-export function perspective (out, fovy, aspect, near, far) {
+export const perspective = (out, fovy, aspect, near, far) => {
   let f = 1.0 / Math.tan(fovy / 2)
   let nf
   out[0] = f / aspect
@@ -55,7 +54,32 @@ export function perspective (out, fovy, aspect, near, far) {
   return out
 }
 
-export function translate (out, a, [x, y, z]) {
+export const lookAt = (out, cameraPos, target, up) => {
+  const zAxis = normalize(subtract(cameraPos, target))
+  const xAxis = normalize(cross(up, zAxis))
+  const yAxis = normalize(cross(zAxis, xAxis))
+
+  out[0] = xAxis[0]
+  out[1] = xAxis[1]
+  out[2] = xAxis[2]
+  out[3] = 0
+  out[4] = yAxis[0]
+  out[5] = yAxis[1]
+  out[6] = yAxis[2]
+  out[7] = 0
+  out[8] = zAxis[0]
+  out[9] = zAxis[1]
+  out[10] = zAxis[2]
+  out[11] = 0
+  out[12] = cameraPos[0]
+  out[13] = cameraPos[1]
+  out[14] = cameraPos[2]
+  out[15] = 0
+
+  return out
+}
+
+export const translate = (out, a, [x, y, z]) => {
   let a00, a01, a02, a03
   let a10, a11, a12, a13
   let a20, a21, a22, a23
@@ -83,7 +107,7 @@ export function translate (out, a, [x, y, z]) {
   return out
 }
 
-export function rotate (out, a, rad, [x, y, z]) {
+export const rotate = (out, a, rad, [x, y, z]) => {
   let len = Math.sqrt(x * x + y * y + z * z)
   let s, c, t
   let a00, a01, a02, a03
@@ -136,7 +160,7 @@ export function rotate (out, a, rad, [x, y, z]) {
   return out
 }
 
-export function rotateX (out, a, b, c) {
+export const rotateX = (out, a, b, c) => {
   let [p, r] = [[], []]
   // Translate point to the origin
   p[0] = a[0] - b[0]
@@ -156,7 +180,7 @@ export function rotateX (out, a, b, c) {
   return out
 }
 
-export function rotateY (out, a, b, c) {
+export const rotateY = (out, a, b, c) => {
   let [p, r] = [[], []]
   // Translate point to the origin
   p[0] = a[0] - b[0]
@@ -176,7 +200,7 @@ export function rotateY (out, a, b, c) {
   return out
 }
 
-export function rotateZ (out, a, b, c) {
+export const rotateZ = (out, a, b, c) => {
   let [p, r] = [[], []]
   // Translate point to the origin
   p[0] = a[0] - b[0]
@@ -196,7 +220,40 @@ export function rotateZ (out, a, b, c) {
   return out
 }
 
-export function transpose (out, a) {
+export const multiply = (out, a, b) => {
+  let a00 = a[0]; let a01 = a[1]; let a02 = a[2]; let a03 = a[3]
+  let a10 = a[4]; let a11 = a[5]; let a12 = a[6]; let a13 = a[7]
+  let a20 = a[8]; let a21 = a[9]; let a22 = a[10]; let a23 = a[11]
+  let a30 = a[12]; let a31 = a[13]; let a32 = a[14]; let a33 = a[15]
+
+  // Cache only the current line of the second matrix
+  let b0 = b[0]; let b1 = b[1]; let b2 = b[2]; let b3 = b[3]
+  out[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  out[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  out[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  out[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+
+  b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7]
+  out[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  out[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  out[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  out[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+
+  b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11]
+  out[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  out[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  out[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  out[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+
+  b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15]
+  out[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  out[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  out[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+  return out
+}
+
+export const transpose = (out, a) => {
   // If we are transposing ourselves we can skip a few steps but have to cache some values
   if (out === a) {
     let a01 = a[1]
@@ -240,7 +297,7 @@ export function transpose (out, a) {
   return out
 }
 
-export function invert (out, a) {
+export const invert = (out, a) => {
   let a00 = a[0]
   let a01 = a[1]
   let a02 = a[2]
