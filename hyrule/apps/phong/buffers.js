@@ -1,4 +1,4 @@
-export const initBuffers = (gl) => {
+export const initBuffers = gl => {
   const positions = [
     // Front face
     -1.0, -1.0, 1.0,
@@ -116,8 +116,8 @@ export const initBuffers = (gl) => {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeNormals), gl.STATIC_DRAW)
 
   return {
-    position: positionBuffer,
     normal: normalBuffer,
+    position: positionBuffer,
     color: colorBuffer,
     indices: indexBuffer
   }
