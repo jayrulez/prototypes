@@ -1,4 +1,4 @@
-import { initShader } from '../../libs/graphics/shader.js'
+import { initShader } from '../../libs/graphics/shader-utils.js'
 
 const vertexShader = `
 precision highp float;
