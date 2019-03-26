@@ -9,6 +9,10 @@ export class AnimateSystem extends System {
     super()
     this.components = [InputComponent, CameraComponent, PositionComponent]
   }
+
+  update (entity) {
+    console.log(entity.components)
+  }
 }
 
 // Render system cares for everything except input.
