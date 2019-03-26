@@ -21,15 +21,17 @@ const drawCube = (gl, programInfo, buffers) => {
   mat.perspective(projectionMat, fov, aspect, 0.1, 100.0)
 
   const modelMat = mat.create()
-  // FIXME should only tranlate on X axis
+
   const delta = getDelta()
-  const posX = Math.sin(delta) * 4
-  mat.translate(modelMat, modelMat, [posX, 0, 0])
+  const posX = Math.sin(delta) * 2
+  const posY = Math.cos(delta) * 2
+  mat.translate(modelMat, modelMat, [posX, posY, 0])
+  mat.rotate(modelMat, modelMat, posX, [1, 1, 1])
 
   const viewMat = createViewMat()
 
   const modelViewMat = mat.create()
-  mat.multiply(modelViewMat, modelMat, viewMat)
+  mat.multiply(modelViewMat, viewMat, modelMat)
 
   const normalMat = mat.create()
   mat.invert(normalMat, modelMat)
@@ -72,7 +74,7 @@ const drawLine = (gl, programInfo, buffers) => {
   const viewMat = createViewMat()
 
   const modelViewMat = mat.create()
-  mat.multiply(modelViewMat, modelMat, viewMat)
+  mat.multiply(modelViewMat, viewMat, modelMat)
 
   const { pos } = programInfo.attribLocations
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)
