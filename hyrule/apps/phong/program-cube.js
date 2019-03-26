@@ -6,9 +6,10 @@ attribute vec4 pos;
 attribute vec4 color;
 attribute vec3 vertexNormal;
 
-uniform mat4 normalMat;
-uniform mat4 modelViewMat;
+uniform mat4 modelMat;
+uniform mat4 viewMat;
 uniform mat4 projectionMat;
+uniform mat4 normalMat;
 
 varying vec4 vColor;
 varying vec3 vLighting;
@@ -26,7 +27,6 @@ void main() {
   float diffuseFactor = max(dot(transformedNormal.xyz, diffuseDir), 0.0);
   vec3 diffuse = diffuseColor * diffuseFactor * diffuseStrength;
 
-  mat4 modelMat = modelViewMat;
   vec3 fragPos = vec3(modelMat * pos);
   vec3 specularLightPos = vec3(0, 0, 0);
   vec3 specularLightDir = normalize(specularLightPos - fragPos);
@@ -41,7 +41,7 @@ void main() {
 
   vColor = color;
   vLighting = ambient + diffuse + specular;
-  gl_Position = projectionMat * modelViewMat * pos;
+  gl_Position = projectionMat * viewMat * modelMat * pos;
 }
 `
 
@@ -65,9 +65,10 @@ export const initProgramInfo = gl => {
       vertexNormal: gl.getAttribLocation(program, 'vertexNormal')
     },
     uniformLocations: {
-      normalMat: gl.getUniformLocation(program, 'normalMat'),
+      modelMat: gl.getUniformLocation(program, 'modelMat'),
+      viewMat: gl.getUniformLocation(program, 'viewMat'),
       projectionMat: gl.getUniformLocation(program, 'projectionMat'),
-      modelViewMat: gl.getUniformLocation(program, 'modelViewMat')
+      normalMat: gl.getUniformLocation(program, 'normalMat')
     }
   }
 }
