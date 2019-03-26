@@ -1,4 +1,4 @@
-import Component from '../../libs/component/index.js'
+import Component from './component.js'
 
 export class InputComponent extends Component {}
 export class GraphicsComponent extends Component {}

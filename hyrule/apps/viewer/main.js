@@ -2,8 +2,8 @@ import World from '../../libs/world/index.js'
 import Entity from '../../libs/entity/index.js'
 import {
   InputComponent, GraphicsComponent, PositionComponent, CameraComponent
-} from './components.js'
-import { AnimateSystem, RenderSystem } from './systems.js'
+} from '../../libs/components/index.js'
+import { AnimateSystem, RenderSystem } from '../../libs/systems/index.js'
 
 const world = new World([
   new AnimateSystem(),

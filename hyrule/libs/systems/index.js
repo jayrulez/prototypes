@@ -1,7 +1,7 @@
-import System from '../../libs/system/index.js'
+import System from './system.js'
 import {
   InputComponent, GraphicsComponent, PositionComponent, CameraComponent
-} from './components.js'
+} from '../components/index.js'
 
 // Animate system cares for everything except graphic materials.
 export class AnimateSystem extends System {
