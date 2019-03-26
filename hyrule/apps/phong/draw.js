@@ -5,10 +5,10 @@ const getDelta = () => (Date.now() - ts) / 1000
 
 const createViewMat = () => {
   const viewMat = mat.create()
-  const delta = getDelta()
-  const posX = Math.sin(delta) * 20
-  const posY = Math.cos(delta) * 20
-  return mat.lookAt(viewMat, [posX, posY, 30], [0, 0, 0], [0, 1, 0])
+  // const delta = getDelta()
+  // const camera = [Math.sin(delta) * 20, Math.cos(delta) * 20, 30]
+  const camera = [-10, 10, 30]
+  return mat.lookAt(viewMat, camera, [0, 0, 0], [0, 1, 0])
 }
 
 const drawCube = (gl, programInfo, buffers) => {
@@ -21,9 +21,10 @@ const drawCube = (gl, programInfo, buffers) => {
   mat.perspective(projectionMat, fov, aspect, 0.1, 100.0)
 
   const modelMat = mat.create()
-  // FIXME
-  // mat.translate(modelMat, modelMat, [0, 0, 0])
-  // mat.rotate(modelMat, modelMat, delta, [1, 1, 0])
+  // FIXME should only tranlate on X axis
+  const delta = getDelta()
+  const posX = Math.sin(delta) * 4
+  mat.translate(modelMat, modelMat, [posX, 0, 0])
 
   const viewMat = createViewMat()
 
