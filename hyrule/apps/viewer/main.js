@@ -11,9 +11,9 @@ import { RenderSystem } from '../../libs/systems/index.js'
 import { DragSystem, SpinSystem } from './systems.js'
 
 const world = new World([
-  new DragSystem(),
-  new SpinSystem(),
-  new RenderSystem()
+  DragSystem,
+  SpinSystem,
+  RenderSystem
 ])
 
 const [cube, grid, camera] = [new Entity(), new Entity(), new Entity()]

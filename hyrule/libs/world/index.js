@@ -9,9 +9,9 @@ const isConnected = (entity, system) => {
 }
 
 export default class World extends EventBus {
-  constructor (systems = []) {
+  constructor (Systems = []) {
     super()
-    this.systems = systems
+    this.systems = Systems.map(System => new System(this))
     this.entities = []
   }
 
