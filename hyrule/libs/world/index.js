@@ -17,6 +17,8 @@ export default class World {
   }
 
   tick () {
+    this.systems.forEach(system => system.onTickStart())
+
     // TODO optimize nested loop
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i]
@@ -27,13 +29,15 @@ export default class World {
         }
       }
     }
+
+    this.systems.forEach(system => system.onTickEnd())
   }
 
   start () {
-    const runFrame = () => window.requestAnimationFrame(() => {
+    const tickFrame = () => window.requestAnimationFrame(() => {
       this.tick()
       // runFrame()
     })
-    runFrame()
+    tickFrame()
   }
 }
