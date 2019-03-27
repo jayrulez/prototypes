@@ -1,4 +1,4 @@
-import { createRefGrid } from '../../libs/graphics/geometry.js'
+import { createRefGrid } from '../../libs/utils/graphics/geometry.js'
 
 export const initBuffers = gl => {
   const positions = createRefGrid(50, 2)

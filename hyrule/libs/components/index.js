@@ -1,5 +1,5 @@
 import Component from './component.js'
-import { create } from '../math/matrix.js'
+import { create } from '../utils/math/matrix.js'
 
 export class CameraComponent extends Component {
   constructor (lookAt = {}) {
