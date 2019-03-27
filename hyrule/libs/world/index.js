@@ -39,7 +39,7 @@ export default class World extends EventBus {
   start () {
     const tickFrame = () => window.requestAnimationFrame(() => {
       this.tick()
-      // runFrame()
+      // tickFrame()
     })
     tickFrame()
   }

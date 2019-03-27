@@ -17,4 +17,12 @@ export class RenderSystem extends System {
       TransformComponent
     ]
   }
+
+  update (entity) {
+    const cameraState = entity.state(CameraComponent)
+    if (!cameraState) return
+
+    // TODO commit to draw scheduler
+    console.log(cameraState.position)
+  }
 }
