@@ -1,29 +1,33 @@
 import World from '../../libs/world/index.js'
 import Entity from '../../libs/entity/index.js'
 import {
-  InputComponent, GraphicsComponent, PositionComponent, CameraComponent
+  CameraComponent,
+  GraphicsComponent,
+  InputComponent,
+  PositionComponent,
+  TransformComponent
 } from '../../libs/components/index.js'
-import { AnimateSystem, RenderSystem } from '../../libs/systems/index.js'
+import { RenderSystem } from '../../libs/systems/index.js'
+import { DragSystem, SpinSystem } from './systems.js'
 
 const world = new World([
-  new AnimateSystem(),
+  new DragSystem(),
+  new SpinSystem(),
   new RenderSystem()
 ])
 
-const cube = new Entity()
-const grid = new Entity()
-const camera = new Entity()
+const [cube, grid, camera] = [new Entity(), new Entity(), new Entity()]
 
 cube.useComponents([
+  new TransformComponent(),
   new GraphicsComponent({ type: 'Cube' }),
   new PositionComponent([0, 0, 0])
 ])
 grid.useComponents([
-  new InputComponent(),
   new GraphicsComponent({ type: 'RefGrid' }),
   new PositionComponent([0, 0, 0])
 ])
-camera.useComponents([new CameraComponent()])
+camera.useComponents([new InputComponent(), new CameraComponent()])
 
 world.addEntity(cube)
 world.addEntity(grid)

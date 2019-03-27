@@ -1,24 +1,20 @@
 import System from './system.js'
 import {
-  InputComponent, GraphicsComponent, PositionComponent, CameraComponent
+  CameraComponent,
+  GraphicsComponent,
+  PositionComponent,
+  TransformComponent
 } from '../components/index.js'
 
-// Animate system cares for everything except graphic materials.
-export class AnimateSystem extends System {
-  constructor () {
-    super()
-    this.components = [InputComponent, CameraComponent, PositionComponent]
-  }
-
-  update (entity) {
-    console.log(entity.components)
-  }
-}
-
-// Render system cares for everything except input.
+// Render system cares about all components related to the final frame
 export class RenderSystem extends System {
   constructor () {
     super()
-    this.components = [GraphicsComponent, CameraComponent, PositionComponent]
+    this.components = [
+      CameraComponent,
+      GraphicsComponent,
+      PositionComponent,
+      TransformComponent
+    ]
   }
 }
