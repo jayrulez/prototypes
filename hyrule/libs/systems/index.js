@@ -17,14 +17,4 @@ export class RenderSystem extends System {
       TransformComponent
     ]
   }
-
-  // TODO collect draw commits
-  update (entity) {
-
-  }
-
-  // TODO make actual draw calls
-  onTickEnd () {
-
-  }
 }

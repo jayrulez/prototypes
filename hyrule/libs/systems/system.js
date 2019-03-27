@@ -1,7 +1,10 @@
-export default class System {
-  update (entity) {}
+import EventBus from '../events/index.js'
 
-  onTickStart () {}
+export default class System extends EventBus {
+  constructor () {
+    super()
+    this.on('update', entity => this.update(entity))
+  }
 
-  onTickEnd () {}
+  update () {}
 }

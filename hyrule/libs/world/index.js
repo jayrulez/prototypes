@@ -1,3 +1,5 @@
+import EventBus from '../events/index.js'
+
 const isConnected = (entity, system) => {
   return entity.components.some(
     componentInstance => system.components.some(component => (
@@ -6,8 +8,9 @@ const isConnected = (entity, system) => {
   )
 }
 
-export default class World {
+export default class World extends EventBus {
   constructor (systems = []) {
+    super()
     this.systems = systems
     this.entities = []
   }
@@ -17,7 +20,7 @@ export default class World {
   }
 
   tick () {
-    this.systems.forEach(system => system.onTickStart())
+    this.systems.forEach(system => system.emit('tickStart'))
 
     // TODO optimize nested loop
     for (let i = 0; i < this.entities.length; i++) {
@@ -25,12 +28,12 @@ export default class World {
       for (let j = 0; j < this.systems.length; j++) {
         const system = this.systems[j]
         if (isConnected(entity, system)) {
-          system.update(entity)
+          system.emit('update', entity)
         }
       }
     }
 
-    this.systems.forEach(system => system.onTickEnd())
+    this.systems.forEach(system => system.emit('tickEnd'))
   }
 
   start () {
