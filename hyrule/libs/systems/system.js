@@ -1,9 +1,10 @@
 import EventBus from '../events/index.js'
 
 export default class System extends EventBus {
-  constructor (world) {
+  constructor () {
     super()
-    this.world = world
+    this.world = null
+    this.components = []
     this.on('update', entity => this.update(entity))
   }
 

@@ -5,11 +5,13 @@ import {
   PositionComponent,
   TransformComponent
 } from '../components/index.js'
+import Renderer from '../renderer/index.js'
 
 // Render system cares about all components related to the final frame
 export class RenderSystem extends System {
-  constructor () {
+  constructor (canvas) {
     super()
+    this.renderer = new Renderer(canvas)
     this.components = [
       CameraComponent,
       GraphicsComponent,

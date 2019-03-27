@@ -10,10 +10,12 @@ import { RenderSystem } from '../../libs/systems/index.js'
 import { DragSystem, SpinSystem } from './systems.js'
 import { InputCommand } from './command.js'
 
+const canvas = document.querySelector('#gl-canvas')
+
 const world = new World([
-  DragSystem,
-  SpinSystem,
-  RenderSystem
+  new DragSystem(),
+  new SpinSystem(),
+  new RenderSystem(canvas)
 ])
 
 const [cube, grid, camera] = [new Entity(), new Entity(), new Entity()]
