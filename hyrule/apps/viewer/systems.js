@@ -19,9 +19,6 @@ export class SpinSystem extends System {
   }
 
   update (entity) {
-    console.log(
-      entity.state(PositionComponent),
-      entity.state(TransformComponent)
-    )
+
   }
 }
