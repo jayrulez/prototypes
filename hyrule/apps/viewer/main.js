@@ -21,11 +21,11 @@ const [cube, grid, camera] = [new Entity(), new Entity(), new Entity()]
 cube.useComponents([
   new TransformComponent(),
   new GraphicsComponent({ type: 'Cube' }),
-  new PositionComponent([0, 0, 0])
+  new PositionComponent()
 ])
 grid.useComponents([
   new GraphicsComponent({ type: 'RefGrid' }),
-  new PositionComponent([0, 0, 0])
+  new PositionComponent()
 ])
 camera.useComponents([new InputComponent(), new CameraComponent()])
 

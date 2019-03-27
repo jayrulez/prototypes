@@ -9,10 +9,6 @@ export class DragSystem extends System {
     super()
     this.components = [CameraComponent]
   }
-
-  update (entity) {
-    console.log('drag update', entity)
-  }
 }
 
 // On spin we change position and transform of an entity
@@ -23,6 +19,9 @@ export class SpinSystem extends System {
   }
 
   update (entity) {
-    console.log('spin update', entity)
+    console.log(
+      entity.state(PositionComponent),
+      entity.state(TransformComponent)
+    )
   }
 }
