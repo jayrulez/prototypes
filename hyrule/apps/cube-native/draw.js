@@ -16,14 +16,12 @@ const createViewMat = ([dX, dY]) => {
   return mat.lookAt(viewMat, camera, [0, 0, 0], [0, 1, 0])
 }
 
-const drawCube = (gl, mats, programInfo, buffers) => {
+const drawCube = (gl, mats, programInfo, buffers, delta) => {
   gl.useProgram(programInfo.program)
 
-  const modelMat = mat.create()
-
-  const delta = getDelta()
   const posX = Math.sin(delta) * 2
   const posY = Math.cos(delta) * 2
+  const modelMat = mat.create()
   mat.translate(modelMat, modelMat, [posX, posY, 0])
   mat.rotate(modelMat, modelMat, posX, [1, 1, 1])
 
@@ -58,7 +56,7 @@ const drawCube = (gl, mats, programInfo, buffers) => {
   gl.drawElements(gl.TRIANGLES, buffers.length, gl.UNSIGNED_SHORT, 0)
 }
 
-const drawLine = (gl, mats, programInfo, buffers) => {
+const drawGrid = (gl, mats, programInfo, buffers) => {
   gl.useProgram(programInfo.program)
 
   const modelMat = mat.create()
@@ -88,6 +86,8 @@ export const draw = (gl, programInfos, buffers, offset) => {
   const projectionMat = createProjectionMat(clientWidth, clientHeight)
   const mats = [viewMat, projectionMat]
 
-  drawCube(gl, mats, programInfos[0], buffers[0])
-  drawLine(gl, mats, programInfos[1], buffers[1])
+  const delta = getDelta()
+
+  drawCube(gl, mats, programInfos[0], buffers[0], delta)
+  drawGrid(gl, mats, programInfos[1], buffers[1])
 }
