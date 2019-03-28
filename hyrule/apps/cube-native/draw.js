@@ -3,22 +3,21 @@ import * as mat from './matrix.js'
 let ts = Date.now()
 const getDelta = () => (Date.now() - ts) / 1000
 
-const createViewMat = () => {
+const createProjectionMat = (width, height) => {
+  const fov = Math.PI / 6
+  const aspect = width / height
+  const projectionMat = mat.create()
+  return mat.perspective(projectionMat, fov, aspect, 0.1, 1000.0)
+}
+
+const createViewMat = ([dX, dY]) => {
   const viewMat = mat.create()
-  // const delta = getDelta()
-  // const camera = [Math.sin(delta) * 20, Math.cos(delta) * 20, 30]
-  const camera = [-10, 10, 30]
+  const camera = [-dX * 30, -dY * 30, 25]
   return mat.lookAt(viewMat, camera, [0, 0, 0], [0, 1, 0])
 }
 
-const drawCube = (gl, programInfo, buffers) => {
+const drawCube = (gl, mats, programInfo, buffers) => {
   gl.useProgram(programInfo.program)
-
-  const fov = Math.PI / 6
-  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
-
-  const projectionMat = mat.create()
-  mat.perspective(projectionMat, fov, aspect, 0.1, 100.0)
 
   const modelMat = mat.create()
 
@@ -28,7 +27,7 @@ const drawCube = (gl, programInfo, buffers) => {
   mat.translate(modelMat, modelMat, [posX, posY, 0])
   mat.rotate(modelMat, modelMat, posX, [1, 1, 1])
 
-  const viewMat = createViewMat()
+  const [viewMat, projectionMat] = mats
 
   const normalMat = mat.create()
   mat.invert(normalMat, modelMat)
@@ -59,17 +58,11 @@ const drawCube = (gl, programInfo, buffers) => {
   gl.drawElements(gl.TRIANGLES, buffers.length, gl.UNSIGNED_SHORT, 0)
 }
 
-const drawLine = (gl, programInfo, buffers) => {
+const drawLine = (gl, mats, programInfo, buffers) => {
   gl.useProgram(programInfo.program)
 
-  const fov = Math.PI / 6
-  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
-
-  const projectionMat = mat.create()
-  mat.perspective(projectionMat, fov, aspect, 0.1, 100.0)
-
   const modelMat = mat.create()
-  const viewMat = createViewMat()
+  const [viewMat, projectionMat] = mats
 
   const { pos } = programInfo.attribLocations
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)
@@ -84,12 +77,17 @@ const drawLine = (gl, programInfo, buffers) => {
   gl.drawArrays(gl.LINES, 0, buffers.length / 3)
 }
 
-export const draw = (gl, programInfos, buffers) => {
+export const draw = (gl, programInfos, buffers, offset) => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-  drawCube(gl, programInfos[0], buffers[0])
-  drawLine(gl, programInfos[1], buffers[1])
+  const { clientWidth, clientHeight } = gl.canvas
+  const viewMat = createViewMat(offset)
+  const projectionMat = createProjectionMat(clientWidth, clientHeight)
+  const mats = [viewMat, projectionMat]
+
+  drawCube(gl, mats, programInfos[0], buffers[0])
+  drawLine(gl, mats, programInfos[1], buffers[1])
 }
