@@ -7,6 +7,18 @@ import {
 } from '../components/index.js'
 import Renderer from '../renderer/index.js'
 
+const commitElement = (entity, renderer) => {
+  const type = entity.state(GraphicsComponent).type
+  const position = entity.state(PositionComponent)
+  const transform = entity.state(TransformComponent)
+  renderer.commitElement({ type, position, transform })
+}
+
+const commitCamera = (entity, renderer) => {
+  const cameraState = entity.state(CameraComponent)
+  renderer.commitCamera(cameraState)
+}
+
 // Render system cares about all components related to the final frame
 export class RenderSystem extends System {
   constructor (canvas) {
@@ -21,10 +33,9 @@ export class RenderSystem extends System {
   }
 
   update (entity) {
-    const cameraState = entity.state(CameraComponent)
-    if (!cameraState) return
-
-    this.renderer.commit(cameraState)
+    entity.state(CameraComponent)
+      ? commitCamera(entity, this.renderer)
+      : commitElement(entity, this.renderer)
   }
 
   onTickEnd () {

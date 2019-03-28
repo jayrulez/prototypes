@@ -14,7 +14,12 @@ export class CameraComponent extends Component {
   }
 }
 
-export class GraphicsComponent extends Component {}
+export class GraphicsComponent extends Component {
+  constructor (graphicsData) {
+    super()
+    this.state = graphicsData || { type: 'Cube' }
+  }
+}
 
 export class PositionComponent extends Component {
   constructor (position) {
