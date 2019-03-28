@@ -1,4 +1,4 @@
-import * as mat from '../../libs/utils/math/matrix.js'
+import * as mat from './matrix.js'
 
 let ts = Date.now()
 const getDelta = () => (Date.now() - ts) / 1000

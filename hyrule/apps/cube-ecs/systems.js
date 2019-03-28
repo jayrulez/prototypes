@@ -1,6 +1,8 @@
 import System from '../../libs/systems/system.js'
 import {
-  CameraComponent, PositionComponent, TransformComponent
+  CameraComponent,
+  PositionComponent,
+  TransformComponent
 } from '../../libs/components/index.js'
 
 // On drag we only change camera position
