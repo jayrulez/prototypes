@@ -1,4 +1,4 @@
-import Command from '../../libs/command/index.js'
+import Command from '../../gunpla/command/index.js'
 
 export class InputCommand extends Command {
   constructor (camera, Component) {

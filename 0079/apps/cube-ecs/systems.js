@@ -1,9 +1,9 @@
-import System from '../../libs/systems/system.js'
+import System from '../../gunpla/systems/system.js'
 import {
   CameraComponent,
   PositionComponent,
   TransformComponent
-} from '../../libs/components/index.js'
+} from '../../gunpla/components/index.js'
 
 // On drag we only change camera position
 export class DragSystem extends System {
