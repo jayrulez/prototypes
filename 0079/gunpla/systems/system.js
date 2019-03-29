@@ -1,4 +1,4 @@
-import EventBus from '../events/index.js'
+import EventBus from '../events/event-bus.js'
 
 export default class System extends EventBus {
   constructor () {

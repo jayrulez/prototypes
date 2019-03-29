@@ -1,4 +1,4 @@
-import EventBus from '../events/index.js'
+import EventBus from '../events/event-bus.js'
 
 const isConnected = (entity, system) => {
   return entity.components.some(
