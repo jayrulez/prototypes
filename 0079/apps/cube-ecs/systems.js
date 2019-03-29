@@ -1,18 +1,9 @@
 import System from '../../gunpla/systems/system.js'
 import {
-  CameraComponent,
   PositionComponent,
   TransformComponent
 } from '../../gunpla/components/index.js'
 import { create, rotate } from '../../gunpla/utils/math/matrix.js'
-
-// On drag we only change camera position
-export class DragSystem extends System {
-  constructor (world) {
-    super(world)
-    this.components = [CameraComponent]
-  }
-}
 
 let ts = Date.now()
 const getDelta = () => (Date.now() - ts) / 1000
@@ -27,8 +18,13 @@ export class SpinSystem extends System {
   update (entity) {
     if (!entity.getState(TransformComponent)) return
 
+    const delta = getDelta()
+    const posX = Math.sin(delta) * 2
+    const posY = Math.cos(delta) * 2
+    entity.setState(PositionComponent, [posX, posY, 0])
+
     const mat = create()
-    rotate(mat, mat, getDelta(), [1, 1, 0])
+    rotate(mat, mat, delta, [1, 1, 0])
     entity.setState(TransformComponent, mat)
   }
 }
