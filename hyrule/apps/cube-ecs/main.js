@@ -30,7 +30,7 @@ grid.useComponents([
   new PositionComponent()
 ])
 camera.useComponents([
-  new CameraComponent({ position: [-10, 10, 30] })
+  new CameraComponent({ position: [0, 0, 30] })
 ])
 
 world.addEntity(cube)

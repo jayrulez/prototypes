@@ -1,6 +1,7 @@
 import Component from './component.js'
 import { create } from '../utils/math/matrix.js'
 
+// world.entities[x].components[x].state.position
 export class CameraComponent extends Component {
   constructor (lookAt = {}) {
     super()

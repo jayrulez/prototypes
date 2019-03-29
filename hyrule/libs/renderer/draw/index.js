@@ -10,10 +10,10 @@ export const createProjectionMat = (width, height) => {
   return mat.perspective(projectionMat, fov, aspect, 0.1, 1000.0)
 }
 
-export const createViewMat = ([dX, dY]) => {
+export const createViewMat = (camera) => {
   const viewMat = mat.create()
-  const camera = [-dX * 30, -dY * 30, 25]
-  return mat.lookAt(viewMat, camera, [0, 0, 0], [0, 1, 0])
+  const { position, target, up } = camera
+  return mat.lookAt(viewMat, position, target, up)
 }
 
 const drawCube = (gl, mats, programInfo, buffers, delta) => {
@@ -75,7 +75,7 @@ const drawGrid = (gl, mats, programInfo, buffers) => {
   gl.drawArrays(gl.LINES, 0, buffers.length / 3)
 }
 
-export const draw = (gl, mats, programInfos, buffers, offset) => {
+export const draw = (gl, mats, programInfos, buffers) => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)

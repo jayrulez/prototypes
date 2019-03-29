@@ -51,10 +51,9 @@ export default class Renderer {
     gl.clearDepth(1.0)
     gl.enable(gl.DEPTH_TEST)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    const offset = [0, 0]
 
     const { clientWidth, clientHeight } = gl.canvas
-    const viewMat = createViewMat(offset)
+    const viewMat = createViewMat(this.camera)
     const projectionMat = createProjectionMat(clientWidth, clientHeight)
     const mats = [viewMat, projectionMat]
 
@@ -68,7 +67,7 @@ export default class Renderer {
       taskResources['RefGrid'].buffers
     ]
 
-    draw(gl, mats, programInfos, buffers, offset)
+    draw(gl, mats, programInfos, buffers)
     this.elements = []
   }
 }
