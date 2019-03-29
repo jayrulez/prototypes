@@ -7,10 +7,16 @@ export default class Entity {
     this.componentsMap = {}
   }
 
-  state (componentClass) {
+  getState (componentClass) {
     const component = this.componentsMap[componentClass.name]
     if (!component) return null
     return component.state
+  }
+
+  setState (componentClass, state) {
+    const component = this.componentsMap[componentClass.name]
+    if (!component) return
+    this.componentsMap[componentClass.name].state = state
   }
 
   useComponents (components) {

@@ -8,14 +8,14 @@ import {
 import Renderer from '../renderer/index.js'
 
 const commitElement = (entity, renderer) => {
-  const type = entity.state(GraphicsComponent).type
-  const position = entity.state(PositionComponent)
-  const transform = entity.state(TransformComponent)
+  const type = entity.getState(GraphicsComponent).type
+  const position = entity.getState(PositionComponent)
+  const transform = entity.getState(TransformComponent)
   renderer.commitElement({ type, position, transform })
 }
 
 const commitCamera = (entity, renderer) => {
-  const cameraState = entity.state(CameraComponent)
+  const cameraState = entity.getState(CameraComponent)
   renderer.commitCamera(cameraState)
 }
 
@@ -33,7 +33,7 @@ export class RenderSystem extends System {
   }
 
   update (entity) {
-    entity.state(CameraComponent)
+    entity.getState(CameraComponent)
       ? commitCamera(entity, this.renderer)
       : commitElement(entity, this.renderer)
   }

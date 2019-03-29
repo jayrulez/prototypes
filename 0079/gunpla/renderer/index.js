@@ -1,3 +1,5 @@
+import * as mat from '../utils/math/matrix.js'
+
 // TODO dynamic load render modules
 import { initProgramInfo as initCubeProgramInfo } from './programs/cube.js'
 import { initProgramInfo as initGridProgramInfo } from './programs/grid.js'
@@ -6,7 +8,7 @@ import { initBuffers as initGridBuffers } from './buffers/grid.js'
 
 import { elementsToTasks } from './tasks/index.js'
 import {
-  drawTask, draw, createProjectionMat, createViewMat
+  drawCube, drawGrid, createProjectionMat, createViewMat
 } from './draw/index.js'
 
 export default class Renderer {
@@ -42,9 +44,9 @@ export default class Renderer {
   }
 
   render () {
-    const tasks = elementsToTasks(this.elements, this.camera)
+    // Task has same shape as element for now
+    const tasks = elementsToTasks(this.elements)
     const { gl, taskResources } = this
-    tasks.forEach((task) => drawTask(task, gl, taskResources))
 
     // FIXME legacy draw
     gl.clearColor(0.0, 0.0, 0.0, 1.0)
@@ -55,19 +57,40 @@ export default class Renderer {
     const { clientWidth, clientHeight } = gl.canvas
     const viewMat = createViewMat(this.camera)
     const projectionMat = createProjectionMat(clientWidth, clientHeight)
-    const mats = [viewMat, projectionMat]
+
+    window.tasks = tasks
+    const [gridTasks, cubeTasks] = tasks
 
     const programInfos = [
-      taskResources['Cube'].programInfo,
-      taskResources['RefGrid'].programInfo
+      taskResources['RefGrid'].programInfo,
+      taskResources['Cube'].programInfo
     ]
 
     const buffers = [
-      taskResources['Cube'].buffers,
-      taskResources['RefGrid'].buffers
+      taskResources['RefGrid'].buffers,
+      taskResources['Cube'].buffers
     ]
 
-    draw(gl, mats, programInfos, buffers)
+    for (let i = 0; i < gridTasks.length; i++) {
+      const { position, transform } = gridTasks[i]
+      const modelMat = mat.create()
+      mat.translate(modelMat, modelMat, position)
+      if (transform) mat.multiply(modelMat, modelMat, transform)
+      const mats = [modelMat, viewMat, projectionMat]
+
+      drawGrid(gl, mats, programInfos[0], buffers[0])
+    }
+
+    for (let i = 0; i < cubeTasks.length; i++) {
+      const { position, transform } = cubeTasks[i]
+      const modelMat = mat.create()
+      mat.translate(modelMat, modelMat, position)
+      if (transform) mat.multiply(modelMat, modelMat, transform)
+      const mats = [modelMat, viewMat, projectionMat]
+
+      drawCube(gl, mats, programInfos[1], buffers[1])
+    }
+
     this.elements = []
   }
 }

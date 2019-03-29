@@ -18,7 +18,9 @@ const world = new World([
   new RenderSystem(canvas)
 ])
 
-const [cube, grid, camera] = [new Entity(), new Entity(), new Entity()]
+const cube = new Entity()
+const grid = new Entity()
+const camera = new Entity()
 
 cube.useComponents([
   new TransformComponent(),

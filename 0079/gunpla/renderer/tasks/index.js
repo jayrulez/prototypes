@@ -1,12 +1,6 @@
-export const elementsToTasks = (elements, camera) => {
-  const lineTask = {
-    elements: elements.filter(element => element.type === 'RefGrid'),
-    camera
-  }
-  const triangleTask = {
-    elements: elements.filter(element => element.type === 'Cube'),
-    camera
-  }
+export const elementsToTasks = (elements) => {
+  const lineTasks = elements.filter(element => element.type === 'RefGrid')
+  const triangleTasks = elements.filter(element => element.type === 'Cube')
 
-  return [lineTask, triangleTask]
+  return [lineTasks, triangleTasks]
 }
