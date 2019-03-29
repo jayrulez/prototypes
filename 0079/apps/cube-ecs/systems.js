@@ -18,10 +18,11 @@ export class SpinSystem extends System {
   update (entity) {
     if (!entity.getState(TransformComponent)) return
 
+    const [x, y] = entity.getState(PositionComponent)
     const delta = getDelta()
-    const posX = Math.sin(delta) * 2
-    const posY = Math.cos(delta) * 2
-    entity.setState(PositionComponent, [posX, posY, 0])
+    const dX = Math.sin(delta) / 30
+    const dY = Math.cos(delta) / 30
+    entity.setState(PositionComponent, [x + dX, y + dY, 0])
 
     const mat = create()
     rotate(mat, mat, delta, [1, 1, 0])
