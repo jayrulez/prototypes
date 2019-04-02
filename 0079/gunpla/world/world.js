@@ -49,6 +49,11 @@ export default class World extends EventBus {
     this.entities.push(entity)
   }
 
+  removeEntity (entity) {
+    const index = this.entities.indexOf(entity)
+    index > -1 && this.entities.splice(index, 1)
+  }
+
   tick () {
     for (let i = 0; i < this.systems.length; i++) {
       this.systems[i].emit('tickStart')
