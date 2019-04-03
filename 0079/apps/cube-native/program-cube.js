@@ -29,8 +29,8 @@ void main() {
   vec3 diffuse = diffuseColor * diffuseFactor * diffuseStrength;
 
   vec3 fragPos = vec3(modelMat * pos);
-  // vec3 specularLightPos = vec3(0, 0, 0);
-  vec3 specularLightPos = viewPos;
+  vec3 specularLightPos = vec3(0, 0, 25);
+  // vec3 specularLightPos = viewPos;
   vec3 specularLightDir = normalize(specularLightPos - fragPos);
 
   float specularStrength = 0.5;

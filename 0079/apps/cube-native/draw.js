@@ -26,7 +26,8 @@ const drawCube = (gl, mats, programInfo, buffers, delta, camera) => {
   gl.useProgram(programInfo.program)
 
   const posX = Math.sin(delta) * 2
-  const posY = Math.cos(delta) * 2
+  const posY = Math.cos(delta) * 2 - 2
+
   const modelMat = mat.create()
   mat.translate(modelMat, modelMat, [posX, posY, 0])
   mat.rotate(modelMat, modelMat, delta, [1, 1, 0])
