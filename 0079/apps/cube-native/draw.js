@@ -23,7 +23,7 @@ const drawCube = (gl, mats, programInfo, buffers, delta) => {
   const posY = Math.cos(delta) * 2
   const modelMat = mat.create()
   mat.translate(modelMat, modelMat, [posX, posY, 0])
-  mat.rotate(modelMat, modelMat, posX, [1, 1, 1])
+  mat.rotate(modelMat, modelMat, delta, [1, 1, 0])
 
   const [viewMat, projectionMat] = mats
 
