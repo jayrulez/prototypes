@@ -1,6 +1,6 @@
 import * as mat from '../matrix.js'
 import { createRefGrid } from './geometry.js'
-import { initShader } from '../shader-utils.js'
+import { initShader } from '../helpers.js'
 import { GRID_LINE_COUNT, GRID_SIZE } from '../consts.js'
 
 const vertexShader = `

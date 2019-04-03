@@ -1,7 +1,7 @@
 import { ANIMATE } from './consts.js'
 import * as trianglePass from './triangle-pass/triangle-pass.js'
 import * as linePass from './line-pass/line-pass.js'
-import { initDrag } from './input.js'
+import { initDrag } from './helpers.js'
 import {
   createViewMat, createProjectionMat, getDelta, getCamera
 } from './draw-helpers.js'

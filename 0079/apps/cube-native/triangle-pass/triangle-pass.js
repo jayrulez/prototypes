@@ -1,7 +1,7 @@
 import * as mat from '../matrix.js'
 import { GROUND_Z, PLANE_SIZE } from '../consts.js'
 
-import { initShader } from '../shader-utils.js'
+import { initShader } from '../helpers.js'
 
 const vertexShader = `
 precision highp float;
