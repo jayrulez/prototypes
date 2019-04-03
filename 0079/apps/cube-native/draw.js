@@ -1,7 +1,9 @@
 import * as mat from './matrix.js'
+import { CAMERA_BASE } from './consts.js'
 
-let ts = Date.now()
-const getDelta = () => (Date.now() - ts) / 1000
+// let ts = Date.now()
+// const getDelta = () => (Date.now() - ts) / 1000
+const getDelta = () => 0
 
 const createProjectionMat = (width, height) => {
   const fov = Math.PI / 6
@@ -12,7 +14,8 @@ const createProjectionMat = (width, height) => {
 
 const createViewMat = ([dX, dY]) => {
   const viewMat = mat.create()
-  const camera = [-dX * 30, -dY * 30 - 50, 25]
+  const [x, y, z] = CAMERA_BASE
+  const camera = [-dX * 30 + x, -dY * 30 + y, z]
   return mat.lookAt(viewMat, camera, [0, 0, 0], [0, 1, 0])
 }
 

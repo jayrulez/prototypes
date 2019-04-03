@@ -8,7 +8,7 @@ import { draw } from './draw.js'
 const canvas = document.querySelector('#gl-canvas')
 
 let [rX, rY] = [0, 0]
-initDrag(canvas, (x, y) => { [rX, rY] = [x, y] })
+initDrag(canvas, (x, y) => { [rX, rY] = [x, y]; drawFrame() })
 
 const gl = canvas.getContext('webgl')
 const cubeProgramInfo = initCubeProgramInfo(gl)
@@ -20,6 +20,6 @@ const drawFrame = () => {
   const programInfos = [cubeProgramInfo, lineProgramInfo]
   const buffers = [cubeBuffers, lineBuffers]
   draw(gl, programInfos, buffers, [rX, rY])
-  window.requestAnimationFrame(drawFrame)
+  // window.requestAnimationFrame(drawFrame)
 }
 drawFrame()

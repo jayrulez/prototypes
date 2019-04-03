@@ -1,3 +1,4 @@
+import { GROUND_Z, PLANE_SIZE } from './consts.js'
 
 export const initBuffers = gl => {
   // Positions
@@ -33,7 +34,13 @@ export const initBuffers = gl => {
     -1.0, 1.0, 1.0,
     -1.0, 1.0, -1.0
   ]
-  const positions = cubePositions
+  const planePositions = [
+    -PLANE_SIZE / 2, -PLANE_SIZE / 2, GROUND_Z,
+    PLANE_SIZE / 2, -PLANE_SIZE / 2, GROUND_Z,
+    PLANE_SIZE / 2, PLANE_SIZE / 2, GROUND_Z,
+    -PLANE_SIZE / 2, PLANE_SIZE / 2, GROUND_Z
+  ]
+  const positions = [...cubePositions, ...planePositions]
 
   // Colors
   const faceColors = [
@@ -44,9 +51,14 @@ export const initBuffers = gl => {
     [1.0, 1.0, 0.0, 1.0], // Yellow
     [1.0, 0.0, 1.0, 1.0] // Purple
   ]
+  const planeColors = [[0.7, 0.7, 0.7, 1.0]]
   let colors = []
   for (let i = 0; i < faceColors.length; i++) {
     const c = faceColors[i]
+    colors = colors.concat(c, c, c, c)
+  }
+  for (let i = 0; i < planeColors.length; i++) {
+    const c = planeColors[i]
     colors = colors.concat(c, c, c, c)
   }
 
@@ -59,7 +71,8 @@ export const initBuffers = gl => {
     16, 17, 18, 16, 18, 19, // Right
     20, 21, 22, 20, 22, 23 // Left
   ]
-  const indices = cubeIndices
+  const planeIndices = [24, 25, 26, 24, 26, 27]
+  const indices = [...cubeIndices, ...planeIndices]
 
   // Normals
   const cubeNormals = [
@@ -70,9 +83,14 @@ export const initBuffers = gl => {
     [1.0, 0.0, 0.0], // Right
     [-1.0, 0.0, 0.0] // Left
   ]
+  const planeNormals = [[0.0, 0.0, 1.0]]
   let normals = []
   for (let i = 0; i < cubeNormals.length; i++) {
     const n = cubeNormals[i]
+    normals = normals.concat(n, n, n, n)
+  }
+  for (let i = 0; i < planeNormals.length; i++) {
+    const n = planeNormals[i]
     normals = normals.concat(n, n, n, n)
   }
 
