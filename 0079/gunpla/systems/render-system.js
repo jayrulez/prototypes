@@ -5,7 +5,7 @@ import {
   PositionComponent,
   TransformComponent
 } from '../components/index.js'
-import Renderer from '../renderer/index.js'
+import Renderer from '../renderer/renderer.js'
 
 const commitElement = (entity, renderer) => {
   const type = entity.getState(GraphicsComponent).type

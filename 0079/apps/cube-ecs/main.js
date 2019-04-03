@@ -1,12 +1,12 @@
-import World from '../../gunpla/world/index.js'
-import Entity from '../../gunpla/entity/index.js'
+import World from '../../gunpla/world/world.js'
+import Entity from '../../gunpla/entity/entity.js'
 import {
   CameraComponent,
   GraphicsComponent,
   PositionComponent,
   TransformComponent
 } from '../../gunpla/components/index.js'
-import { RenderSystem } from '../../gunpla/systems/index.js'
+import { RenderSystem } from '../../gunpla/systems/render-system.js'
 import { SpinSystem } from './systems.js'
 import { InputCommand } from './command.js'
 

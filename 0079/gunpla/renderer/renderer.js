@@ -6,10 +6,10 @@ import { initProgramInfo as initGridProgramInfo } from './programs/grid.js'
 import { initBuffers as initCubeBuffers } from './buffers/cube.js'
 import { initBuffers as initGridBuffers } from './buffers/grid.js'
 
-import { elementsToTasks } from './tasks/index.js'
+import { elementsToTasks } from './tasks/task.js'
 import {
   drawCube, drawGrid, createProjectionMat, createViewMat
-} from './draw/index.js'
+} from './draw/draw.js'
 
 export default class Renderer {
   constructor (canvas) {
