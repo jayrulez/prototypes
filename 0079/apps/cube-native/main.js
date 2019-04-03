@@ -1,3 +1,4 @@
+import { ANIMATE } from './consts.js'
 import { initProgramInfo as initCubeProgramInfo } from './program-cube.js'
 import { initProgramInfo as initLineProgramInfo } from './program-line.js'
 import { initBuffers as initCubeBuffers } from './buffers-cube.js'
@@ -8,7 +9,10 @@ import { draw } from './draw.js'
 const canvas = document.querySelector('#gl-canvas')
 
 let [rX, rY] = [0, 0]
-initDrag(canvas, (x, y) => { [rX, rY] = [x, y]; drawFrame() })
+initDrag(canvas, (x, y) => {
+  [rX, rY] = [x, y]
+  !ANIMATE && drawFrame()
+})
 
 const gl = canvas.getContext('webgl')
 const cubeProgramInfo = initCubeProgramInfo(gl)
@@ -20,6 +24,6 @@ const drawFrame = () => {
   const programInfos = [cubeProgramInfo, lineProgramInfo]
   const buffers = [cubeBuffers, lineBuffers]
   draw(gl, programInfos, buffers, [rX, rY])
-  // window.requestAnimationFrame(drawFrame)
+  ANIMATE && window.requestAnimationFrame(drawFrame)
 }
 drawFrame()

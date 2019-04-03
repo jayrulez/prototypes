@@ -1,9 +1,8 @@
 import * as mat from './matrix.js'
-import { CAMERA_BASE } from './consts.js'
+import { ANIMATE, CAMERA_BASE, ROTATE_DELTA_BASE } from './consts.js'
 
-// let ts = Date.now()
-// const getDelta = () => (Date.now() - ts) / 1000
-const getDelta = () => 0
+let ts = Date.now()
+const getDelta = () => ANIMATE ? (Date.now() - ts) / 1000 : ROTATE_DELTA_BASE
 
 const createProjectionMat = (width, height) => {
   const fov = Math.PI / 6
@@ -12,14 +11,18 @@ const createProjectionMat = (width, height) => {
   return mat.perspective(projectionMat, fov, aspect, 0.1, 1000.0)
 }
 
+const getCamera = (dX, dY) => {
+  const [x, y, z] = CAMERA_BASE
+  return [-dX * 30 + x, -dY * 30 + y, z]
+}
+
 const createViewMat = ([dX, dY]) => {
   const viewMat = mat.create()
-  const [x, y, z] = CAMERA_BASE
-  const camera = [-dX * 30 + x, -dY * 30 + y, z]
+  const camera = getCamera(dX, dY)
   return mat.lookAt(viewMat, camera, [0, 0, 0], [0, 1, 0])
 }
 
-const drawCube = (gl, mats, programInfo, buffers, delta) => {
+const drawCube = (gl, mats, programInfo, buffers, delta, camera) => {
   gl.useProgram(programInfo.program)
 
   const posX = Math.sin(delta) * 2
@@ -50,6 +53,7 @@ const drawCube = (gl, mats, programInfo, buffers, delta) => {
   gl.enableVertexAttribArray(color)
 
   const { uniformLocations } = programInfo
+  gl.uniform3fv(uniformLocations.viewPos, camera)
   gl.uniformMatrix4fv(uniformLocations.modelMat, false, modelMat)
   gl.uniformMatrix4fv(uniformLocations.viewMat, false, viewMat)
   gl.uniformMatrix4fv(uniformLocations.projectionMat, false, projectionMat)
@@ -90,7 +94,8 @@ export const draw = (gl, programInfos, buffers, offset) => {
   const mats = [viewMat, projectionMat]
 
   const delta = getDelta()
+  const camera = getCamera(offset[0], offset[1])
 
-  drawCube(gl, mats, programInfos[0], buffers[0], delta)
+  drawCube(gl, mats, programInfos[0], buffers[0], delta, camera)
   drawGrid(gl, mats, programInfos[1], buffers[1])
 }
