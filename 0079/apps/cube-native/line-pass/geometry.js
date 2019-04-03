@@ -1,4 +1,4 @@
-import { GROUND_Z } from './consts.js'
+import { GROUND_Z } from '../consts.js'
 
 export const createRefGrid = (n = 100, size = 10) => {
   const results = []
