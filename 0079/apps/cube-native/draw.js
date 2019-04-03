@@ -12,7 +12,7 @@ const createProjectionMat = (width, height) => {
 
 const createViewMat = ([dX, dY]) => {
   const viewMat = mat.create()
-  const camera = [-dX * 30, -dY * 30, 25]
+  const camera = [-dX * 30, -dY * 30 - 50, 25]
   return mat.lookAt(viewMat, camera, [0, 0, 0], [0, 1, 0])
 }
 
