@@ -1,5 +1,8 @@
 import * as mat from '../matrix.js'
 import { initShader } from '../helpers.js'
+import { LIGHT_POS } from '../consts.js'
+
+const [x, y, z] = LIGHT_POS
 
 const vertexShader = `
 precision highp float;
@@ -30,7 +33,7 @@ void main() {
   vec3 diffuse = diffuseColor * diffuseFactor * diffuseStrength;
 
   vec3 fragPos = vec3(modelMat * pos);
-  vec3 specularLightPos = vec3(0, 0, 25);
+  vec3 specularLightPos = vec3(${x}, ${y}, ${z});
   // vec3 specularLightPos = viewPos;
   vec3 specularLightDir = normalize(specularLightPos - fragPos);
 
@@ -128,22 +131,22 @@ export const draw = (gl, mats, programInfo, buffers, options) => {
   gl.vertexAttribPointer(pos, 3, gl.FLOAT, false, 0, 0)
   gl.enableVertexAttribArray(pos)
 
-  const { vertexNormal } = programInfo.attribLocations
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal)
-  gl.vertexAttribPointer(vertexNormal, 3, gl.FLOAT, false, 0, 0)
-  gl.enableVertexAttribArray(vertexNormal)
+  // const { vertexNormal } = programInfo.attribLocations
+  // gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal)
+  // gl.vertexAttribPointer(vertexNormal, 3, gl.FLOAT, false, 0, 0)
+  // gl.enableVertexAttribArray(vertexNormal)
 
-  const { color } = programInfo.attribLocations
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color)
-  gl.vertexAttribPointer(color, 4, gl.FLOAT, false, 0, 0)
-  gl.enableVertexAttribArray(color)
+  // const { color } = programInfo.attribLocations
+  // gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color)
+  // gl.vertexAttribPointer(color, 4, gl.FLOAT, false, 0, 0)
+  // gl.enableVertexAttribArray(color)
 
   const { uniformLocations } = programInfo
-  gl.uniform3fv(uniformLocations.viewPos, camera)
+  // gl.uniform3fv(uniformLocations.viewPos, camera)
   gl.uniformMatrix4fv(uniformLocations.modelMat, false, modelMat)
   gl.uniformMatrix4fv(uniformLocations.viewMat, false, viewMat)
   gl.uniformMatrix4fv(uniformLocations.projectionMat, false, projectionMat)
-  gl.uniformMatrix4fv(uniformLocations.normalMat, false, normalMat)
+  // gl.uniformMatrix4fv(uniformLocations.normalMat, false, normalMat)
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices)
   gl.drawElements(gl.TRIANGLES, buffers.length, gl.UNSIGNED_SHORT, 0)
