@@ -1,6 +1,7 @@
 import { ANIMATE } from './consts.js'
 import * as trianglePass from './triangle-pass/triangle-pass.js'
 import * as linePass from './line-pass/line-pass.js'
+import { createLineData, createTriangleData } from './data.js'
 import {
   createViewMat, createProjectionMat, getDelta, getCamera, initDrag
 } from './helpers.js'
@@ -16,10 +17,10 @@ initDrag(canvas, (x, y) => {
 const gl = canvas.getContext('webgl')
 const triangleProgramInfo = trianglePass.initProgramInfo(gl)
 const lineProgramInfo = linePass.initProgramInfo(gl)
-const triangleBuffers = trianglePass.initBuffers(gl)
-const lineBuffers = linePass.initBuffers(gl)
+const triangleBuffers = trianglePass.initBuffers(gl, createTriangleData)
+const lineBuffers = linePass.initBuffers(gl, createLineData)
 
-const draw = (gl, programInfos, buffers, offset) => {
+const draw = (gl, offset) => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clearDepth(1.0)
   gl.enable(gl.DEPTH_TEST)
@@ -32,15 +33,14 @@ const draw = (gl, programInfos, buffers, offset) => {
 
   const delta = getDelta()
   const camera = getCamera(offset[0], offset[1])
+  const options = { delta, camera }
 
-  trianglePass.draw(gl, mats, programInfos[0], buffers[0], delta, camera)
-  linePass.draw(gl, mats, programInfos[1], buffers[1])
+  trianglePass.draw(gl, mats, triangleProgramInfo, triangleBuffers, options)
+  linePass.draw(gl, mats, lineProgramInfo, lineBuffers)
 }
 
 const drawFrame = () => {
-  const programInfos = [triangleProgramInfo, lineProgramInfo]
-  const buffers = [triangleBuffers, lineBuffers]
-  draw(gl, programInfos, buffers, [rX, rY])
+  draw(gl, [rX, rY])
   ANIMATE && window.requestAnimationFrame(drawFrame)
 }
 drawFrame()

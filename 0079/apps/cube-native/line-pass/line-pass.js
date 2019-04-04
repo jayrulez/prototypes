@@ -1,7 +1,5 @@
 import * as mat from '../matrix.js'
-import { createRefGrid } from './geometry.js'
 import { initShader } from '../helpers.js'
-import { GRID_LINE_COUNT, GRID_SIZE } from '../consts.js'
 
 const vertexShader = `
 precision highp float;
@@ -42,8 +40,8 @@ export const initProgramInfo = gl => {
   }
 }
 
-export const initBuffers = gl => {
-  const positions = createRefGrid(GRID_LINE_COUNT, GRID_SIZE)
+export const initBuffers = (gl, createData) => {
+  const positions = createData()
   const positionBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
