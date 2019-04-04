@@ -23,6 +23,8 @@ void main() {
   const vec4 bitMask = vec4(1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0, 0.0);
   vec4 rgbaDepth = fract(gl_FragCoord.z * bitShift);
   rgbaDepth -= rgbaDepth.gbaa * bitMask;
+  // gl_FragColor = vec4(0, 0, 0, 0); // gl_FragColor is useless
+  // gl_FragColor = vec4(rgbaDepth.rgb, 1);
   gl_FragColor = rgbaDepth;
 }
 `
@@ -75,10 +77,6 @@ export const draw = (gl, mats, programInfo, buffers, options) => {
   mat.rotate(modelMat, modelMat, delta, [1, 1, 0])
 
   const [viewMat, projectionMat] = mats
-
-  const normalMat = mat.create()
-  mat.invert(normalMat, modelMat)
-  mat.transpose(normalMat, normalMat)
 
   const { pos } = programInfo.attribLocations
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)

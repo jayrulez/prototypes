@@ -30,7 +30,8 @@ void main() {
 
   float diffuseStrength = 0.8;
   vec3 diffuseColor = vec3(1, 1, 1);
-  vec3 diffuseDir = normalize(vec3(1, 0, 0.75));
+  // vec3 diffuseDir = normalize(vec3(1, 0, 0.75));
+  vec3 diffuseDir = normalize(vec3(${x}, ${y}, ${z}));
   float diffuseFactor = max(dot(transformedNormal.xyz, diffuseDir), 0.0);
   vec3 diffuse = diffuseColor * diffuseFactor * diffuseStrength;
 
@@ -143,8 +144,9 @@ export const draw = (gl, mats, programInfo, buffers, options) => {
 
   const [viewMat, projectionMat, lightViewMat, lightProjectionMat] = mats
   const lightMVPMat = mat.create()
-  mat.multiply(lightMVPMat, lightViewMat, modelMat)
-  mat.multiply(lightMVPMat, lightProjectionMat, lightMVPMat)
+  const tmpMat = mat.create()
+  mat.multiply(tmpMat, lightViewMat, modelMat)
+  mat.multiply(lightMVPMat, lightProjectionMat, tmpMat)
 
   const normalMat = mat.create()
   mat.invert(normalMat, modelMat)

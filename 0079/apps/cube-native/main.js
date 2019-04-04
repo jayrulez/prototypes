@@ -61,7 +61,7 @@ const draw = (gl, offset) => {
   const lightViewMat = mat.create()
   const lightProjectionMat = mat.create()
   const fov = Math.PI / 6
-  mat.perspective(lightViewMat, fov, 1.0, 1.0, 200.0)
+  mat.perspective(lightViewMat, fov, 1.0, 1.0, 100.0) // Changing this works
   mat.lookAt(lightProjectionMat, LIGHT_POS, [0, 0, 0], [0, 1, 0])
   const lightMats = [lightViewMat, lightProjectionMat]
   shadowBucket.draw(gl, lightMats, shadowProgramInfo, shadowBuffers, options)
