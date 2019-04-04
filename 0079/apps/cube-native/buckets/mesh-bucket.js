@@ -14,8 +14,10 @@ uniform vec3 viewPos;
 uniform mat4 modelMat;
 uniform mat4 viewMat;
 uniform mat4 projectionMat;
+uniform mat4 lightMVPMat;
 uniform mat4 normalMat;
 
+varying vec4 vPosFromLight;
 varying vec4 vColor;
 varying vec3 vLighting;
 
@@ -46,17 +48,34 @@ void main() {
 
   vColor = color;
   vLighting = ambient + diffuse + specular;
+  vPosFromLight = lightMVPMat * pos;
   gl_Position = projectionMat * viewMat * modelMat * pos;
 }
 `
 
 const fragmentShader = `
 precision highp float;
+
+uniform sampler2D shadowMap;
+
+varying vec4 vPosFromLight;
 varying vec4 vColor;
 varying vec3 vLighting;
 
+float unpackDepth(const in vec4 rgbaDepth) {
+  const vec4 bitShift = vec4(
+    1.0, 1.0 / 256.0, 1.0 / (256.0 * 256.0), 1.0 / (256.0 * 256.0 * 256.0)
+  );
+  float depth = dot(rgbaDepth, bitShift);
+  return depth;
+}
+
 void main() {
-  gl_FragColor = vec4(vColor.rgb * vLighting, 1.0);
+  vec3 shadowCoord = (vPosFromLight.xyz / vPosFromLight.w) / 2.0 + 0.5;
+  vec4 rgbaDepth = texture2D(shadowMap, shadowCoord.xy);
+  float depth = unpackDepth(rgbaDepth);
+  float visibility = (shadowCoord.z > depth + 0.0015) ? 0.7 : 1.0;
+  gl_FragColor = vec4(vColor.rgb * visibility * vLighting, vColor.a);
 }
 `
 
@@ -70,6 +89,8 @@ export const initProgramInfo = gl => {
       vertexNormal: gl.getAttribLocation(program, 'vertexNormal')
     },
     uniformLocations: {
+      shadowMap: gl.getUniformLocation(program, 'shadowMap'),
+      lightMVPMat: gl.getUniformLocation(program, 'lightMVPMat'),
       viewPos: gl.getUniformLocation(program, 'viewPos'),
       modelMat: gl.getUniformLocation(program, 'modelMat'),
       viewMat: gl.getUniformLocation(program, 'viewMat'),
@@ -120,7 +141,10 @@ export const draw = (gl, mats, programInfo, buffers, options) => {
   mat.translate(modelMat, modelMat, [posX, posY, 0])
   mat.rotate(modelMat, modelMat, delta, [1, 1, 0])
 
-  const [viewMat, projectionMat] = mats
+  const [viewMat, projectionMat, lightViewMat, lightProjectionMat] = mats
+  const lightMVPMat = mat.create()
+  mat.multiply(lightMVPMat, lightViewMat, modelMat)
+  mat.multiply(lightMVPMat, lightProjectionMat, lightMVPMat)
 
   const normalMat = mat.create()
   mat.invert(normalMat, modelMat)
@@ -131,22 +155,24 @@ export const draw = (gl, mats, programInfo, buffers, options) => {
   gl.vertexAttribPointer(pos, 3, gl.FLOAT, false, 0, 0)
   gl.enableVertexAttribArray(pos)
 
-  // const { vertexNormal } = programInfo.attribLocations
-  // gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal)
-  // gl.vertexAttribPointer(vertexNormal, 3, gl.FLOAT, false, 0, 0)
-  // gl.enableVertexAttribArray(vertexNormal)
+  const { vertexNormal } = programInfo.attribLocations
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal)
+  gl.vertexAttribPointer(vertexNormal, 3, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(vertexNormal)
 
-  // const { color } = programInfo.attribLocations
-  // gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color)
-  // gl.vertexAttribPointer(color, 4, gl.FLOAT, false, 0, 0)
-  // gl.enableVertexAttribArray(color)
+  const { color } = programInfo.attribLocations
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color)
+  gl.vertexAttribPointer(color, 4, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(color)
 
   const { uniformLocations } = programInfo
-  // gl.uniform3fv(uniformLocations.viewPos, camera)
+  gl.uniform3fv(uniformLocations.viewPos, camera)
   gl.uniformMatrix4fv(uniformLocations.modelMat, false, modelMat)
   gl.uniformMatrix4fv(uniformLocations.viewMat, false, viewMat)
   gl.uniformMatrix4fv(uniformLocations.projectionMat, false, projectionMat)
-  // gl.uniformMatrix4fv(uniformLocations.normalMat, false, normalMat)
+  gl.uniformMatrix4fv(uniformLocations.normalMat, false, normalMat)
+  gl.uniformMatrix4fv(uniformLocations.lightMVPMat, false, lightMVPMat)
+  gl.uniform1i(uniformLocations.shadowMap, 0)
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices)
   gl.drawElements(gl.TRIANGLES, buffers.length, gl.UNSIGNED_SHORT, 0)

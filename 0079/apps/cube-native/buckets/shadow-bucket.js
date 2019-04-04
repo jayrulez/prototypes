@@ -1,6 +1,5 @@
 import * as mat from '../matrix.js'
-import { initShader, initFramebufferObject } from '../helpers.js'
-import { OFFSCREEN_SIZE, LIGHT_POS } from '../consts.js'
+import { initShader } from '../helpers.js'
 
 const vertexShader = `
 precision highp float;
@@ -24,8 +23,7 @@ void main() {
   const vec4 bitMask = vec4(1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0, 0.0);
   vec4 rgbaDepth = fract(gl_FragCoord.z * bitShift);
   rgbaDepth -= rgbaDepth.gbaa * bitMask;
-  // gl_FragColor = rgbaDepth;
-  gl_FragColor = vec4(rgbaDepth.rgb, 1);
+  gl_FragColor = rgbaDepth;
 }
 `
 
@@ -45,15 +43,11 @@ export const initProgramInfo = gl => {
 }
 
 export const initBuffers = (gl, createData) => {
-  const { positions, colors, indices, normals } = createData()
+  const { positions, indices } = createData()
 
   const positionBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
-
-  const colorBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW)
 
   const indexBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
@@ -61,36 +55,41 @@ export const initBuffers = (gl, createData) => {
     gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW
   )
 
-  const normalBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW)
-
   return {
-    normal: normalBuffer,
     position: positionBuffer,
-    color: colorBuffer,
     indices: indexBuffer,
     length: indices.length
   }
 }
 
-export const draw = (gl, mats, initProgramInfo, buffers) => {
-  const fbo = initFramebufferObject(gl)
-  gl.activeTexture(gl.TEXTURE0)
-  gl.bindTexture(gl.TEXTURE_2D, fbo.texture)
+// Simplified from mesh draw
+export const draw = (gl, mats, programInfo, buffers, options) => {
+  const { delta } = options
+  gl.useProgram(programInfo.program)
 
-  gl.clearColor(0, 0, 0, 1)
-  gl.enable(gl.DEPTH_TEST)
+  const posX = Math.sin(delta) * 2
+  const posY = Math.cos(delta) * 2 - 2
 
-  const lightViewProjectionMat = mat.create()
-  const fov = Math.PI / 6
-  mat.perspective(lightViewProjectionMat, fov, 1.0, 1.0, 200.0)
-  mat.lookAt(lightViewProjectionMat, LIGHT_POS, [0, 0, 0], [0, 1, 0])
-  // viewMat.lookAt(camera)
+  const modelMat = mat.create()
+  mat.translate(modelMat, modelMat, [posX, posY, 0])
+  mat.rotate(modelMat, modelMat, delta, [1, 1, 0])
 
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
-  gl.viewport(0, 0, OFFSCREEN_SIZE, OFFSCREEN_SIZE)
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+  const [viewMat, projectionMat] = mats
 
-  // TODO draw FBO
+  const normalMat = mat.create()
+  mat.invert(normalMat, modelMat)
+  mat.transpose(normalMat, normalMat)
+
+  const { pos } = programInfo.attribLocations
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)
+  gl.vertexAttribPointer(pos, 3, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(pos)
+
+  const { uniformLocations } = programInfo
+  gl.uniformMatrix4fv(uniformLocations.modelMat, false, modelMat)
+  gl.uniformMatrix4fv(uniformLocations.viewMat, false, viewMat)
+  gl.uniformMatrix4fv(uniformLocations.projectionMat, false, projectionMat)
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices)
+  gl.drawElements(gl.TRIANGLES, buffers.length, gl.UNSIGNED_SHORT, 0)
 }

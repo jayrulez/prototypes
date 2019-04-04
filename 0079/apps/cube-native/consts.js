@@ -1,8 +1,8 @@
-export const ANIMATE = false
+export const ANIMATE = true
 export const ROTATE_DELTA_BASE = 0
 export const GROUND_Z = -4.0
 export const PLANE_SIZE = 10
-export const CAMERA_BASE = [0, 0, 30]
+export const CAMERA_BASE = [5, 5, 20]
 export const GRID_LINE_COUNT = 50
 export const GRID_SIZE = 2
 export const OFFSCREEN_SIZE = 1024
