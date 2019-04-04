@@ -1,6 +1,6 @@
 import { ANIMATE } from './consts.js'
-import * as trianglePass from './triangle-pass/triangle-pass.js'
-import * as linePass from './line-pass/line-pass.js'
+import * as meshBucket from './buckets/mesh-bucket.js'
+import * as lineBucket from './buckets/line-bucket.js'
 import { createLineData, createTriangleData } from './data.js'
 import {
   createViewMat, createProjectionMat, getDelta, getCamera, initDrag
@@ -15,10 +15,10 @@ initDrag(canvas, (x, y) => {
 })
 
 const gl = canvas.getContext('webgl')
-const triangleProgramInfo = trianglePass.initProgramInfo(gl)
-const lineProgramInfo = linePass.initProgramInfo(gl)
-const triangleBuffers = trianglePass.initBuffers(gl, createTriangleData)
-const lineBuffers = linePass.initBuffers(gl, createLineData)
+const triangleProgramInfo = meshBucket.initProgramInfo(gl)
+const lineProgramInfo = lineBucket.initProgramInfo(gl)
+const triangleBuffers = meshBucket.initBuffers(gl, createTriangleData)
+const lineBuffers = lineBucket.initBuffers(gl, createLineData)
 
 const draw = (gl, offset) => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
@@ -35,8 +35,8 @@ const draw = (gl, offset) => {
   const camera = getCamera(offset[0], offset[1])
   const options = { delta, camera }
 
-  trianglePass.draw(gl, mats, triangleProgramInfo, triangleBuffers, options)
-  linePass.draw(gl, mats, lineProgramInfo, lineBuffers)
+  meshBucket.draw(gl, mats, triangleProgramInfo, triangleBuffers, options)
+  lineBucket.draw(gl, mats, lineProgramInfo, lineBuffers)
 }
 
 const drawFrame = () => {
