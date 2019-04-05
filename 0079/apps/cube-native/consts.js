@@ -6,4 +6,4 @@ export const CAMERA_BASE = [5, 5, 20]
 export const GRID_LINE_COUNT = 50
 export const GRID_SIZE = 2
 export const OFFSCREEN_SIZE = 1024
-export const LIGHT_POS = [2, 2, 4]
+export const LIGHT_POS = [0, 0, 25]
