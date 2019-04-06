@@ -1,19 +1,43 @@
 export class ShadePlugin {
   constructor () {
-    this.schema = {}
-    this.elementProps = {}
-    this.programProps = {}
-    this.program = {
+    this.programSchema = {
       vertexShader: '',
-      fragmentShader: ''
+      fragmentShader: '',
+      attributes: {},
+      uniforms: {}
     }
+    this.elementSchema = {}
   }
 
-  keyGetter (element) {
+  createKey (element) {
     return null
   }
 
-  bufferGetter (element) {
-    return {}
+  createBufferProps (element) {
+    return null
   }
+
+  createTextureProps (element) {
+    return []
+  }
+
+  configBuffers (gl, buffers) {
+
+  }
+
+  configTextures (gl, textures) {
+
+  }
+
+  configUniforms (gl, global) {
+
+  }
+
+  beforeDraw (gl) {
+
+  }
+}
+
+export class Beam {
+
 }

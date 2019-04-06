@@ -13,5 +13,5 @@ export const test = () => {
   const plugin = new ShadePlugin()
   window.plugin = plugin
 
-  assert.equal(plugin.keyGetter(), null)
+  assert.equal(plugin.createKey(), null)
 }
