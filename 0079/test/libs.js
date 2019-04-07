@@ -2,30 +2,18 @@ import {
   getWebGLInstance,
   initProgramProps,
   initBufferProps,
-  initFramebufferObject
+  initFramebufferObject,
+  uploadBuffers
 } from './utils.js'
+
+export { ShaderTypes, BufferTypes } from './consts.js'
 
 const defaultUtils = {
   getWebGLInstance,
   initProgramProps,
   initBufferProps,
-  initFramebufferObject
-}
-
-export const ShaderTypes = {
-  vec4: '4f',
-  vec3: '3f',
-  vec2: '2f',
-  float: '1f',
-  int: '1i',
-  mat4: '4f',
-  mat3: '3f',
-  sampler2D: '1i'
-}
-
-export const BufferTypes = {
-  float: 'float',
-  int: 'int'
+  initFramebufferObject,
+  uploadBuffers
 }
 
 export class ShadePlugin {
@@ -97,8 +85,11 @@ export class Renderer {
     this.plugins.forEach(plugin => {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
+
+      const { uploadBuffers } = this.glUtils
+      const { buffers, bufferSchema } = plugin
       const bufferProps = plugin.createBufferProps(element)
-      console.log(bufferProps) // TODO transform buffer data
+      uploadBuffers(this.gl, bufferProps, buffers, bufferSchema)
     })
   }
 

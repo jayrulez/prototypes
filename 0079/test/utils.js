@@ -1,3 +1,4 @@
+import { BufferTypes } from './consts.js'
 
 export const getWebGLInstance = canvas => canvas.getContext('webgl')
 
@@ -59,6 +60,19 @@ export const initBufferProps = (gl, bufferSchema) => {
     buffers[key] = gl.createBuffer()
   })
   return buffers
+}
+
+export const uploadBuffers = (gl, bufferProps, buffers, bufferSchema) => {
+  Object.keys(bufferSchema).forEach(key => {
+    const { type, index } = bufferSchema[key]
+    const bufferProp = bufferProps[key]
+    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+    const arr = type === BufferTypes.float
+      ? new Float32Array(bufferProp)
+      : new Uint16Array(bufferProp)
+    gl.bindBuffer(target, buffers[key])
+    gl.bufferData(target, arr, gl.STATIC_DRAW)
+  })
 }
 
 export const initFramebufferObject = (gl) => {
