@@ -39,7 +39,6 @@ export class ShadePlugin {
     }
     this.buffers = null
     this.bufferSchema = {}
-    this.elementSchema = {}
     this.offscreen = false
   }
 
@@ -48,15 +47,11 @@ export class ShadePlugin {
   }
 
   createBufferProps (element) {
-    return null
+    return {}
   }
 
   createTextureProps (element) {
     return []
-  }
-
-  configBuffers (gl, buffers) {
-
   }
 
   configTextures (gl, textures) {
@@ -79,7 +74,7 @@ export class Element {
   }
 }
 
-export class Beam {
+export class Renderer {
   constructor (canvas, plugins, utils = defaultUtils) {
     this.plugins = plugins
     this.globals = {}
@@ -99,6 +94,12 @@ export class Beam {
   addElement (element) {
     element.keys = {}
     this.elements.push(element)
+    this.plugins.forEach(plugin => {
+      const { name } = plugin.constructor
+      if (!element.plugins[name]) return
+      const bufferProps = plugin.createBufferProps(element)
+      console.log(bufferProps) // TODO transform buffer data
+    })
   }
 
   removeElement (element) {
