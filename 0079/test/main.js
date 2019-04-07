@@ -127,7 +127,7 @@ class CubePlugin extends ShadePlugin {
       pos.push(basePositions[i + 1] + p[1])
       pos.push(basePositions[i + 2] + p[2])
     }
-    return { pos, color, index }
+    return { keys: { pos, color, index }, length: index.length }
   }
 
   createUniformProps (globals) {
@@ -156,6 +156,7 @@ export const main = () => {
 
   const element = new CubeElement({ position: [0, 0, 0] })
   renderer.addElement(element)
+  renderer.render()
 
   window.renderer = renderer
 }

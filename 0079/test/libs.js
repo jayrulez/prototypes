@@ -31,6 +31,7 @@ export class ShadePlugin {
       uniforms: {}
     }
     this.buffers = null
+    this.bufferLength = 0
     this.bufferSchema = {}
     this.offscreen = false
   }
@@ -40,7 +41,7 @@ export class ShadePlugin {
   }
 
   createBufferProps (element) {
-    return {}
+    return { keys: {}, length: 0 }
   }
 
   createTextureProps (element) {
@@ -100,12 +101,9 @@ export class Renderer {
 
       const { buffers, bufferSchema } = plugin
       const bufferProps = plugin.createBufferProps(element)
-      const lengthKey = Object
-        .keys(bufferProps)
-        .find(key => bufferProps[key])
-      bufferSchema.length = bufferProps[lengthKey].length // FIXME
+      plugin.bufferLength += bufferProps.length
       const { uploadBuffers } = this.glUtils
-      uploadBuffers(this.gl, bufferProps, buffers, bufferSchema)
+      uploadBuffers(this.gl, bufferProps.keys, buffers, bufferSchema)
     })
   }
 
@@ -125,9 +123,9 @@ export class Renderer {
     resetBeforeDraw(gl)
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
-      const { programInfo, buffers, bufferSchema } = plugin
+      const { programInfo, buffers, bufferSchema, bufferLength } = plugin
       const uniformProps = plugin.createUniformProps(globals)
-      draw(gl, programInfo, buffers, bufferSchema, uniformProps)
+      draw(gl, programInfo, buffers, bufferSchema, bufferLength, uniformProps)
     }
   }
 }

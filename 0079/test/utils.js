@@ -62,10 +62,10 @@ export const initBufferInfo = (gl, bufferSchema) => {
   return buffers
 }
 
-export const uploadBuffers = (gl, bufferProps, buffers, bufferSchema) => {
+export const uploadBuffers = (gl, bufferPropKeys, buffers, bufferSchema) => {
   Object.keys(bufferSchema).forEach(key => {
     const { type, index } = bufferSchema[key]
-    const bufferProp = bufferProps[key]
+    const bufferProp = bufferPropKeys[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
     const arr = type === BufferTypes.float
       ? new Float32Array(bufferProp)
@@ -147,7 +147,7 @@ export const resetBeforeDraw = gl => {
 }
 
 export const draw = (
-  gl, programInfo, buffers, bufferSchema, uniformProps
+  gl, programInfo, buffers, bufferSchema, bufferLength, uniformProps
 ) => {
   gl.useProgram(programInfo.program)
 
@@ -181,6 +181,5 @@ export const draw = (
     uniformSetterMapping[type]()
   })
 
-  // FIXME
-  gl.drawElements(gl.TRIANGLES, bufferSchema.length / 3, gl.UNSIGNED_SHORT, 0)
+  gl.drawElements(gl.TRIANGLES, bufferLength, gl.UNSIGNED_SHORT, 0)
 }
