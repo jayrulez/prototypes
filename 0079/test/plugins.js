@@ -1,7 +1,7 @@
-import { ShadePlugin, ShaderTypes } from './libs.js'
+import { ShadePlugin, ShaderTypes, BufferTypes } from './libs.js'
 
 const vertexShader = `
-attribute vec3 pos;
+attribute vec4 pos;
 attribute vec4 color;
 
 uniform mat4 modelMat;
@@ -11,7 +11,7 @@ uniform mat4 projectionMat;
 varying highp vec4 vColor;
 
 void main() {
-  gl_Position = projectionMat * viewMat * modelMat * vec4(pos, 1);
+  gl_Position = projectionMat * viewMat * modelMat * pos;
   vColor = color;
 }
 `
@@ -40,6 +40,14 @@ export class CubePlugin extends ShadePlugin {
       viewMat: mat4,
       projectionMat: mat4
     }
+
+    const { float, int } = BufferTypes
+    this.bufferSchema = {
+      pos: { type: float, n: 3 },
+      color: { type: float, n: 4 },
+      index: { type: int, index: true }
+    }
+
     this.elementSchema = {}
   }
 }

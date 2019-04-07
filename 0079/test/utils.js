@@ -53,6 +53,14 @@ export const initProgramProps = (gl, programSchema) => {
   }
 }
 
+export const initBufferProps = (gl, bufferSchema) => {
+  const buffers = {}
+  Object.keys(bufferSchema).forEach(key => {
+    buffers[key] = gl.createBuffer()
+  })
+  return buffers
+}
+
 export const initFramebufferObject = (gl) => {
   let framebuffer, texture, depthBuffer
 

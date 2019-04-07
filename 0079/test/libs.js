@@ -1,12 +1,14 @@
 import {
   getWebGLInstance,
   initProgramProps,
+  initBufferProps,
   initFramebufferObject
 } from './utils.js'
 
 const defaultUtils = {
   getWebGLInstance,
   initProgramProps,
+  initBufferProps,
   initFramebufferObject
 }
 
@@ -21,6 +23,11 @@ export const ShaderTypes = {
   sampler2D: '1i'
 }
 
+export const BufferTypes = {
+  float: 'float',
+  int: 'int'
+}
+
 export class ShadePlugin {
   constructor () {
     this.program = null
@@ -30,6 +37,8 @@ export class ShadePlugin {
       attributes: {},
       uniforms: {}
     }
+    this.buffers = null
+    this.bufferSchema = {}
     this.elementSchema = {}
     this.offscreen = false
   }
@@ -76,10 +85,14 @@ export class Beam {
     this.globals = {}
     this.elements = []
     this.glUtils = utils
-    const { getWebGLInstance, initProgramProps } = this.glUtils
+    const {
+      getWebGLInstance,
+      initProgramProps
+    } = this.glUtils
     this.gl = getWebGLInstance(canvas)
     this.plugins.forEach(plugin => {
       plugin.program = initProgramProps(this.gl, plugin.programSchema)
+      plugin.buffers = initBufferProps(this.gl, plugin.bufferSchema)
     })
   }
 
