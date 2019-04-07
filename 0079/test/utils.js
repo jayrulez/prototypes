@@ -14,9 +14,9 @@ const compileShader = (gl, type, source) => {
   return shader
 }
 
-export const initShader = (gl, vsSource, fsSource) => {
-  const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vsSource)
-  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fsSource)
+const initShader = (gl, vSource, fSource) => {
+  const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vSource)
+  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fSource)
 
   const shaderProgram = gl.createProgram()
   gl.attachShader(shaderProgram, vertexShader)
@@ -29,6 +29,28 @@ export const initShader = (gl, vsSource, fsSource) => {
   }
 
   return shaderProgram
+}
+
+export const initProgramProps = (gl, programSchema) => {
+  const { vertexShader, fragmentShader } = programSchema
+  const program = initShader(gl, vertexShader, fragmentShader)
+  return {
+    program,
+    attributes: Object.keys(programSchema.attributes).reduce((map, key) => ({
+      ...map,
+      [key]: {
+        type: programSchema.attributes[key],
+        location: gl.getAttribLocation(program, key)
+      }
+    }), {}),
+    uniforms: Object.keys(programSchema.uniforms).reduce((map, key) => ({
+      ...map,
+      [key]: {
+        type: programSchema.uniforms[key],
+        location: gl.getUniformLocation(program, key)
+      }
+    }), {})
+  }
 }
 
 export const initFramebufferObject = (gl) => {

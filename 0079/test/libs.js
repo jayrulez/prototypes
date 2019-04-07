@@ -1,17 +1,29 @@
 import {
   getWebGLInstance,
-  initShader,
+  initProgramProps,
   initFramebufferObject
 } from './utils.js'
 
 const defaultUtils = {
   getWebGLInstance,
-  initShader,
+  initProgramProps,
   initFramebufferObject
+}
+
+export const ShaderTypes = {
+  vec4: '4f',
+  vec3: '3f',
+  vec2: '2f',
+  float: '1f',
+  int: '1i',
+  mat4: '4f',
+  mat3: '3f',
+  sampler2D: '1i'
 }
 
 export class ShadePlugin {
   constructor () {
+    this.program = null
     this.programSchema = {
       vertexShader: '',
       fragmentShader: '',
@@ -59,12 +71,15 @@ export class Element {
 }
 
 export class Beam {
-  constructor (canvas, plugins, utils) {
+  constructor (canvas, plugins, utils = defaultUtils) {
     this.plugins = plugins
     this.globals = {}
     this.elements = []
-    this.glUtils = utils || defaultUtils
+    this.glUtils = utils
     this.gl = this.glUtils.getWebGLInstance(canvas)
+    this.plugins.forEach(plugin => {
+      plugin.program = initProgramProps(this.gl, plugin.programSchema)
+    })
   }
 
   addElement (element) {
