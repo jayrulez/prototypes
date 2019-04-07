@@ -1,4 +1,4 @@
-import { BufferTypes } from './consts.js'
+import { ShaderTypes, BufferTypes } from './consts.js'
 
 export const getWebGLInstance = canvas => canvas.getContext('webgl')
 
@@ -164,15 +164,21 @@ export const draw = (
     }
   })
 
-  // FIXME
   Object.keys(programInfo.uniforms).forEach(key => {
     const { location, type } = programInfo.uniforms[key]
-
-    if (type.includes('Matrix')) {
-      gl.uniformMatrix4fv(location, false, uniformProps[key])
-    } else {
-      gl.uniform4fv(location, uniformProps[key])
+    const props = uniformProps[key]
+    const uniformSetterMapping = {
+      [ShaderTypes.vec4]: () => gl.uniform4fv(location, props),
+      [ShaderTypes.vec3]: () => gl.uniform3fv(location, props),
+      [ShaderTypes.vec2]: () => gl.uniform2fv(location, props),
+      [ShaderTypes.float]: () => gl.uniform1fv(location, props),
+      [ShaderTypes.int]: () => gl.uniform1i(location, props),
+      [ShaderTypes.mat4]: () => gl.uniformMatrix4fv(location, false, props),
+      [ShaderTypes.mat3]: () => gl.uniformMatrix3fv(location, false, props),
+      [ShaderTypes.mat2]: () => gl.uniformMatrix2fv(location, false, props),
+      [ShaderTypes.sampler2D]: () => gl.uniform1i(location, props)
     }
+    uniformSetterMapping[type]()
   })
 
   // FIXME

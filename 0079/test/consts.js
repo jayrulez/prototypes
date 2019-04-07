@@ -1,16 +1,16 @@
 export const ShaderTypes = {
-  vec4: 'uniform4fv',
-  vec3: 'uniform3fv',
-  vec2: 'uniform2fv',
-  float: 'uniform1fv',
-  int: 'unform1iv',
-  mat4: 'uniformMatrix4fv',
-  mat3: 'uniformMatrix2fv',
-  mat2: 'uniformMatrix2fv',
-  sampler2D: 'uniform1i'
+  vec4: 0,
+  vec3: 1,
+  vec2: 2,
+  float: 3,
+  int: 4,
+  mat4: 5,
+  mat3: 6,
+  mat2: 7,
+  sampler2D: 8
 }
 
 export const BufferTypes = {
-  float: 'float',
-  int: 'int'
+  float: 0,
+  int: 1
 }
