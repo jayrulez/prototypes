@@ -1,3 +1,4 @@
+import { create, lookAt, perspective } from './matrix.js'
 import {
   getWebGLInstance,
   initProgramProps,
@@ -42,14 +43,6 @@ export class ShadePlugin {
     return []
   }
 
-  configTextures (gl, textures) {
-
-  }
-
-  configUniforms (gl, global) {
-
-  }
-
   beforeDraw (gl) {
 
   }
@@ -60,6 +53,20 @@ export class Element {
     this.keys = {}
     this.state = state
   }
+}
+
+export const setPerspective = (canvas) => {
+  const fov = Math.PI / 6
+  const aspect = canvas.clientWidth / canvas.clientHeight
+  const projectionMat = create()
+  perspective(projectionMat, fov, aspect, 0.1, 100.0)
+  return projectionMat
+}
+
+export const setCamera = (eye, center, up) => {
+  const viewMat = create()
+  lookAt(viewMat, eye || [0, 0, 0], center || [0, 0, 0], up || [0, 1, 0])
+  return viewMat
 }
 
 export class Renderer {

@@ -1,5 +1,11 @@
 import {
-  Renderer, Element, ShadePlugin, ShaderTypes, BufferTypes
+  Renderer,
+  Element,
+  ShadePlugin,
+  ShaderTypes,
+  BufferTypes,
+  setCamera,
+  setPerspective
 } from './libs.js'
 
 const vertexShader = `
@@ -139,6 +145,8 @@ export const main = () => {
 
   const cubePlugin = new CubePlugin()
   const renderer = new Renderer(canvas, [cubePlugin])
+  renderer.setGlobal('camera', setCamera([0, 10, 10]))
+  renderer.setGlobal('perspective', setPerspective(canvas))
 
   const element = new CubeElement({ position: [0, 0, 0] })
   renderer.addElement(element)
