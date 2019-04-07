@@ -76,7 +76,8 @@ export class Beam {
     this.globals = {}
     this.elements = []
     this.glUtils = utils
-    this.gl = this.glUtils.getWebGLInstance(canvas)
+    const { getWebGLInstance, initProgramProps } = this.glUtils
+    this.gl = getWebGLInstance(canvas)
     this.plugins.forEach(plugin => {
       plugin.program = initProgramProps(this.gl, plugin.programSchema)
     })
