@@ -12,14 +12,13 @@ const vertexShader = `
 attribute vec4 pos;
 attribute vec4 color;
 
-uniform mat4 modelMat;
 uniform mat4 viewMat;
 uniform mat4 projectionMat;
 
 varying highp vec4 vColor;
 
 void main() {
-  gl_Position = projectionMat * viewMat * modelMat * pos;
+  gl_Position = projectionMat * viewMat * pos;
   vColor = color;
 }
 `
@@ -105,13 +104,13 @@ class CubePlugin extends ShadePlugin {
       color: vec4
     }
     this.programSchema.uniforms = {
-      modelMat: mat4,
       viewMat: mat4,
       projectionMat: mat4
     }
 
     const { float, int } = BufferTypes
     this.bufferSchema = {
+      length: 0,
       pos: { type: float, n: 3 },
       color: { type: float, n: 4 },
       index: { type: int, index: true }
@@ -120,8 +119,8 @@ class CubePlugin extends ShadePlugin {
     this.elementSchema = {}
   }
 
-  createBufferProps ({ state }) {
-    const p = state.position
+  createBufferProps (element) {
+    const p = element.state.position
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
       pos.push(basePositions[i] + p[0])
@@ -129,6 +128,13 @@ class CubePlugin extends ShadePlugin {
       pos.push(basePositions[i + 2] + p[2])
     }
     return { pos, color, index }
+  }
+
+  createUniformProps (globals) {
+    return {
+      viewMat: globals.camera,
+      projectionMat: globals.perspective
+    }
   }
 }
 

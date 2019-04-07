@@ -1,25 +1,29 @@
 import { create, lookAt, perspective } from './matrix.js'
 import {
   getWebGLInstance,
-  initProgramProps,
-  initBufferProps,
+  initProgramInfo,
+  initBufferInfo,
   initFramebufferObject,
-  uploadBuffers
+  uploadBuffers,
+  resetBeforeDraw,
+  draw
 } from './utils.js'
 
 export { ShaderTypes, BufferTypes } from './consts.js'
 
 const defaultUtils = {
   getWebGLInstance,
-  initProgramProps,
-  initBufferProps,
+  initProgramInfo,
+  initBufferInfo,
   initFramebufferObject,
-  uploadBuffers
+  uploadBuffers,
+  resetBeforeDraw,
+  draw
 }
 
 export class ShadePlugin {
   constructor () {
-    this.program = null
+    this.programInfo = null
     this.programSchema = {
       vertexShader: '',
       fragmentShader: '',
@@ -43,8 +47,8 @@ export class ShadePlugin {
     return []
   }
 
-  beforeDraw (gl) {
-
+  createUniformProps (globals) {
+    return {}
   }
 }
 
@@ -77,12 +81,13 @@ export class Renderer {
     this.glUtils = utils
     const {
       getWebGLInstance,
-      initProgramProps
+      initProgramInfo,
+      initBufferInfo
     } = this.glUtils
     this.gl = getWebGLInstance(canvas)
     this.plugins.forEach(plugin => {
-      plugin.program = initProgramProps(this.gl, plugin.programSchema)
-      plugin.buffers = initBufferProps(this.gl, plugin.bufferSchema)
+      plugin.programInfo = initProgramInfo(this.gl, plugin.programSchema)
+      plugin.buffers = initBufferInfo(this.gl, plugin.bufferSchema)
     })
   }
 
@@ -93,9 +98,13 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
-      const { uploadBuffers } = this.glUtils
       const { buffers, bufferSchema } = plugin
       const bufferProps = plugin.createBufferProps(element)
+      const lengthKey = Object
+        .keys(bufferProps)
+        .find(key => bufferProps[key])
+      bufferSchema.length = bufferProps[lengthKey].length // FIXME
+      const { uploadBuffers } = this.glUtils
       uploadBuffers(this.gl, bufferProps, buffers, bufferSchema)
     })
   }
@@ -111,6 +120,14 @@ export class Renderer {
   }
 
   render () {
-
+    const { gl, glUtils, plugins, globals } = this
+    const { resetBeforeDraw, draw } = glUtils
+    resetBeforeDraw(gl)
+    for (let i = 0; i < plugins.length; i++) {
+      const plugin = plugins[i]
+      const { programInfo, buffers, bufferSchema } = plugin
+      const uniformProps = plugin.createUniformProps(globals)
+      draw(gl, programInfo, buffers, bufferSchema, uniformProps)
+    }
   }
 }

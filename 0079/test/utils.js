@@ -32,7 +32,7 @@ const initShader = (gl, vSource, fSource) => {
   return shaderProgram
 }
 
-export const initProgramProps = (gl, programSchema) => {
+export const initProgramInfo = (gl, programSchema) => {
   const { vertexShader, fragmentShader } = programSchema
   const program = initShader(gl, vertexShader, fragmentShader)
   return {
@@ -54,7 +54,7 @@ export const initProgramProps = (gl, programSchema) => {
   }
 }
 
-export const initBufferProps = (gl, bufferSchema) => {
+export const initBufferInfo = (gl, bufferSchema) => {
   const buffers = {}
   Object.keys(bufferSchema).forEach(key => {
     buffers[key] = gl.createBuffer()
@@ -137,4 +137,44 @@ export const initFramebufferObject = (gl) => {
   gl.bindRenderbuffer(gl.RENDERBUFFER, null)
 
   return { framebuffer, texture }
+}
+
+export const resetBeforeDraw = gl => {
+  gl.clearColor(0.0, 0.0, 0.0, 1.0)
+  gl.clearDepth(1.0)
+  gl.enable(gl.DEPTH_TEST)
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+}
+
+export const draw = (
+  gl, programInfo, buffers, bufferSchema, uniformProps
+) => {
+  gl.useProgram(programInfo.program)
+
+  Object.keys(programInfo.attributes).forEach(key => {
+    const { location } = programInfo.attributes[key]
+    const { type, n, index } = bufferSchema[key]
+    if (index) {
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers[key])
+    } else {
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffers[key])
+      const bufferType = type === BufferTypes.float ? gl.FLOAT : gl.INT
+      gl.vertexAttribPointer(location, n, bufferType, false, 0, 0)
+      gl.enableVertexAttribArray(location)
+    }
+  })
+
+  // FIXME
+  Object.keys(programInfo.uniforms).forEach(key => {
+    const { location, type } = programInfo.uniforms[key]
+
+    if (type.includes('Matrix')) {
+      gl.uniformMatrix4fv(location, false, uniformProps[key])
+    } else {
+      gl.uniform4fv(location, uniformProps[key])
+    }
+  })
+
+  // FIXME
+  gl.drawElements(gl.TRIANGLES, bufferSchema.length / 3, gl.UNSIGNED_SHORT, 0)
 }
