@@ -54,10 +54,15 @@ export const initProgramInfo = (gl, programSchema) => {
   }
 }
 
-export const initBufferInfo = (gl, bufferSchema) => {
+export const initBufferInfo = (gl, bufferSchema, bufferChunkSize) => {
   const buffers = {}
   Object.keys(bufferSchema).forEach(key => {
-    buffers[key] = gl.createBuffer()
+    const buffer = gl.createBuffer()
+    const { index } = bufferSchema[key]
+    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+    gl.bindBuffer(target, buffer)
+    gl.bufferData(target, bufferChunkSize, gl.STATIC_DRAW)
+    buffers[key] = buffer
   })
   return buffers
 }
@@ -81,7 +86,6 @@ export const uploadBuffers = (
     const offset = uploadOffset.keys[key]
 
     gl.bindBuffer(target, buffers[key])
-    gl.bufferData(target, (offset + arr.length) * size, gl.STATIC_DRAW)
     gl.bufferSubData(target, offset * size, arr)
   })
 }

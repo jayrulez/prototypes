@@ -9,6 +9,7 @@ import {
   draw
 } from './utils.js'
 
+import { RendererConfig } from './consts.js'
 export { ShaderTypes, BufferTypes } from './consts.js'
 
 const defaultUtils = {
@@ -56,6 +57,7 @@ export class ShadePlugin {
 export class Element {
   constructor (state) {
     this.keys = {}
+    this.bufferProps = null
     this.state = state
   }
 }
@@ -75,9 +77,12 @@ export const setCamera = (eye, center, up) => {
 }
 
 export class Renderer {
-  constructor (canvas, plugins, utils = defaultUtils) {
+  constructor (
+    canvas, plugins, config = RendererConfig, utils = defaultUtils
+  ) {
     this.plugins = plugins
     this.globals = {}
+    this.config = config
     this.elements = []
     this.glUtils = utils
     const {
@@ -85,10 +90,13 @@ export class Renderer {
       initProgramInfo,
       initBufferInfo
     } = this.glUtils
+    const { bufferChunkSize } = this.config
     this.gl = getWebGLInstance(canvas)
     this.plugins.forEach(plugin => {
       plugin.programInfo = initProgramInfo(this.gl, plugin.programSchema)
-      plugin.buffers = initBufferInfo(this.gl, plugin.bufferSchema)
+      plugin.buffers = initBufferInfo(
+        this.gl, plugin.bufferSchema, bufferChunkSize
+      )
     })
   }
 

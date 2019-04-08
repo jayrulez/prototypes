@@ -14,3 +14,7 @@ export const BufferTypes = {
   float: 0,
   int: 1
 }
+
+export const RendererConfig = {
+  bufferChunkSize: 100 * 1024
+}
