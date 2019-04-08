@@ -63,20 +63,26 @@ export const initBufferInfo = (gl, bufferSchema) => {
 }
 
 export const uploadBuffers = (
-  gl, offset, bufferProps, buffers, bufferSchema
+  gl, uploadOffset, bufferProps, buffers, bufferSchema
 ) => {
   Object.keys(bufferSchema).forEach(key => {
     const { type, index } = bufferSchema[key]
-    const data = bufferProps.keys[key]
+    const data = bufferProps[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+
+    if (index) {
+      for (let i = 0; i < data.length; i++) data[i] += uploadOffset.index
+    }
+
     const arr = type === BufferTypes.float
       ? new Float32Array(data)
       : new Uint16Array(data)
-    const bytes = type === BufferTypes.float ? 4 : 2
+    const size = type === BufferTypes.float ? 4 : 2
+    const offset = uploadOffset.keys[key]
 
     gl.bindBuffer(target, buffers[key])
-    gl.bufferData(target, (offset + arr.length) * bytes, gl.STATIC_DRAW)
-    gl.bufferSubData(target, offset * bytes, arr)
+    gl.bufferData(target, (offset + arr.length) * size, gl.STATIC_DRAW)
+    gl.bufferSubData(target, offset * size, arr)
   })
 }
 
@@ -152,7 +158,7 @@ export const resetBeforeDraw = gl => {
 }
 
 export const draw = (
-  gl, programInfo, buffers, bufferSchema, bufferLength, uniformProps
+  gl, programInfo, buffers, bufferSchema, totalLength, uniformProps
 ) => {
   gl.useProgram(programInfo.program)
 
@@ -186,5 +192,5 @@ export const draw = (
     uniformSetterMapping[type]()
   })
 
-  gl.drawElements(gl.TRIANGLES, bufferLength, gl.UNSIGNED_SHORT, 0)
+  gl.drawElements(gl.TRIANGLES, totalLength, gl.UNSIGNED_SHORT, 0)
 }

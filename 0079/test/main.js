@@ -124,7 +124,7 @@ class CubePlugin extends ShadePlugin {
       pos.push(basePositions[i + 1] + p[1])
       pos.push(basePositions[i + 2] + p[2])
     }
-    return { keys: { pos, color, index }, length: index.length }
+    return { pos, color, index }
   }
 
   createUniformProps (globals) {
@@ -151,8 +151,11 @@ export const main = () => {
   renderer.setGlobal('camera', setCamera([0, 10, 10]))
   renderer.setGlobal('perspective', setPerspective(canvas))
 
-  const element = new CubeElement({ position: [0, 0, 0] })
-  renderer.addElement(element)
+  const cubeA = new CubeElement({ position: [0, 0, 0] })
+  const cubeB = new CubeElement({ position: [3, 0, 0] })
+  renderer.addElement(cubeA)
+  renderer.addElement(cubeB)
+
   renderer.render()
 
   window.renderer = renderer

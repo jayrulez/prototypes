@@ -31,7 +31,7 @@ export class ShadePlugin {
       uniforms: {}
     }
     this.buffers = null
-    this.elementBufferMap = new WeakMap()
+    this.bufferLengthMap = new WeakMap()
     this.bufferSchema = {}
     this.offscreen = false
   }
@@ -41,7 +41,7 @@ export class ShadePlugin {
   }
 
   createBufferProps (element) {
-    return { keys: {}, length: 0 }
+    return {}
   }
 
   createTextureProps (element) {
@@ -99,15 +99,39 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
-      const { buffers, bufferSchema, elementBufferMap } = plugin
-      const offset = this.elements.reduce((acc, element) => {
-        return acc + elementBufferMap.get(element)
-      }, 0)
+      const { buffers, bufferSchema, bufferLengthMap } = plugin
+      // bufferProps: { keyA, keyB, keyC... }
       const bufferProps = plugin.createBufferProps(element)
-      const { uploadBuffers } = this.glUtils
+      // bufferKeys: [keyA, keyB, keyC...]
+      const bufferKeys = Object.keys(bufferSchema)
+      const indexKey = Object
+        .keys(bufferSchema)
+        .find(key => bufferSchema[key].index)
+      // bufferLengths: { keys: { keyA, keyB, keyC... }, index }
+      const bufferLengths = {
+        keys: bufferKeys.reduce(
+          (map, key) => ({ ...map, [key]: bufferProps[key].length }), {}
+        ),
+        index: Math.max(...bufferProps[indexKey]) + 1
+      }
+      // uploadOffset: { keys: { keyA, keyB, keyC... }, index }
+      const uploadOffset = {
+        keys: bufferKeys.reduce((map, key) => ({ ...map, [key]: 0 }), {}),
+        index: 0
+      }
 
-      elementBufferMap.set(element, bufferProps.length)
-      uploadBuffers(this.gl, offset, bufferProps, buffers, bufferSchema)
+      for (let i = 0; i < this.elements.length; i++) {
+        const elementBufferLengths = bufferLengthMap.get(this.elements[i])
+        for (let j = 0; j < bufferKeys.length; j++) {
+          const key = bufferKeys[j]
+          uploadOffset.keys[key] += elementBufferLengths.keys[key]
+        }
+        uploadOffset.index += elementBufferLengths.index
+      }
+
+      const { uploadBuffers } = this.glUtils
+      bufferLengthMap.set(element, bufferLengths)
+      uploadBuffers(this.gl, uploadOffset, bufferProps, buffers, bufferSchema)
     })
 
     this.elements.push(element)
@@ -129,13 +153,20 @@ export class Renderer {
     resetBeforeDraw(gl)
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
-      const { programInfo, buffers, bufferSchema, elementBufferMap } = plugin
-      let bufferLength = 0
+      const { programInfo, buffers, bufferSchema, bufferLengthMap } = plugin
+      const indexKey = Object
+        .keys(bufferSchema)
+        .find(key => bufferSchema[key].index)
+
+      let totalLength = 0
       for (let i = 0; i < elements.length; i++) {
-        bufferLength += elementBufferMap.get(elements[i]) || 0
+        const bufferLengths = bufferLengthMap.get(elements[i])
+        if (!bufferLengths) continue
+        totalLength += bufferLengths.keys[indexKey]
       }
       const uniformProps = plugin.createUniformProps(globals)
-      draw(gl, programInfo, buffers, bufferSchema, bufferLength, uniformProps)
+
+      draw(gl, programInfo, buffers, bufferSchema, totalLength, uniformProps)
     }
   }
 }
