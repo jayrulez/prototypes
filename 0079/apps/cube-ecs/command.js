@@ -1,4 +1,4 @@
-import Command from '../../gunpla/command/command.js'
+import Command from '../../psycho/command/command.js'
 
 const isMobile = window.orientation > -1
 const [E_START, E_MOVE, E_END] = isMobile

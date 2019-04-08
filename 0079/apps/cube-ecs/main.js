@@ -1,12 +1,12 @@
-import World from '../../gunpla/world/world.js'
-import Entity from '../../gunpla/entity/entity.js'
+import World from '../../psycho/world/world.js'
+import Entity from '../../psycho/entity/entity.js'
 import {
   CameraComponent,
   GraphicsComponent,
   PositionComponent,
   TransformComponent
-} from '../../gunpla/components/index.js'
-import { RenderSystem } from '../../gunpla/systems/render-system.js'
+} from '../../psycho/components/index.js'
+import { RenderSystem } from '../../psycho/systems/render-system.js'
 import { SpinSystem } from './systems.js'
 import { InputCommand } from './command.js'
 
