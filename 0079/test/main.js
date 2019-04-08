@@ -110,13 +110,10 @@ class CubePlugin extends ShadePlugin {
 
     const { float, int } = BufferTypes
     this.bufferSchema = {
-      length: 0,
       pos: { type: float, n: 3 },
       color: { type: float, n: 4 },
       index: { type: int, index: true }
     }
-
-    this.elementSchema = {}
   }
 
   createBufferProps (element) {

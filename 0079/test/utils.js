@@ -62,16 +62,21 @@ export const initBufferInfo = (gl, bufferSchema) => {
   return buffers
 }
 
-export const uploadBuffers = (gl, bufferPropKeys, buffers, bufferSchema) => {
+export const uploadBuffers = (
+  gl, offset, bufferProps, buffers, bufferSchema
+) => {
   Object.keys(bufferSchema).forEach(key => {
     const { type, index } = bufferSchema[key]
-    const bufferProp = bufferPropKeys[key]
+    const data = bufferProps.keys[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
     const arr = type === BufferTypes.float
-      ? new Float32Array(bufferProp)
-      : new Uint16Array(bufferProp)
+      ? new Float32Array(data)
+      : new Uint16Array(data)
+    const bytes = type === BufferTypes.float ? 4 : 2
+
     gl.bindBuffer(target, buffers[key])
-    gl.bufferData(target, arr, gl.STATIC_DRAW)
+    gl.bufferData(target, (offset + arr.length) * bytes, gl.STATIC_DRAW)
+    gl.bufferSubData(target, offset * bytes, arr)
   })
 }
 

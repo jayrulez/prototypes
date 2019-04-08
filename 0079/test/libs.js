@@ -31,7 +31,7 @@ export class ShadePlugin {
       uniforms: {}
     }
     this.buffers = null
-    this.bufferLength = 0
+    this.elementBufferMap = new WeakMap()
     this.bufferSchema = {}
     this.offscreen = false
   }
@@ -94,17 +94,23 @@ export class Renderer {
 
   addElement (element) {
     element.keys = {}
-    this.elements.push(element)
+
     this.plugins.forEach(plugin => {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
-      const { buffers, bufferSchema } = plugin
+      const { buffers, bufferSchema, elementBufferMap } = plugin
+      const offset = this.elements.reduce((acc, element) => {
+        return acc + elementBufferMap.get(element)
+      }, 0)
       const bufferProps = plugin.createBufferProps(element)
-      plugin.bufferLength += bufferProps.length
       const { uploadBuffers } = this.glUtils
-      uploadBuffers(this.gl, bufferProps.keys, buffers, bufferSchema)
+
+      elementBufferMap.set(element, bufferProps.length)
+      uploadBuffers(this.gl, offset, bufferProps, buffers, bufferSchema)
     })
+
+    this.elements.push(element)
   }
 
   removeElement (element) {
@@ -118,12 +124,16 @@ export class Renderer {
   }
 
   render () {
-    const { gl, glUtils, plugins, globals } = this
+    const { gl, glUtils, plugins, globals, elements } = this
     const { resetBeforeDraw, draw } = glUtils
     resetBeforeDraw(gl)
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
-      const { programInfo, buffers, bufferSchema, bufferLength } = plugin
+      const { programInfo, buffers, bufferSchema, elementBufferMap } = plugin
+      let bufferLength = 0
+      for (let i = 0; i < elements.length; i++) {
+        bufferLength += elementBufferMap.get(elements[i]) || 0
+      }
       const uniformProps = plugin.createUniformProps(globals)
       draw(gl, programInfo, buffers, bufferSchema, bufferLength, uniformProps)
     }
