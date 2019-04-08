@@ -67,10 +67,16 @@ export const initBufferInfo = (gl, bufferSchema, bufferChunkSize) => {
   return buffers
 }
 
-export const uploadBuffers = (
-  gl, uploadOffset, bufferProps, buffers, bufferSchema
+export const uploadFullBuffers = (
+  gl, keys, elements, bufferProps, bufferSizes, buffers, bufferSchema
 ) => {
-  Object.keys(bufferSchema).forEach(key => {
+  // TODO reset buffer
+}
+
+export const uploadSubBuffers = (
+  gl, keys, uploadOffset, bufferProps, buffers, bufferSchema
+) => {
+  keys.forEach(key => {
     const { type, index } = bufferSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
 

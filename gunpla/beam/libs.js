@@ -4,12 +4,13 @@ import {
   initProgramInfo,
   initBufferInfo,
   initFramebufferObject,
-  uploadBuffers,
+  uploadSubBuffers,
+  uploadFullBuffers,
   resetBeforeDraw,
   draw
 } from './utils.js'
 
-import { RendererConfig } from './consts.js'
+import { RendererConfig, BufferTypes } from './consts.js'
 export { ShaderTypes, BufferTypes } from './consts.js'
 
 const defaultUtils = {
@@ -17,7 +18,8 @@ const defaultUtils = {
   initProgramInfo,
   initBufferInfo,
   initFramebufferObject,
-  uploadBuffers,
+  uploadSubBuffers,
+  uploadFullBuffers,
   resetBeforeDraw,
   draw
 }
@@ -32,6 +34,7 @@ export class ShadePlugin {
       uniforms: {}
     }
     this.buffers = null
+    this.bufferSizes = {}
     this.bufferLengthMap = new WeakMap()
     this.bufferSchema = {}
     this.offscreen = false
@@ -57,7 +60,7 @@ export class ShadePlugin {
 export class Element {
   constructor (state) {
     this.keys = {}
-    this.bufferProps = null
+    this.bufferProps = {}
     this.state = state
   }
 }
@@ -97,6 +100,9 @@ export class Renderer {
       plugin.buffers = initBufferInfo(
         this.gl, plugin.bufferSchema, bufferChunkSize
       )
+      plugin.bufferSizes = Object
+        .keys(plugin.bufferSchema)
+        .reduce((map, key) => ({ ...map, [key]: bufferChunkSize }), {})
     })
   }
 
@@ -107,7 +113,7 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
-      const { buffers, bufferSchema, bufferLengthMap } = plugin
+      const { buffers, bufferSchema, bufferLengthMap, bufferSizes } = plugin
       // bufferProps: { keyA, keyB, keyC... }
       const bufferProps = plugin.createBufferProps(element)
       // bufferKeys: [keyA, keyB, keyC...]
@@ -137,9 +143,32 @@ export class Renderer {
         }
       }
 
-      const { uploadBuffers } = this.glUtils
+      const { gl, config, elements, glUtils } = this
+      const { bufferChunkSize } = config
+      const fullKeys = []
+      const subKeys = []
+      for (let i = 0; i < bufferKeys.length; i++) {
+        const key = bufferKeys[i]
+        const size = bufferSchema[key] === BufferTypes.float ? 4 : 2
+        const need = (uploadOffset.keys[key] + bufferProps[key].length) * size
+        if (need < bufferChunkSize) subKeys.push(key)
+        else {
+          bufferSizes[key] += Math.max(
+            bufferChunkSize, bufferProps[key].length * size
+          )
+          fullKeys.push(key)
+        }
+      }
+
+      const { uploadSubBuffers, uploadFullBuffers } = glUtils
+      element.bufferProps[name] = bufferProps
       bufferLengthMap.set(element, bufferLengths)
-      uploadBuffers(this.gl, uploadOffset, bufferProps, buffers, bufferSchema)
+      uploadFullBuffers(
+        gl, fullKeys, elements, bufferProps, bufferSizes, buffers, bufferSchema
+      )
+      uploadSubBuffers(
+        gl, subKeys, uploadOffset, bufferProps, buffers, bufferSchema
+      )
     })
 
     this.elements.push(element)
