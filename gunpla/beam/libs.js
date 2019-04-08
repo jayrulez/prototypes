@@ -112,9 +112,7 @@ export class Renderer {
       const bufferProps = plugin.createBufferProps(element)
       // bufferKeys: [keyA, keyB, keyC...]
       const bufferKeys = Object.keys(bufferSchema)
-      const indexKey = Object
-        .keys(bufferSchema)
-        .find(key => bufferSchema[key].index)
+      const indexKey = bufferKeys.find(key => bufferSchema[key].index)
       // bufferLengths: { keys: { keyA, keyB, keyC... }, index }
       const bufferLengths = {
         keys: bufferKeys.reduce(
@@ -128,17 +126,15 @@ export class Renderer {
         index: 0
       }
 
-      let elementBufferLengths
       for (let i = 0; i < this.elements.length; i++) {
-        elementBufferLengths = bufferLengthMap.get(this.elements[i])
+        const elementBufferLengths = bufferLengthMap.get(this.elements[i])
+        if (elementBufferLengths) {
+          uploadOffset.index += elementBufferLengths.index
+        }
         for (let j = 0; j < bufferKeys.length; j++) {
           const key = bufferKeys[j]
           uploadOffset.keys[key] += elementBufferLengths.keys[key]
         }
-      }
-      // Only use last buffer lengths to update index count
-      if (elementBufferLengths) {
-        uploadOffset.index += elementBufferLengths.index
       }
 
       const { uploadBuffers } = this.glUtils

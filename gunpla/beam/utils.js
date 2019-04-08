@@ -72,12 +72,15 @@ export const uploadBuffers = (
 ) => {
   Object.keys(bufferSchema).forEach(key => {
     const { type, index } = bufferSchema[key]
-    const data = bufferProps[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
 
+    let data
     if (index) {
-      for (let i = 0; i < data.length; i++) data[i] += uploadOffset.index
-    }
+      data = []
+      for (let i = 0; i < bufferProps[key].length; i++) {
+        data[i] = bufferProps[key][i] + uploadOffset.index
+      }
+    } else { data = bufferProps[key] }
 
     const arr = type === BufferTypes.float
       ? new Float32Array(data)
