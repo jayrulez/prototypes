@@ -60,7 +60,7 @@ export class ShadePlugin {
 export class Element {
   constructor (state) {
     this.keys = {}
-    this.bufferProps = {}
+    this.bufferMap = {}
     this.state = state
   }
 }
@@ -161,10 +161,17 @@ export class Renderer {
       }
 
       const { uploadSubBuffers, uploadFullBuffers } = glUtils
-      element.bufferProps[name] = bufferProps
+      element.bufferMap[name] = bufferProps
       bufferLengthMap.set(element, bufferLengths)
       uploadFullBuffers(
-        gl, fullKeys, elements, bufferProps, bufferSizes, buffers, bufferSchema
+        gl,
+        fullKeys,
+        name,
+        elements,
+        bufferProps,
+        bufferSizes,
+        buffers,
+        bufferSchema
       )
       uploadSubBuffers(
         gl, subKeys, uploadOffset, bufferProps, buffers, bufferSchema

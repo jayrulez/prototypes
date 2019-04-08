@@ -68,9 +68,23 @@ export const initBufferInfo = (gl, bufferSchema, bufferChunkSize) => {
 }
 
 export const uploadFullBuffers = (
-  gl, keys, elements, bufferProps, bufferSizes, buffers, bufferSchema
+  gl, keys, name, elements, bufferProps, bufferSizes, buffers, bufferSchema
 ) => {
-  // TODO reset buffer
+  const props = keys.reduce((map, key) => ({ ...map, [key]: [] }), {})
+  for (let i = 0; i < elements.length; i++) {
+    const elementBufferProps = elements[i].bufferMap[name]
+    if (!elementBufferProps) continue
+
+    for (let j = 0; j < keys.length; j++) {
+      const key = keys[j]
+      if (bufferSchema[key].index) {
+        // TODO calculate new index
+      } else {
+        props[key] = props[key].concat(elementBufferProps[key])
+      }
+    }
+  }
+  // TODO upload all buffer data
 }
 
 export const uploadSubBuffers = (
