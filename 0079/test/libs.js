@@ -120,12 +120,16 @@ export class Renderer {
         index: 0
       }
 
+      let elementBufferLengths
       for (let i = 0; i < this.elements.length; i++) {
-        const elementBufferLengths = bufferLengthMap.get(this.elements[i])
+        elementBufferLengths = bufferLengthMap.get(this.elements[i])
         for (let j = 0; j < bufferKeys.length; j++) {
           const key = bufferKeys[j]
           uploadOffset.keys[key] += elementBufferLengths.keys[key]
         }
+      }
+      // Only use last buffer lengths to update index count
+      if (elementBufferLengths) {
         uploadOffset.index += elementBufferLengths.index
       }
 

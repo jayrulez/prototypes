@@ -162,18 +162,20 @@ export const draw = (
 ) => {
   gl.useProgram(programInfo.program)
 
-  Object.keys(programInfo.attributes).forEach(key => {
-    const { location } = programInfo.attributes[key]
-    const { type, n, index } = bufferSchema[key]
-    if (index) {
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers[key])
+  let indexBuffer = null
+  Object.keys(bufferSchema).forEach(key => {
+    if (!programInfo.attributes[key] && bufferSchema[key].index) {
+      indexBuffer = buffers[key]
     } else {
+      const { location } = programInfo.attributes[key]
+      const { type, n } = bufferSchema[key]
       gl.bindBuffer(gl.ARRAY_BUFFER, buffers[key])
       const bufferType = type === BufferTypes.float ? gl.FLOAT : gl.INT
       gl.vertexAttribPointer(location, n, bufferType, false, 0, 0)
       gl.enableVertexAttribArray(location)
     }
   })
+  indexBuffer && gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
 
   Object.keys(programInfo.uniforms).forEach(key => {
     const { location, type } = programInfo.uniforms[key]
