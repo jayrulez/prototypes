@@ -18,6 +18,7 @@ export class ShadePlugin {
     return null
   }
 
+  // bufferProps: { keyA, keyB, keyC... }
   createBufferProps (element) {
     return {}
   }

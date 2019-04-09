@@ -63,7 +63,6 @@ export class Renderer {
       if (!element.plugins[name]) return
 
       const { buffers, bufferSchema, bufferLengthMap, bufferSizes } = plugin
-      // bufferProps: { keyA, keyB, keyC... }
       const bufferProps = plugin.createBufferProps(element)
       const bufferKeys = Object.keys(bufferSchema)
       const { bufferChunkSize } = config
@@ -108,7 +107,6 @@ export class Renderer {
       if (!element.plugins[name]) return
 
       const { buffers, bufferSchema, bufferLengthMap } = plugin
-      // bufferProps: { keyA, keyB, keyC... }
       const bufferProps = plugin.createBufferProps(element)
       const bufferKeys = Object.keys(bufferSchema)
       const uploadOffset = getUploadOffset(
@@ -137,7 +135,6 @@ export class Renderer {
       if (!element.plugins[name]) return
 
       const { buffers, bufferSchema, bufferLengthMap, bufferSizes } = plugin
-      // bufferProps: { keyA, keyB, keyC... }
       const bufferProps = plugin.createBufferProps(element)
       const bufferKeys = Object.keys(bufferSchema)
       const bufferLengths = getBufferLengths(
