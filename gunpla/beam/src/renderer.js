@@ -68,7 +68,7 @@ export class Renderer {
       const bufferKeys = Object.keys(bufferSchema)
       const { bufferChunkSize } = config
       const uploadOffset = getUploadOffset(
-        elements, bufferKeys, bufferLengthMap
+        element, elements, bufferKeys, bufferLengthMap
       )
       const [fullKeys, subKeys] = divideUploadKeys(
         bufferKeys, bufferSchema, bufferProps, bufferChunkSize, uploadOffset
@@ -98,6 +98,32 @@ export class Renderer {
     })
 
     elements.push(element)
+  }
+
+  changeElement (element, state) {
+    const { gl, elements, plugins, glUtils } = this
+    element.state = state
+    plugins.forEach(plugin => {
+      const { name } = plugin.constructor
+      if (!element.plugins[name]) return
+
+      const { buffers, bufferSchema, bufferLengthMap } = plugin
+      // bufferProps: { keyA, keyB, keyC... }
+      const bufferProps = plugin.createBufferProps(element)
+      const bufferKeys = Object.keys(bufferSchema)
+      const uploadOffset = getUploadOffset(
+        element, elements, bufferKeys, bufferLengthMap
+      )
+      const bufferLengths = getBufferLengths(
+        bufferKeys, bufferProps, bufferSchema
+      )
+      const { uploadSubBuffers } = glUtils
+      element.bufferMap[name] = bufferProps
+      bufferLengthMap.set(element, bufferLengths)
+      uploadSubBuffers(
+        gl, bufferKeys, uploadOffset, bufferProps, buffers, bufferSchema
+      )
+    })
   }
 
   removeElement (element) {

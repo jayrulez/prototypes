@@ -16,13 +16,16 @@ export const push = (arr, x) => { arr[arr.length] = x }
 export const bufferTypeSize = type => type === BufferTypes.float ? 4 : 2
 
 // uploadOffset: { keys: { keyA, keyB, keyC... }, index }
-export const getUploadOffset = (elements, bufferKeys, bufferLengthMap) => {
+export const getUploadOffset = (
+  element, elements, bufferKeys, bufferLengthMap
+) => {
   const uploadOffset = {
     keys: bufferKeys.reduce((map, key) => ({ ...map, [key]: 0 }), {}),
     index: 0
   }
 
   for (let i = 0; i < elements.length; i++) {
+    if (elements[i] === element) break
     const elementBufferLengths = bufferLengthMap.get(elements[i])
     if (elementBufferLengths) {
       uploadOffset.index += elementBufferLengths.index
