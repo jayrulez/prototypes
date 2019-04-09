@@ -4,6 +4,8 @@ import {
   BufferTypes
 } from '../../src/index.js'
 
+const push = (arr, x) => { arr[arr.length] = x }
+
 const vertexShader = `
 attribute vec4 pos;
 attribute vec4 color;
@@ -73,11 +75,6 @@ const faceColors = [
   [1.0, 1.0, 0.0, 1.0], // Yellow
   [1.0, 0.0, 1.0, 1.0] // Purple
 ]
-let color = []
-for (let i = 0; i < faceColors.length; i++) {
-  const c = faceColors[i]
-  color = color.concat(c, c, c, c)
-}
 
 const index = [
   0, 1, 2, 0, 2, 3, // Front
@@ -113,12 +110,19 @@ export class CubePlugin extends ShadePlugin {
   }
 
   createBufferProps (element) {
-    const p = element.state.position
+    const { position, randomColor } = element.state
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
-      pos.push(basePositions[i] + p[0])
-      pos.push(basePositions[i + 1] + p[1])
-      pos.push(basePositions[i + 2] + p[2])
+      push(pos, basePositions[i] + position[0])
+      push(pos, basePositions[i + 1] + position[1])
+      push(pos, basePositions[i + 2] + position[2])
+    }
+    let color = []
+    for (let i = 0; i < faceColors.length; i++) {
+      const c = randomColor
+        ? [Math.random(), Math.random(), Math.random(), Math.random()]
+        : faceColors[i]
+      color = color.concat(c, c, c, c)
     }
     return { pos, color, index }
   }

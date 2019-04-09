@@ -51,7 +51,8 @@ export const animateMain = () => {
     for (let j = 0; j < N; j++) {
       for (let k = 0; k < N; k++) {
         const cube = new CubeElement({
-          position: [i * 3 - N, j * 3 - N, k * 3 - N]
+          position: [i * 3 - N, j * 3 - N, k * 3 - N],
+          randomColor: true
         })
         renderer.addElement(cube)
       }
