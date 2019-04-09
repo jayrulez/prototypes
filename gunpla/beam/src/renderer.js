@@ -8,8 +8,13 @@ import {
   resetBeforeDraw,
   draw
 } from './utils/gl-utils.js'
-import { RendererConfig, BufferTypes } from './consts.js'
-import { max } from './utils/misc.js'
+import { RendererConfig } from './consts.js'
+import {
+  allocateBufferSizes,
+  divideUploadKeys,
+  getUploadOffset,
+  getBufferLengths
+} from './utils/misc.js'
 
 const defaultUtils = {
   getWebGLInstance,
@@ -50,62 +55,33 @@ export class Renderer {
   }
 
   addElement (element) {
-    element.keys = {}
+    element.keys = {} // TODO key-based draw batching
 
-    this.plugins.forEach(plugin => {
+    const { gl, config, elements, plugins, glUtils } = this
+    plugins.forEach(plugin => {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
       const { buffers, bufferSchema, bufferLengthMap, bufferSizes } = plugin
       // bufferProps: { keyA, keyB, keyC... }
       const bufferProps = plugin.createBufferProps(element)
-      // bufferKeys: [keyA, keyB, keyC...]
       const bufferKeys = Object.keys(bufferSchema)
-      const indexKey = bufferKeys.find(key => bufferSchema[key].index)
-      // bufferLengths: { keys: { keyA, keyB, keyC... }, index }
-      const bufferLengths = {
-        keys: bufferKeys.reduce(
-          (map, key) => ({ ...map, [key]: bufferProps[key].length }), {}
-        ),
-        index: max(bufferProps[indexKey]) + 1
-      }
-      // uploadOffset: { keys: { keyA, keyB, keyC... }, index }
-      const uploadOffset = {
-        keys: bufferKeys.reduce((map, key) => ({ ...map, [key]: 0 }), {}),
-        index: 0
-      }
-
-      for (let i = 0; i < this.elements.length; i++) {
-        const elementBufferLengths = bufferLengthMap.get(this.elements[i])
-        if (elementBufferLengths) {
-          uploadOffset.index += elementBufferLengths.index
-        }
-        for (let j = 0; j < bufferKeys.length; j++) {
-          const key = bufferKeys[j]
-          uploadOffset.keys[key] += elementBufferLengths.keys[key]
-        }
-      }
-
-      const { gl, config, elements, glUtils } = this
       const { bufferChunkSize } = config
-      const fullKeys = []
-      const subKeys = []
-      for (let i = 0; i < bufferKeys.length; i++) {
-        const key = bufferKeys[i]
-        const size = bufferSchema[key] === BufferTypes.float ? 4 : 2
-        const need = (uploadOffset.keys[key] + bufferProps[key].length) * size
-        if (need < bufferChunkSize) subKeys.push(key)
-        else {
-          bufferSizes[key] += Math.max(
-            bufferChunkSize, bufferProps[key].length * size
-          )
-          fullKeys.push(key)
-        }
-      }
-
+      const uploadOffset = getUploadOffset(
+        elements, bufferKeys, bufferLengthMap
+      )
+      const [fullKeys, subKeys] = divideUploadKeys(
+        bufferKeys, bufferSchema, bufferProps, bufferChunkSize, uploadOffset
+      )
+      const bufferLengths = getBufferLengths(
+        bufferKeys, bufferProps, bufferSchema
+      )
       const { uploadSubBuffers, uploadFullBuffers } = glUtils
       element.bufferMap[name] = bufferProps
       bufferLengthMap.set(element, bufferLengths)
+      allocateBufferSizes(
+        fullKeys, bufferSchema, bufferSizes, bufferChunkSize, bufferProps
+      )
       uploadFullBuffers(
         gl,
         fullKeys,
@@ -121,7 +97,7 @@ export class Renderer {
       )
     })
 
-    this.elements.push(element)
+    elements.push(element)
   }
 
   removeElement (element) {

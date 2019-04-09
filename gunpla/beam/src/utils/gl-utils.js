@@ -1,3 +1,5 @@
+// Includes all gl-related methods here
+
 import { ShaderTypes, BufferTypes } from '../consts.js'
 import { max, push } from '../utils/misc.js'
 
