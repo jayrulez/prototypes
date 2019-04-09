@@ -1,4 +1,5 @@
 import { ShaderTypes, BufferTypes } from '../consts.js'
+import { max, push } from '../utils/misc.js'
 
 export const getWebGLInstance = canvas => canvas.getContext('webgl')
 
@@ -70,7 +71,12 @@ export const initBufferInfo = (gl, bufferSchema, bufferChunkSize) => {
 export const uploadFullBuffers = (
   gl, keys, name, elements, bufferProps, bufferSizes, buffers, bufferSchema
 ) => {
-  const props = keys.reduce((map, key) => ({ ...map, [key]: [] }), {})
+  if (!keys.length) return
+
+  // Join props of previous elements
+  // prevProps: { keyA, keyB, keyC... }
+  const prevProps = keys.reduce((map, key) => ({ ...map, [key]: [] }), {})
+  let indexOffset = 0
   for (let i = 0; i < elements.length; i++) {
     const elementBufferProps = elements[i].bufferMap[name]
     if (!elementBufferProps) continue
@@ -78,18 +84,48 @@ export const uploadFullBuffers = (
     for (let j = 0; j < keys.length; j++) {
       const key = keys[j]
       if (bufferSchema[key].index) {
-        // TODO calculate new index
+        const indices = []
+        // elementBufferProps[key]: [0, 1, 2, 0, 1, 3...] element index array
+        for (let k = 0; k < elementBufferProps[key].length; k++) {
+          push(indices, elementBufferProps[key][k] + indexOffset)
+        }
+        prevProps[key] = prevProps[key].concat(indices)
+        indexOffset = max(prevProps[key]) + 1
       } else {
-        props[key] = props[key].concat(elementBufferProps[key])
+        prevProps[key] = prevProps[key].concat(elementBufferProps[key])
       }
     }
   }
-  // TODO upload all buffer data
+
+  // Join props of current element
+  keys.forEach(key => {
+    const { type, index } = bufferSchema[key]
+    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+    let data = prevProps[key]
+    if (index) {
+      const indexOffset = elements.length ? max(data) + 1 : 0
+      for (let i = 0; i < bufferProps[key].length; i++) {
+        push(data, bufferProps[key][i] + indexOffset)
+      }
+    } else {
+      for (let i = 0; i < bufferProps[key].length; i++) {
+        push(data, bufferProps[key][i])
+      }
+    }
+    const arr = type === BufferTypes.float
+      ? new Float32Array(data)
+      : new Uint16Array(data)
+    gl.bindBuffer(target, buffers[key])
+    gl.bufferData(target, bufferSizes[key], gl.STATIC_DRAW)
+    gl.bufferData(target, arr, gl.STATIC_DRAW)
+  })
 }
 
 export const uploadSubBuffers = (
   gl, keys, uploadOffset, bufferProps, buffers, bufferSchema
 ) => {
+  if (!keys.length) return
+
   keys.forEach(key => {
     const { type, index } = bufferSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER

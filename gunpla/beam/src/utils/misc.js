@@ -6,3 +6,5 @@ export const max = (arr) => {
   }
   return max
 }
+
+export const push = (arr, x) => { arr[arr.length] = x }
