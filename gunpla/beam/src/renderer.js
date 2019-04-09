@@ -7,8 +7,9 @@ import {
   uploadFullBuffers,
   resetBeforeDraw,
   draw
-} from './gl-utils.js'
+} from './utils/gl-utils.js'
 import { RendererConfig, BufferTypes } from './consts.js'
+import { max } from './utils/misc.js'
 
 const defaultUtils = {
   getWebGLInstance,
@@ -66,7 +67,7 @@ export class Renderer {
         keys: bufferKeys.reduce(
           (map, key) => ({ ...map, [key]: bufferProps[key].length }), {}
         ),
-        index: Math.max(...bufferProps[indexKey]) + 1
+        index: max(bufferProps[indexKey]) + 1
       }
       // uploadOffset: { keys: { keyA, keyB, keyC... }, index }
       const uploadOffset = {

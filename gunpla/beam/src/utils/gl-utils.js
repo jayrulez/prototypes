@@ -1,4 +1,4 @@
-import { ShaderTypes, BufferTypes } from './consts.js'
+import { ShaderTypes, BufferTypes } from '../consts.js'
 
 export const getWebGLInstance = canvas => canvas.getContext('webgl')
 

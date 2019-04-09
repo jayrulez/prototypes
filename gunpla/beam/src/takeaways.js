@@ -1,4 +1,4 @@
-import { create, lookAt, perspective } from './mat4.js'
+import { create, lookAt, perspective } from './utils/mat4.js'
 
 export const setCamera = (eye, center, up) => {
   const viewMat = create()
