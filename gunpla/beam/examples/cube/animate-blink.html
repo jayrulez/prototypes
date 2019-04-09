@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <body>
+    <canvas id="gl-canvas" width="400" height="400"></canvas>
+<script type="module">
+import { Renderer, setCamera, setPerspective } from '../../src/index.js'
+import { CubeElement, CubePlugin } from './cube.js'
+
+const canvas = document.getElementById('gl-canvas')
+
+const cubePlugin = new CubePlugin()
+const config = { bufferChunkSize: 1000 * 1024 }
+const renderer = new Renderer(canvas, [cubePlugin], config)
+renderer.setGlobal('camera', setCamera([0, 10, 10]))
+renderer.setGlobal('perspective', setPerspective(canvas))
+
+const N = 5
+for (let i = 0; i < N; i++) {
+  for (let j = 0; j < N; j++) {
+    for (let k = 0; k < N; k++) {
+      const cube = new CubeElement({
+        position: [i * 3 - N, j * 3 - N, k * 3 - N],
+        color: [1, 1, 1, 1]
+      })
+      renderer.addElement(cube)
+    }
+  }
+}
+
+let i = 0
+const { random, cos, sin } = Math
+const tick = () => {
+  i += 0.01
+  const eye = [cos(i) * 40, sin(i) * 40, 40]
+  renderer.setGlobal('camera', setCamera(eye))
+  for (let i = 0; i < renderer.elements.length; i++) {
+    const element = renderer.elements[i]
+    const [x, y, z] = element.state.position
+    renderer.changeElement(element, {
+      position: [x + random() - 0.5, y + random() - 0.5, z + random() - 0.5],
+      color: [random(), random(), random(), random()]
+    })
+  }
+  renderer.render()
+  window.requestAnimationFrame(tick)
+}
+
+tick()
+window.renderer = renderer
+</script>
+  </body>
+</html>

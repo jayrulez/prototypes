@@ -1,4 +1,5 @@
 import {
+  Element,
   ShadePlugin,
   ShaderTypes,
   BufferTypes
@@ -110,18 +111,16 @@ export class CubePlugin extends ShadePlugin {
   }
 
   createBufferProps (element) {
-    const { position, randomColor } = element.state
+    const p = element.state.position
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
-      push(pos, basePositions[i] + position[0])
-      push(pos, basePositions[i + 1] + position[1])
-      push(pos, basePositions[i + 2] + position[2])
+      push(pos, basePositions[i] + p[0])
+      push(pos, basePositions[i + 1] + p[1])
+      push(pos, basePositions[i + 2] + p[2])
     }
     let color = []
     for (let i = 0; i < faceColors.length; i++) {
-      const c = randomColor
-        ? [Math.random(), Math.random(), Math.random(), Math.random()]
-        : faceColors[i]
+      const c = element.state.color ? element.state.color : faceColors[i]
       color = color.concat(c, c, c, c)
     }
     return { pos, color, index }
@@ -132,5 +131,12 @@ export class CubePlugin extends ShadePlugin {
       viewMat: globals.camera,
       projectionMat: globals.perspective
     }
+  }
+}
+
+export class CubeElement extends Element {
+  constructor (state) {
+    super(state)
+    this.plugins = { CubePlugin }
   }
 }

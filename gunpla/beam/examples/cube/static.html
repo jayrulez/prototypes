@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <body>
+    <canvas id="gl-canvas" width="400" height="400"></canvas>
+<script type="module">
+import { Renderer, setCamera, setPerspective } from '../../src/index.js'
+import { CubeElement, CubePlugin } from './cube.js'
+
+const canvas = document.getElementById('gl-canvas')
+
+const cubePlugin = new CubePlugin()
+const renderer = new Renderer(canvas, [cubePlugin])
+renderer.setGlobal('camera', setCamera([0, 10, 10]))
+renderer.setGlobal('perspective', setPerspective(canvas))
+
+const cubeA = new CubeElement({ position: [0, 0, 0] })
+const cubeB = new CubeElement({ position: [3, 0, 0] })
+const cubeC = new CubeElement({ position: [-3, 0, 0] })
+const cubeD = new CubeElement({ position: [0, -3, 0] })
+renderer.addElement(cubeA)
+renderer.addElement(cubeB)
+renderer.addElement(cubeC)
+renderer.addElement(cubeD)
+
+renderer.render()
+window.renderer = renderer
+</script>
+  </body>
+</html>
