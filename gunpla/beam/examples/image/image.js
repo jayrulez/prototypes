@@ -1,8 +1,11 @@
 import {
+  Element,
   ShadePlugin,
   ShaderTypes,
   BufferTypes
 } from '../../src/index.js'
+
+const push = (arr, x) => { arr[arr.length] = x }
 
 const vertexShader = `
 attribute vec4 pos;
@@ -10,19 +13,21 @@ attribute vec4 pos;
 uniform mat4 viewMat;
 uniform mat4 projectionMat;
 
-varying highp vec4 vColor;
+varying highp vec2 vTexCoord;
 
 void main() {
   gl_Position = projectionMat * viewMat * pos;
-  vColor = vec4(1, 0, 0, 1);
+  // vTexCoord = texCoord;
+  vTexCoord = vec2(0, 0);
 }
 `
 
 const fragmentShader = `
-varying highp vec4 vColor;
+uniform sampler2D img;
+varying highp vec2 vTexCoord;
 
 void main() {
-  gl_FragColor = vColor;
+  gl_FragColor = vec4(1, 1, 1, 1);
 }
 `
 
@@ -39,7 +44,7 @@ export class ImagePlugin extends ShadePlugin {
   constructor () {
     super()
 
-    const { vec3, mat4 } = ShaderTypes
+    const { vec3, mat4, sampler2D } = ShaderTypes
     this.programSchema.vertexShader = vertexShader
     this.programSchema.fragmentShader = fragmentShader
     this.programSchema.attributes = {
@@ -47,7 +52,8 @@ export class ImagePlugin extends ShadePlugin {
     }
     this.programSchema.uniforms = {
       viewMat: mat4,
-      projectionMat: mat4
+      projectionMat: mat4,
+      img: sampler2D
     }
 
     const { float, int } = BufferTypes
@@ -55,17 +61,26 @@ export class ImagePlugin extends ShadePlugin {
       pos: { type: float, n: 3 },
       index: { type: int, index: true }
     }
+
+    // TODO textureSchema[key]config
+    this.textureSchema = {
+      img: { fallback: [1, 1, 1, 1] }
+    }
   }
 
   createBufferProps (element) {
     const p = element.state.position
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
-      pos.push(basePositions[i] + p[0])
-      pos.push(basePositions[i + 1] + p[1])
-      pos.push(basePositions[i + 2] + p[2])
+      push(pos, basePositions[i] + p[0])
+      push(pos, basePositions[i + 1] + p[1])
+      push(pos, basePositions[i + 2] + p[2])
     }
     return { pos, index }
+  }
+
+  createTextureProps (element) {
+    return {}
   }
 
   createUniformProps (globals) {
@@ -73,5 +88,14 @@ export class ImagePlugin extends ShadePlugin {
       viewMat: globals.camera,
       projectionMat: globals.perspective
     }
+  }
+}
+
+export class ImageElement extends Element {
+  constructor (state) {
+    super(state)
+    this.plugins = { ImagePlugin }
+    this.position = state.position || [0, 0, 0]
+    this.img = state.img || null
   }
 }

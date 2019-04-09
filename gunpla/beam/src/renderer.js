@@ -10,6 +10,7 @@ import {
 } from './utils/gl-utils.js'
 import { RendererConfig } from './consts.js'
 import {
+  push,
   allocateBufferSizes,
   divideUploadKeys,
   getUploadOffset,
@@ -58,7 +59,8 @@ export class Renderer {
     element.keys = {} // TODO key-based draw batching
 
     const { gl, config, elements, plugins, glUtils } = this
-    plugins.forEach(plugin => {
+    for (let i = 0; i < plugins.length; i++) {
+      const plugin = plugins[i]
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
@@ -94,15 +96,15 @@ export class Renderer {
       uploadSubBuffers(
         gl, subKeys, uploadOffset, bufferProps, buffers, bufferSchema
       )
-    })
-
-    elements.push(element)
+    }
+    push(elements, element)
   }
 
   changeElement (element, state) {
     const { gl, elements, plugins, glUtils } = this
     element.state = state
-    plugins.forEach(plugin => {
+    for (let i = 0; i < plugins.length; i++) {
+      const plugin = plugins[i]
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
@@ -121,7 +123,7 @@ export class Renderer {
       uploadSubBuffers(
         gl, bufferKeys, uploadOffset, bufferProps, buffers, bufferSchema
       )
-    })
+    }
   }
 
   removeElement (element) {
@@ -130,7 +132,8 @@ export class Renderer {
     this.elements.splice(index, 1)
 
     const { gl, elements, plugins, glUtils } = this
-    plugins.forEach(plugin => {
+    for (let i = 0; i < plugins.length; i++) {
+      const plugin = plugins[i]
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
@@ -152,7 +155,7 @@ export class Renderer {
         buffers,
         bufferSchema
       )
-    })
+    }
   }
 
   setGlobal (field, props) {

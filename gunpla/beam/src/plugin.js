@@ -11,6 +11,7 @@ export class ShadePlugin {
     this.bufferSizes = {}
     this.bufferLengthMap = new WeakMap()
     this.bufferSchema = {}
+    this.textureSchema = {}
     this.offscreen = false
   }
 
@@ -24,7 +25,7 @@ export class ShadePlugin {
   }
 
   createTextureProps (element) {
-    return []
+    return {}
   }
 
   createUniformProps (globals) {
