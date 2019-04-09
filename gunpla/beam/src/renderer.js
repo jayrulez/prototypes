@@ -130,6 +130,32 @@ export class Renderer {
     const index = this.elements.indexOf(element)
     if (index === -1) return
     this.elements.splice(index, 1)
+
+    const { gl, elements, plugins, glUtils } = this
+    plugins.forEach(plugin => {
+      const { name } = plugin.constructor
+      if (!element.plugins[name]) return
+
+      const { buffers, bufferSchema, bufferLengthMap, bufferSizes } = plugin
+      // bufferProps: { keyA, keyB, keyC... }
+      const bufferProps = plugin.createBufferProps(element)
+      const bufferKeys = Object.keys(bufferSchema)
+      const bufferLengths = getBufferLengths(
+        bufferKeys, bufferProps, bufferSchema
+      )
+      const { uploadFullBuffers } = glUtils
+      bufferLengthMap.set(element, bufferLengths)
+      uploadFullBuffers(
+        gl,
+        bufferKeys,
+        name,
+        elements,
+        bufferProps,
+        bufferSizes,
+        buffers,
+        bufferSchema
+      )
+    })
   }
 
   setGlobal (field, props) {
