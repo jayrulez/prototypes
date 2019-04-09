@@ -6,9 +6,9 @@
   <body>
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
-import { main } from './main.js'
+import { staticMain, animateMain } from './main.js'
 
-main()
+window.location.hash.length ? animateMain() : staticMain()
 </script>
   </body>
 </html>

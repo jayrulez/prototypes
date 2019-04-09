@@ -14,7 +14,8 @@ class CubeElement extends Element {
   }
 }
 
-export const main = () => {
+// Static demo entry
+export const staticMain = () => {
   const canvas = document.getElementById('gl-canvas')
 
   const cubePlugin = new CubePlugin()
@@ -32,6 +33,40 @@ export const main = () => {
   renderer.addElement(cubeD)
 
   renderer.render()
+  window.renderer = renderer
+}
 
+// Animate demo entry
+export const animateMain = () => {
+  const canvas = document.getElementById('gl-canvas')
+
+  const cubePlugin = new CubePlugin()
+  const config = { bufferChunkSize: 1000 * 1024 }
+  const renderer = new Renderer(canvas, [cubePlugin], config)
+  renderer.setGlobal('camera', setCamera([0, 10, 10]))
+  renderer.setGlobal('perspective', setPerspective(canvas))
+
+  const N = 10
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      for (let k = 0; k < N; k++) {
+        const cube = new CubeElement({
+          position: [i * 3 - N, j * 3 - N, k * 3 - N]
+        })
+        renderer.addElement(cube)
+      }
+    }
+  }
+
+  let i = 0
+  const tick = () => {
+    i += 0.01
+    const eye = [Math.cos(i) * 40, Math.sin(i) * 40, 40]
+    renderer.setGlobal('camera', setCamera(eye))
+    renderer.render()
+    window.requestAnimationFrame(tick)
+  }
+
+  tick()
   window.renderer = renderer
 }
