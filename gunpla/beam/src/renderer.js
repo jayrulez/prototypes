@@ -64,7 +64,7 @@ export class Renderer {
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor
-      if (!element.plugins[name]) return
+      if (!element.plugins[name]) continue
 
       const { buffers, propSchema, bufferLengthMap, bufferSizes } = plugin
       const bufferProps = plugin.propsByElement(element)

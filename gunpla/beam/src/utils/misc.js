@@ -55,10 +55,10 @@ export const getUploadOffset = (
     const elementBufferLengths = bufferLengthMap.get(elements[i])
     if (elementBufferLengths) {
       uploadOffset.index += elementBufferLengths.index
-    }
-    for (let j = 0; j < bufferKeys.length; j++) {
-      const key = bufferKeys[j]
-      uploadOffset.keys[key] += elementBufferLengths.keys[key]
+      for (let j = 0; j < bufferKeys.length; j++) {
+        const key = bufferKeys[j]
+        uploadOffset.keys[key] += elementBufferLengths.keys[key]
+      }
     }
   }
 
