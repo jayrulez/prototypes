@@ -5,12 +5,16 @@ import {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
+  uploadTexture,
   resetBeforeDraw,
   draw
 } from './utils/gl-utils.js'
-import { RendererConfig } from './consts.js'
+import { RendererConfig, ResourceTypes } from './consts.js'
 import {
   push,
+  getCharFromMaps,
+  setCharToMaps,
+  generateChar,
   allocateBufferSizes,
   divideUploadKeys,
   getUploadOffset,
@@ -24,6 +28,7 @@ const defaultUtils = {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
+  uploadTexture,
   resetBeforeDraw,
   draw
 }
@@ -56,9 +61,7 @@ export class Renderer {
   }
 
   addElement (element) {
-    element.keys = {} // TODO key-based draw batching
-
-    const { gl, config, elements, plugins, glUtils } = this
+    const { gl, config, elements, plugins, glUtils, globals } = this
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor
@@ -97,11 +100,34 @@ export class Renderer {
         gl, subKeys, uploadOffset, bufferProps, buffers, bufferSchema
       )
 
-      // const { textureSchema } = plugin
-      const elementUniformProps = plugin.createUniformPropsByElement(element)
-      Object.keys(elementUniformProps)
-      // TODO
+      const { resourceSchema, textureMap, resourceCodeMaps } = plugin
+      const { uploadTexture } = glUtils
+      const uniformProps = {
+        ...plugin.createUniformPropsByGlobal(globals),
+        ...plugin.createUniformPropsByElement(element)
+      }
+      const textureKeys = Object
+        .keys(resourceSchema)
+        .filter(key => resourceSchema[key].type === ResourceTypes.texture)
+
+      textureKeys.forEach(key => {
+        const image = uniformProps[key]
+        if (!textureMap.get(image)) {
+          const texture = uploadTexture(gl, image)
+          textureMap.set(image, texture)
+        }
+      })
+
+      let code = ''
+      textureKeys.forEach(key => {
+        let char = getCharFromMaps(uniformProps[key], resourceCodeMaps)
+        if (!char) char = generateChar()
+        setCharToMaps(uniformProps[key], char, resourceCodeMaps)
+        code += char
+      })
+      element.codes[name] = code
     }
+
     push(elements, element)
   }
 

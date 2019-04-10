@@ -1,7 +1,7 @@
 // Includes all gl-related methods here
 
 import { ShaderTypes, BufferTypes } from '../consts.js'
-import { max, push } from '../utils/misc.js'
+import { max, push, isPowerOf2 } from '../utils/misc.js'
 
 export const getWebGLInstance = canvas => canvas.getContext('webgl')
 
@@ -55,6 +55,22 @@ export const initProgramInfo = (gl, programSchema) => {
       }
     }), {})
   }
+}
+
+export const uploadTexture = (gl, image) => {
+  const texture = gl.createTexture()
+  gl.bindTexture(gl.TEXTURE_2D, texture)
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+
+  if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+    gl.generateMipmap(gl.TEXTURE_2D)
+  } else {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+  }
+  return texture
 }
 
 export const initBufferInfo = (gl, bufferSchema, bufferChunkSize) => {

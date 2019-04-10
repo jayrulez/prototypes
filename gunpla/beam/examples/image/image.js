@@ -4,7 +4,8 @@ import {
   Element,
   ShadePlugin,
   ShaderTypes,
-  BufferTypes
+  BufferTypes,
+  ResourceTypes
 } from '../../src/index.js'
 
 const push = (arr, x) => { arr[arr.length] = x }
@@ -56,13 +57,14 @@ export class ImagePlugin extends ShadePlugin {
     }
 
     // TODO fallback / config / fbo support
-    this.textureSchema = {
-      img: {}
+    const { texture } = ResourceTypes
+    this.resourceSchema = {
+      img: { type: texture }
     }
   }
 
-  createBufferProps (element) {
-    const p = element.state.position
+  createBufferProps ({ state }) {
+    const p = state.position
     const basePositions = [
       -1.0, -1.0, 1.0,
       1.0, -1.0, 1.0,

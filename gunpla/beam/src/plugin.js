@@ -7,11 +7,14 @@ export class ShadePlugin {
       attributes: {},
       uniforms: {}
     }
-    this.buffers = null
+    this.buffers = {}
     this.bufferSizes = {}
     this.bufferLengthMap = new WeakMap()
     this.bufferSchema = {}
-    this.textureSchema = {}
+    this.textureMap = new WeakMap()
+    // Resources = Textures + Uniforms
+    this.resourceSchema = {}
+    this.resourceCodeMaps = [new WeakMap(), {}]
     this.offscreen = false
   }
 

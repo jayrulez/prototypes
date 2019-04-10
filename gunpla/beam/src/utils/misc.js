@@ -13,7 +13,28 @@ export const max = arr => {
 
 export const push = (arr, x) => { arr[arr.length] = x }
 
+export const isPowerOf2 = value => (value & (value - 1)) === 0
+
 export const bufferTypeSize = type => type === BufferTypes.float ? 4 : 2
+
+let i = 66 // ASCII 'B' for Beam
+export const generateChar = () => {
+  const char = String.fromCharCode(i)
+  i++
+  return char
+}
+
+export const getCharFromMaps = (data, [weakMap, map]) => {
+  return data instanceof Object
+    ? (weakMap.get(data) || '')
+    : (map[data] || '')
+}
+
+export const setCharToMaps = (data, char, [weakMap, map]) => {
+  data instanceof Object
+    ? weakMap.set(data, char)
+    : map[data] = char
+}
 
 // uploadOffset: { keys: { keyA, keyB, keyC... }, index }
 export const getUploadOffset = (

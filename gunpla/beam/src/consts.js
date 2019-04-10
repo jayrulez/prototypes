@@ -15,6 +15,11 @@ export const BufferTypes = {
   int: 1
 }
 
+export const ResourceTypes = {
+  texture: 0,
+  array: 1
+}
+
 export const RendererConfig = {
   bufferChunkSize: 100 * 1024
 }

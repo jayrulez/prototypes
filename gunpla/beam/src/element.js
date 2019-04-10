@@ -1,6 +1,6 @@
 export class Element {
   constructor (state) {
-    this.keys = {}
+    this.codes = {}
     this.bufferMap = {}
     this.plugins = {}
     this.state = state
