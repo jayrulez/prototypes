@@ -21,12 +21,17 @@ const renderer = new Renderer(canvas, [imagePlugin])
 renderer.setGlobal('camera', setCamera([0, 0, 10]))
 renderer.setGlobal('perspective', setPerspective(canvas))
 
-loadImage('./demo.jpg').then(img => {
-  const imageElement = new ImageElement({
-    position: [0, 0, 0],
+loadImage('./black-hole.jpg').then(img => {
+  const imageA = new ImageElement({
+    position: [1, 0, -3],
     img
   })
-  renderer.addElement(imageElement)
+  const imageB = new ImageElement({
+    position: [-1, 0, -3],
+    img
+  })
+  renderer.addElement(imageA)
+  renderer.addElement(imageB)
   renderer.render()
 })
 
