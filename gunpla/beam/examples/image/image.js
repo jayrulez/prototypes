@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 import {
   Element,
   ShadePlugin,
@@ -31,15 +33,6 @@ void main() {
 }
 `
 
-const basePositions = [
-  -1.0, -1.0, 1.0,
-  1.0, -1.0, 1.0,
-  1.0, 1.0, 1.0,
-  -1.0, 1.0, 1.0
-]
-
-const index = [0, 1, 2, 0, 2, 3]
-
 export class ImagePlugin extends ShadePlugin {
   constructor () {
     super()
@@ -62,28 +55,34 @@ export class ImagePlugin extends ShadePlugin {
       index: { type: int, index: true }
     }
 
-    // TODO textureSchema[key]config
+    // TODO fallback / config / fbo support
     this.textureSchema = {
-      img: { fallback: [1, 1, 1, 1] }
+      img: {}
     }
   }
 
   createBufferProps (element) {
     const p = element.state.position
+    const basePositions = [
+      -1.0, -1.0, 1.0,
+      1.0, -1.0, 1.0,
+      1.0, 1.0, 1.0,
+      -1.0, 1.0, 1.0
+    ]
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
       push(pos, basePositions[i] + p[0])
       push(pos, basePositions[i + 1] + p[1])
       push(pos, basePositions[i + 2] + p[2])
     }
-    return { pos, index }
+    return { pos, index: [0, 1, 2, 0, 2, 3] }
   }
 
-  createTextureProps (element) {
-    return {}
+  createUniformPropsByElement ({ state }) {
+    return { img: state.img }
   }
 
-  createUniformProps (globals) {
+  createUniformPropsByGlobal (globals) {
     return {
       viewMat: globals.camera,
       projectionMat: globals.perspective
@@ -95,7 +94,11 @@ export class ImageElement extends Element {
   constructor (state) {
     super(state)
     this.plugins = { ImagePlugin }
-    this.position = state.position || [0, 0, 0]
-    this.img = state.img || null
   }
 }
+
+export const loadImage = url => new Promise(resolve => {
+  const image = new Image()
+  image.onload = () => resolve(image)
+  image.src = url
+})

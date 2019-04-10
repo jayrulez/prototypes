@@ -110,8 +110,8 @@ export class CubePlugin extends ShadePlugin {
     }
   }
 
-  createBufferProps (element) {
-    const p = element.state.position
+  createBufferProps ({ state }) {
+    const p = state.position
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
       push(pos, basePositions[i] + p[0])
@@ -120,13 +120,13 @@ export class CubePlugin extends ShadePlugin {
     }
     let color = []
     for (let i = 0; i < faceColors.length; i++) {
-      const c = element.state.color ? element.state.color : faceColors[i]
+      const c = state.color ? state.color : faceColors[i]
       color = color.concat(c, c, c, c)
     }
     return { pos, color, index }
   }
 
-  createUniformProps (globals) {
+  createUniformPropsByGlobal (globals) {
     return {
       viewMat: globals.camera,
       projectionMat: globals.perspective

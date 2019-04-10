@@ -6,7 +6,7 @@
   <body>
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
-import { ImagePlugin, ImageElement } from './image.js'
+import { ImagePlugin, ImageElement, loadImage } from './image.js'
 import {
   Element,
   Renderer,
@@ -21,9 +21,14 @@ const renderer = new Renderer(canvas, [imagePlugin])
 renderer.setGlobal('camera', setCamera([0, 0, 10]))
 renderer.setGlobal('perspective', setPerspective(canvas))
 
-const imageElement = new ImageElement({ position: [0, 0, 0] })
-renderer.addElement(imageElement)
-renderer.render()
+loadImage('./demo.jpg').then(img => {
+  const imageElement = new ImageElement({
+    position: [0, 0, 0],
+    img
+  })
+  renderer.addElement(imageElement)
+  renderer.render()
+})
 
 window.renderer = renderer
 </script>

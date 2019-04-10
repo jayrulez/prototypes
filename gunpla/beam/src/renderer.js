@@ -96,6 +96,11 @@ export class Renderer {
       uploadSubBuffers(
         gl, subKeys, uploadOffset, bufferProps, buffers, bufferSchema
       )
+
+      // const { textureSchema } = plugin
+      const elementUniformProps = plugin.createUniformPropsByElement(element)
+      Object.keys(elementUniformProps)
+      // TODO
     }
     push(elements, element)
   }
@@ -179,7 +184,7 @@ export class Renderer {
         if (!bufferLengths) continue
         totalLength += bufferLengths.keys[indexKey]
       }
-      const uniformProps = plugin.createUniformProps(globals)
+      const uniformProps = plugin.createUniformPropsByGlobal(globals)
 
       draw(gl, programInfo, buffers, bufferSchema, totalLength, uniformProps)
     }

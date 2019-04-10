@@ -15,20 +15,20 @@ export class ShadePlugin {
     this.offscreen = false
   }
 
-  createKey (element) {
+  createKey ({ state }) {
     return null
   }
 
   // bufferProps: { keyA, keyB, keyC... }
-  createBufferProps (element) {
+  createBufferProps ({ state }) {
     return {}
   }
 
-  createTextureProps (element) {
+  createUniformPropsByElement ({ state }) {
     return {}
   }
 
-  createUniformProps (globals) {
+  createUniformPropsByGlobal (globals) {
     return {}
   }
 }
