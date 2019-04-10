@@ -10,14 +10,9 @@ export const ShaderTypes = {
   sampler2D: 8
 }
 
-export const BufferTypes = {
-  float: 0,
-  int: 1
-}
-
-export const ResourceTypes = {
-  texture: 0,
-  array: 1
+export const PropTypes = {
+  attribute: 0,
+  uniform: 1
 }
 
 export const RendererConfig = {

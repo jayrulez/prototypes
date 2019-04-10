@@ -9,10 +9,11 @@ import {
   resetBeforeDraw,
   draw
 } from './utils/gl-utils.js'
-import { RendererConfig, ResourceTypes } from './consts.js'
+import { RendererConfig, PropTypes } from './consts.js'
 import {
   push,
   getCharFromMaps,
+  getBufferKeys,
   setCharToMaps,
   generateChar,
   allocateBufferSizes,
@@ -50,12 +51,10 @@ export class Renderer {
     const { bufferChunkSize } = this.config
     this.gl = getWebGLInstance(canvas)
     this.plugins.forEach(plugin => {
-      plugin.programInfo = initProgramInfo(this.gl, plugin.programSchema)
-      plugin.buffers = initBufferInfo(
-        this.gl, plugin.bufferSchema, bufferChunkSize
-      )
-      plugin.bufferSizes = Object
-        .keys(plugin.bufferSchema)
+      const { programSchema, propSchema } = plugin
+      plugin.programInfo = initProgramInfo(this.gl, programSchema)
+      plugin.buffers = initBufferInfo(this.gl, propSchema, bufferChunkSize)
+      plugin.bufferSizes = getBufferKeys(propSchema)
         .reduce((map, key) => ({ ...map, [key]: bufferChunkSize }), {})
     })
   }
@@ -67,24 +66,24 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
-      const { buffers, bufferSchema, bufferLengthMap, bufferSizes } = plugin
-      const bufferProps = plugin.createBufferProps(element)
-      const bufferKeys = Object.keys(bufferSchema)
+      const { buffers, propSchema, bufferLengthMap, bufferSizes } = plugin
+      const bufferProps = plugin.propsByElement(element)
+      const bufferKeys = getBufferKeys(propSchema)
       const { bufferChunkSize } = config
       const uploadOffset = getUploadOffset(
         element, elements, bufferKeys, bufferLengthMap
       )
       const [fullKeys, subKeys] = divideUploadKeys(
-        bufferKeys, bufferSchema, bufferProps, bufferChunkSize, uploadOffset
+        bufferKeys, propSchema, bufferProps, bufferChunkSize, uploadOffset
       )
       const bufferLengths = getBufferLengths(
-        bufferKeys, bufferProps, bufferSchema
+        bufferKeys, bufferProps, propSchema
       )
       const { uploadSubBuffers, uploadFullBuffers } = glUtils
       element.bufferMap[name] = bufferProps
       bufferLengthMap.set(element, bufferLengths)
       allocateBufferSizes(
-        fullKeys, bufferSchema, bufferSizes, bufferChunkSize, bufferProps
+        fullKeys, propSchema, bufferSizes, bufferChunkSize, bufferProps
       )
       uploadFullBuffers(
         gl,
@@ -94,21 +93,21 @@ export class Renderer {
         bufferProps,
         bufferSizes,
         buffers,
-        bufferSchema
+        propSchema
       )
       uploadSubBuffers(
-        gl, subKeys, uploadOffset, bufferProps, buffers, bufferSchema
+        gl, subKeys, uploadOffset, bufferProps, buffers, propSchema
       )
 
-      const { resourceSchema, textureMap, resourceCodeMaps } = plugin
+      const { textureMap, elementCodeMaps } = plugin
       const { uploadTexture } = glUtils
       const uniformProps = {
-        ...plugin.createUniformPropsByGlobal(globals),
-        ...plugin.createUniformPropsByElement(element)
+        ...plugin.propsByGlobals(globals),
+        ...plugin.propsByElement(element)
       }
       const textureKeys = Object
-        .keys(resourceSchema)
-        .filter(key => resourceSchema[key].type === ResourceTypes.texture)
+        .keys(propSchema)
+        .filter(key => propSchema[key].type === PropTypes.uniform)
 
       textureKeys.forEach(key => {
         const image = uniformProps[key]
@@ -120,9 +119,9 @@ export class Renderer {
 
       let code = ''
       textureKeys.forEach(key => {
-        let char = getCharFromMaps(uniformProps[key], resourceCodeMaps)
+        let char = getCharFromMaps(uniformProps[key], elementCodeMaps)
         if (!char) char = generateChar()
-        setCharToMaps(uniformProps[key], char, resourceCodeMaps)
+        setCharToMaps(uniformProps[key], char, elementCodeMaps)
         code += char
       })
       element.codes[name] = code
@@ -131,28 +130,28 @@ export class Renderer {
     push(elements, element)
   }
 
-  changeElement (element, state) {
+  changeElement (element, props) {
     const { gl, elements, plugins, glUtils } = this
-    element.state = state
+    element.props = props
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
-      const { buffers, bufferSchema, bufferLengthMap } = plugin
-      const bufferProps = plugin.createBufferProps(element)
-      const bufferKeys = Object.keys(bufferSchema)
+      const { buffers, propSchema, bufferLengthMap } = plugin
+      const bufferProps = plugin.propsByElement(element)
+      const bufferKeys = getBufferKeys(propSchema)
       const uploadOffset = getUploadOffset(
         element, elements, bufferKeys, bufferLengthMap
       )
       const bufferLengths = getBufferLengths(
-        bufferKeys, bufferProps, bufferSchema
+        bufferKeys, bufferProps, propSchema
       )
       const { uploadSubBuffers } = glUtils
       element.bufferMap[name] = bufferProps
       bufferLengthMap.set(element, bufferLengths)
       uploadSubBuffers(
-        gl, bufferKeys, uploadOffset, bufferProps, buffers, bufferSchema
+        gl, bufferKeys, uploadOffset, bufferProps, buffers, propSchema
       )
     }
   }
@@ -168,11 +167,11 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) return
 
-      const { buffers, bufferSchema, bufferLengthMap, bufferSizes } = plugin
-      const bufferProps = plugin.createBufferProps(element)
-      const bufferKeys = Object.keys(bufferSchema)
+      const { buffers, propSchema, bufferLengthMap, bufferSizes } = plugin
+      const bufferProps = plugin.propsByElement(element)
+      const bufferKeys = getBufferKeys(propSchema)
       const bufferLengths = getBufferLengths(
-        bufferKeys, bufferProps, bufferSchema
+        bufferKeys, bufferProps, propSchema
       )
       const { uploadFullBuffers } = glUtils
       bufferLengthMap.set(element, bufferLengths)
@@ -184,7 +183,7 @@ export class Renderer {
         bufferProps,
         bufferSizes,
         buffers,
-        bufferSchema
+        propSchema
       )
     }
   }
@@ -199,10 +198,10 @@ export class Renderer {
     resetBeforeDraw(gl)
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
-      const { programInfo, buffers, bufferSchema, bufferLengthMap } = plugin
+      const { programInfo, buffers, propSchema, bufferLengthMap } = plugin
       const indexKey = Object
-        .keys(bufferSchema)
-        .find(key => bufferSchema[key].index)
+        .keys(propSchema)
+        .find(key => propSchema[key].index)
 
       let totalLength = 0
       for (let i = 0; i < elements.length; i++) {
@@ -210,9 +209,9 @@ export class Renderer {
         if (!bufferLengths) continue
         totalLength += bufferLengths.keys[indexKey]
       }
-      const uniformProps = plugin.createUniformPropsByGlobal(globals)
+      const uniformProps = plugin.propsByGlobals(globals)
 
-      draw(gl, programInfo, buffers, bufferSchema, totalLength, uniformProps)
+      draw(gl, programInfo, buffers, propSchema, totalLength, uniformProps)
     }
   }
 }

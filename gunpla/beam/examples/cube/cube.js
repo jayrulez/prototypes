@@ -2,7 +2,7 @@ import {
   Element,
   ShadePlugin,
   ShaderTypes,
-  BufferTypes
+  PropTypes
 } from '../../src/index.js'
 
 const push = (arr, x) => { arr[arr.length] = x }
@@ -102,16 +102,16 @@ export class CubePlugin extends ShadePlugin {
       projectionMat: mat4
     }
 
-    const { float, int } = BufferTypes
-    this.bufferSchema = {
-      pos: { type: float, n: 3 },
-      color: { type: float, n: 4 },
-      index: { type: int, index: true }
+    const { attribute } = PropTypes
+    this.propSchema = {
+      pos: { type: attribute, n: 3 },
+      color: { type: attribute, n: 4 },
+      index: { type: attribute, index: true }
     }
   }
 
-  createBufferProps ({ state }) {
-    const p = state.position
+  propsByElement ({ props }) {
+    const p = props.position
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
       push(pos, basePositions[i] + p[0])
@@ -120,13 +120,13 @@ export class CubePlugin extends ShadePlugin {
     }
     let color = []
     for (let i = 0; i < faceColors.length; i++) {
-      const c = state.color ? state.color : faceColors[i]
+      const c = props.color ? props.color : faceColors[i]
       color = color.concat(c, c, c, c)
     }
     return { pos, color, index }
   }
 
-  createUniformPropsByGlobal (globals) {
+  propsByGlobals (globals) {
     return {
       viewMat: globals.camera,
       projectionMat: globals.perspective
@@ -135,8 +135,8 @@ export class CubePlugin extends ShadePlugin {
 }
 
 export class CubeElement extends Element {
-  constructor (state) {
-    super(state)
+  constructor (props) {
+    super(props)
     this.plugins = { CubePlugin }
   }
 }

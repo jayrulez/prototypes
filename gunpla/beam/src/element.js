@@ -1,8 +1,8 @@
 export class Element {
-  constructor (state) {
+  constructor (props) {
     this.codes = {}
     this.bufferMap = {}
     this.plugins = {}
-    this.state = state
+    this.props = props
   }
 }

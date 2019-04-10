@@ -1,6 +1,6 @@
 // Includes all non-gl utils methods for core renderer lib here
 
-import { BufferTypes } from '../consts.js'
+import { PropTypes } from '../consts.js'
 
 export const max = arr => {
   if (!arr.length) return null
@@ -15,7 +15,12 @@ export const push = (arr, x) => { arr[arr.length] = x }
 
 export const isPowerOf2 = value => (value & (value - 1)) === 0
 
-export const bufferTypeSize = type => type === BufferTypes.float ? 4 : 2
+// Prop keys with numComponents must be attribute floats
+export const bufferTypeSize = (propSchema, key) => propSchema[key].n ? 4 : 2
+
+export const getBufferKeys = (propSchema) => Object
+  .keys(propSchema)
+  .filter(key => propSchema[key].type === PropTypes.attribute)
 
 let i = 66 // ASCII 'B' for Beam
 export const generateChar = () => {
@@ -61,13 +66,13 @@ export const getUploadOffset = (
 }
 
 export const divideUploadKeys = (
-  bufferKeys, bufferSchema, bufferProps, bufferChunkSize, uploadOffset
+  bufferKeys, propSchema, bufferProps, bufferChunkSize, uploadOffset
 ) => {
   const fullKeys = []
   const subKeys = []
   for (let i = 0; i < bufferKeys.length; i++) {
     const key = bufferKeys[i]
-    const size = bufferTypeSize(bufferSchema[key])
+    const size = bufferTypeSize(propSchema, key)
     const need = (uploadOffset.keys[key] + bufferProps[key].length) * size
     need < bufferChunkSize ? push(subKeys, key) : push(fullKeys, key)
   }
@@ -75,11 +80,11 @@ export const divideUploadKeys = (
 }
 
 export const allocateBufferSizes = (
-  fullKeys, bufferSchema, bufferSizes, bufferChunkSize, bufferProps
+  fullKeys, propSchema, bufferSizes, bufferChunkSize, bufferProps
 ) => {
   for (let i = 0; i < fullKeys.length; i++) {
     const key = fullKeys[i]
-    const size = bufferTypeSize(bufferSchema[key])
+    const size = bufferTypeSize(propSchema, key)
     bufferSizes[key] += Math.max(
       bufferChunkSize, bufferProps[key].length * size
     )
@@ -87,8 +92,8 @@ export const allocateBufferSizes = (
 }
 
 // bufferLengths: { keys: { keyA, keyB, keyC... }, index }
-export const getBufferLengths = (bufferKeys, bufferProps, bufferSchema) => {
-  const indexKey = bufferKeys.find(key => bufferSchema[key].index)
+export const getBufferLengths = (bufferKeys, bufferProps, propSchema) => {
+  const indexKey = bufferKeys.find(key => propSchema[key].index)
   return {
     keys: bufferKeys.reduce(
       (map, key) => ({ ...map, [key]: bufferProps[key].length }), {}

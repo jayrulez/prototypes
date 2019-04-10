@@ -4,8 +4,7 @@ import {
   Element,
   ShadePlugin,
   ShaderTypes,
-  BufferTypes,
-  ResourceTypes
+  PropTypes
 } from '../../src/index.js'
 
 const push = (arr, x) => { arr[arr.length] = x }
@@ -50,21 +49,17 @@ export class ImagePlugin extends ShadePlugin {
       img: sampler2D
     }
 
-    const { float, int } = BufferTypes
-    this.bufferSchema = {
-      pos: { type: float, n: 3 },
-      index: { type: int, index: true }
-    }
-
-    // TODO fallback / config / fbo support
-    const { texture } = ResourceTypes
-    this.resourceSchema = {
-      img: { type: texture }
+    const { attribute, uniform } = PropTypes
+    // TODO uniform fallback / config / fbo support
+    this.propSchema = {
+      pos: { type: attribute, n: 3 },
+      index: { type: attribute, index: true },
+      img: { type: uniform }
     }
   }
 
-  createBufferProps ({ state }) {
-    const p = state.position
+  propsByElement ({ props }) {
+    const p = props.position
     const basePositions = [
       -1.0, -1.0, 1.0,
       1.0, -1.0, 1.0,
@@ -77,14 +72,10 @@ export class ImagePlugin extends ShadePlugin {
       push(pos, basePositions[i + 1] + p[1])
       push(pos, basePositions[i + 2] + p[2])
     }
-    return { pos, index: [0, 1, 2, 0, 2, 3] }
+    return { pos, index: [0, 1, 2, 0, 2, 3], img: props.img }
   }
 
-  createUniformPropsByElement ({ state }) {
-    return { img: state.img }
-  }
-
-  createUniformPropsByGlobal (globals) {
+  propsByGlobals (globals) {
     return {
       viewMat: globals.camera,
       projectionMat: globals.perspective
@@ -93,8 +84,8 @@ export class ImagePlugin extends ShadePlugin {
 }
 
 export class ImageElement extends Element {
-  constructor (state) {
-    super(state)
+  constructor (props) {
+    super(props)
     this.plugins = { ImagePlugin }
   }
 }

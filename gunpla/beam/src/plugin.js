@@ -7,31 +7,20 @@ export class ShadePlugin {
       attributes: {},
       uniforms: {}
     }
+    this.propSchema = {}
+    this.elementCodeMaps = [new WeakMap(), {}]
     this.buffers = {}
     this.bufferSizes = {}
     this.bufferLengthMap = new WeakMap()
-    this.bufferSchema = {}
     this.textureMap = new WeakMap()
-    // Resources = Textures + Uniforms
-    this.resourceSchema = {}
-    this.resourceCodeMaps = [new WeakMap(), {}]
     this.offscreen = false
   }
 
-  createKey ({ state }) {
-    return null
-  }
-
-  // bufferProps: { keyA, keyB, keyC... }
-  createBufferProps ({ state }) {
+  propsByElement ({ props }) {
     return {}
   }
 
-  createUniformPropsByElement ({ state }) {
-    return {}
-  }
-
-  createUniformPropsByGlobal (globals) {
+  propsByGlobals (globals) {
     return {}
   }
 }

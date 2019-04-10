@@ -1,7 +1,12 @@
 // Includes all gl-related methods here
 
-import { ShaderTypes, BufferTypes } from '../consts.js'
-import { max, push, isPowerOf2 } from '../utils/misc.js'
+import { ShaderTypes } from '../consts.js'
+import {
+  max,
+  push,
+  isPowerOf2,
+  getBufferKeys
+} from '../utils/misc.js'
 
 export const getWebGLInstance = canvas => canvas.getContext('webgl')
 
@@ -73,11 +78,12 @@ export const uploadTexture = (gl, image) => {
   return texture
 }
 
-export const initBufferInfo = (gl, bufferSchema, bufferChunkSize) => {
+export const initBufferInfo = (gl, propSchema, bufferChunkSize) => {
   const buffers = {}
-  Object.keys(bufferSchema).forEach(key => {
+  const bufferKeys = getBufferKeys(propSchema)
+  bufferKeys.forEach(key => {
     const buffer = gl.createBuffer()
-    const { index } = bufferSchema[key]
+    const { index } = propSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
     gl.bindBuffer(target, buffer)
     gl.bufferData(target, bufferChunkSize, gl.STATIC_DRAW)
@@ -87,21 +93,21 @@ export const initBufferInfo = (gl, bufferSchema, bufferChunkSize) => {
 }
 
 export const uploadFullBuffers = (
-  gl, keys, name, elements, bufferProps, bufferSizes, buffers, bufferSchema
+  gl, bufferKeys, name, elements, bufferProps, bufferSizes, buffers, propSchema
 ) => {
-  if (!keys.length) return
+  if (!bufferKeys.length) return
 
   // Join props of previous elements
   // prevProps: { keyA, keyB, keyC... }
-  const prevProps = keys.reduce((map, key) => ({ ...map, [key]: [] }), {})
+  const prevProps = bufferKeys.reduce((map, key) => ({ ...map, [key]: [] }), {})
   let indexOffset = 0
   for (let i = 0; i < elements.length; i++) {
     const elementBufferProps = elements[i].bufferMap[name]
     if (!elementBufferProps) continue
 
-    for (let j = 0; j < keys.length; j++) {
-      const key = keys[j]
-      if (bufferSchema[key].index) {
+    for (let j = 0; j < bufferKeys.length; j++) {
+      const key = bufferKeys[j]
+      if (propSchema[key].index) {
         const indices = []
         // elementBufferProps[key]: [0, 1, 2, 0, 1, 3...] element index array
         for (let k = 0; k < elementBufferProps[key].length; k++) {
@@ -116,8 +122,8 @@ export const uploadFullBuffers = (
   }
 
   // Join props of current element
-  keys.forEach(key => {
-    const { type, index } = bufferSchema[key]
+  bufferKeys.forEach(key => {
+    const { index } = propSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
     let data = prevProps[key]
     if (index) {
@@ -130,9 +136,7 @@ export const uploadFullBuffers = (
         push(data, bufferProps[key][i])
       }
     }
-    const arr = type === BufferTypes.float
-      ? new Float32Array(data)
-      : new Uint16Array(data)
+    const arr = index ? new Uint16Array(data) : new Float32Array(data)
     gl.bindBuffer(target, buffers[key])
     gl.bufferData(target, bufferSizes[key], gl.STATIC_DRAW)
     gl.bufferData(target, arr, gl.STATIC_DRAW)
@@ -140,12 +144,12 @@ export const uploadFullBuffers = (
 }
 
 export const uploadSubBuffers = (
-  gl, keys, uploadOffset, bufferProps, buffers, bufferSchema
+  gl, keys, uploadOffset, bufferProps, buffers, propSchema
 ) => {
   if (!keys.length) return
 
   keys.forEach(key => {
-    const { type, index } = bufferSchema[key]
+    const { index } = propSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
 
     let data
@@ -156,10 +160,8 @@ export const uploadSubBuffers = (
       }
     } else { data = bufferProps[key] }
 
-    const arr = type === BufferTypes.float
-      ? new Float32Array(data)
-      : new Uint16Array(data)
-    const size = type === BufferTypes.float ? 4 : 2
+    const arr = index ? new Uint16Array(data) : new Float32Array(data)
+    const size = index ? 2 : 4
     const offset = uploadOffset.keys[key]
 
     gl.bindBuffer(target, buffers[key])
@@ -239,19 +241,20 @@ export const resetBeforeDraw = gl => {
 }
 
 export const draw = (
-  gl, programInfo, buffers, bufferSchema, totalLength, uniformProps
+  gl, programInfo, buffers, propSchema, totalLength, uniformProps
 ) => {
   gl.useProgram(programInfo.program)
 
   let indexBuffer = null
-  Object.keys(bufferSchema).forEach(key => {
-    if (!programInfo.attributes[key] && bufferSchema[key].index) {
+  const bufferKeys = getBufferKeys(propSchema)
+  bufferKeys.forEach(key => {
+    if (!programInfo.attributes[key] && propSchema[key].index) {
       indexBuffer = buffers[key]
     } else {
       const { location } = programInfo.attributes[key]
-      const { type, n } = bufferSchema[key]
+      const { n } = propSchema[key]
       gl.bindBuffer(gl.ARRAY_BUFFER, buffers[key])
-      const bufferType = type === BufferTypes.float ? gl.FLOAT : gl.INT
+      const bufferType = n ? gl.FLOAT : gl.INT
       gl.vertexAttribPointer(location, n, bufferType, false, 0, 0)
       gl.enableVertexAttribArray(location)
     }

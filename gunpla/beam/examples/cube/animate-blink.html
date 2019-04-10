@@ -38,7 +38,7 @@ const tick = () => {
   renderer.setGlobal('camera', setCamera(eye))
   for (let i = 0; i < renderer.elements.length; i++) {
     const element = renderer.elements[i]
-    const [x, y, z] = element.state.position
+    const [x, y, z] = element.props.position
     renderer.changeElement(element, {
       position: [x + random() - 0.5, y + random() - 0.5, z + random() - 0.5],
       color: [random(), random(), random(), random()]
