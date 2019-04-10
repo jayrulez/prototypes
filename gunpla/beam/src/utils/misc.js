@@ -41,40 +41,42 @@ export const setCharToMaps = (data, char, [weakMap, map]) => {
     : map[data] = char
 }
 
-// uploadOffset: { keys: { keyA, keyB, keyC... }, index }
-export const getUploadOffset = (
-  element, elements, bufferKeys, bufferLengthMap
+export const alignBufferProps = (
+  baseElement, name, bufferKeys, bufferProps, propSchema
 ) => {
-  const uploadOffset = {
-    keys: bufferKeys.reduce((map, key) => ({ ...map, [key]: 0 }), {}),
-    index: 0
+  if (!baseElement) return bufferProps
+  const indexKey = bufferKeys.find(key => propSchema[key].index)
+  if (!indexKey) return bufferProps
+
+  const indexValueOffset = max(baseElement.bufferPropsMap[name][indexKey]) + 1
+
+  const offsetIndexArr = []
+  for (let i = 0; i < bufferProps[indexKey].length; i++) {
+    push(offsetIndexArr, bufferProps[indexKey][i] + indexValueOffset)
   }
 
+  return { ...bufferProps, [indexKey]: offsetIndexArr }
+}
+
+export const bufferPropOffset = (elements, name, key) => {
+  let sum = 0
   for (let i = 0; i < elements.length; i++) {
-    if (elements[i] === element) break
-    const elementBufferLengths = bufferLengthMap.get(elements[i])
-    if (elementBufferLengths) {
-      uploadOffset.index += elementBufferLengths.index
-      for (let j = 0; j < bufferKeys.length; j++) {
-        const key = bufferKeys[j]
-        uploadOffset.keys[key] += elementBufferLengths.keys[key]
-      }
-    }
+    sum += elements[i].bufferPropsMap[name][key].length
   }
-
-  return uploadOffset
+  return sum
 }
 
 export const divideUploadKeys = (
-  bufferKeys, propSchema, bufferProps, bufferChunkSize, uploadOffset
+  elements, name, bufferKeys, bufferProps, propSchema, bufferChunkSize
 ) => {
   const fullKeys = []
   const subKeys = []
   for (let i = 0; i < bufferKeys.length; i++) {
     const key = bufferKeys[i]
     const size = bufferTypeSize(propSchema, key)
-    const need = (uploadOffset.keys[key] + bufferProps[key].length) * size
-    need < bufferChunkSize ? push(subKeys, key) : push(fullKeys, key)
+    const baseSpace = bufferPropOffset(elements, name, key) * size
+    const spaceRequired = baseSpace + bufferProps[key].length * size
+    spaceRequired < bufferChunkSize ? push(subKeys, key) : push(fullKeys, key)
   }
   return [fullKeys, subKeys]
 }
@@ -88,16 +90,5 @@ export const allocateBufferSizes = (
     bufferSizes[key] += Math.max(
       bufferChunkSize, bufferProps[key].length * size
     )
-  }
-}
-
-// bufferLengths: { keys: { keyA, keyB, keyC... }, index }
-export const getBufferLengths = (bufferKeys, bufferProps, propSchema) => {
-  const indexKey = bufferKeys.find(key => propSchema[key].index)
-  return {
-    keys: bufferKeys.reduce(
-      (map, key) => ({ ...map, [key]: bufferProps[key].length }), {}
-    ),
-    index: max(bufferProps[indexKey]) + 1
   }
 }
