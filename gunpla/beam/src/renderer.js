@@ -127,20 +127,18 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) continue
 
-      const { buffers, propSchema, bufferLengthMap } = plugin
-      const bufferProps = plugin.propsByElement(element)
+      const { buffers, propSchema } = plugin
+      const baseBufferProps = plugin.propsByElement(element)
       const bufferKeys = getBufferKeys(propSchema)
-      const uploadOffset = getUploadOffset(
-        element, elements, bufferKeys, bufferLengthMap
-      )
-      const bufferLengths = getBufferLengths(
-        bufferKeys, bufferProps, propSchema
+      const lastElement = elements[elements.indexOf(element) - 1]
+      const bufferProps = alignBufferProps(
+        lastElement, name, bufferKeys, baseBufferProps, propSchema
       )
       const { uploadSubBuffers } = glUtils
-      element.bufferProps[name] = bufferProps
-      bufferLengthMap.set(element, bufferLengths)
+      element.bufferPropsMap[name] = bufferProps
+      const subElements = elements.slice(0, elements.indexOf(element))
       uploadSubBuffers(
-        gl, bufferKeys, uploadOffset, bufferProps, buffers, propSchema
+        gl, bufferKeys, name, subElements, bufferProps, buffers, propSchema
       )
     }
   }
