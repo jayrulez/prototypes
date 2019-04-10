@@ -144,34 +144,11 @@ export class Renderer {
   }
 
   removeElement (element) {
-    const index = this.elements.indexOf(element)
-    if (index === -1) return
-    this.elements.splice(index, 1)
-
-    const { gl, elements, plugins, glUtils } = this
-    for (let i = 0; i < plugins.length; i++) {
-      const plugin = plugins[i]
-      const { name } = plugin.constructor
-      if (!element.plugins[name]) continue
-
-      const { buffers, propSchema, bufferLengthMap, bufferSizes } = plugin
-      const bufferProps = plugin.propsByElement(element)
-      const bufferKeys = getBufferKeys(propSchema)
-      const bufferLengths = getBufferLengths(
-        bufferKeys, bufferProps, propSchema
-      )
-      const { uploadFullBuffers } = glUtils
-      bufferLengthMap.set(element, bufferLengths)
-      uploadFullBuffers(
-        gl,
-        bufferKeys,
-        name,
-        elements,
-        bufferProps,
-        bufferSizes,
-        buffers,
-        propSchema
-      )
+    const copyElements = this.elements.filter(el => el !== element)
+    this.elements = []
+    // TODO perf
+    for (let i = 0; i < copyElements.length; i++) {
+      this.addElement(copyElements[i])
     }
   }
 
