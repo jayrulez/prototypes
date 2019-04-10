@@ -198,7 +198,13 @@ export class Renderer {
     resetBeforeDraw(gl)
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
-      const { programInfo, buffers, propSchema, bufferLengthMap } = plugin
+      const {
+        programInfo,
+        buffers,
+        propSchema,
+        bufferLengthMap,
+        textureMap
+      } = plugin
       const indexKey = Object
         .keys(propSchema)
         .find(key => propSchema[key].index)
@@ -209,9 +215,11 @@ export class Renderer {
         if (!bufferLengths) continue
         totalLength += bufferLengths.keys[indexKey]
       }
-      const uniformProps = plugin.propsByGlobals(globals)
-
-      draw(gl, programInfo, buffers, propSchema, totalLength, uniformProps)
+      const props = {
+        ...plugin.propsByElement(elements[0]), // FIXME
+        ...plugin.propsByGlobals(globals)
+      }
+      draw(gl, programInfo, buffers, propSchema, totalLength, textureMap, props)
     }
   }
 }
