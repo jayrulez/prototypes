@@ -6,7 +6,7 @@
   <body>
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
-import { ImagePlugin, ImageElement, loadImage } from './image.js'
+import { ImagePlugin, ImageElement, loadImages } from './image.js'
 import {
   Element,
   Renderer,
@@ -21,17 +21,23 @@ const renderer = new Renderer(canvas, [imagePlugin])
 renderer.setGlobal('camera', setCamera([0, 0, 10]))
 renderer.setGlobal('perspective', setPerspective(canvas))
 
-loadImage('./black-hole.jpg').then(img => {
-  const imageA = new ImageElement({
-    position: [1, 0, -3],
-    img
+loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
+  const imageA1 = new ImageElement({
+    position: [-1, 1, -3], img: imgA
   })
-  const imageB = new ImageElement({
-    position: [-1, 0, -3],
-    img
+  const imageA2 = new ImageElement({
+    position: [1, 1, -3], img: imgA
   })
-  renderer.addElement(imageA)
-  renderer.addElement(imageB)
+  const imageB1 = new ImageElement({
+    position: [-1, -1, -3], img: imgB
+  })
+  const imageB2 = new ImageElement({
+    position: [1, -1, -3], img: imgB
+  })
+  renderer.addElement(imageA1)
+  renderer.addElement(imageA2)
+  renderer.addElement(imageB1)
+  renderer.addElement(imageB2)
   renderer.render()
 })
 

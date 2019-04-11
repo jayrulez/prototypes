@@ -130,20 +130,32 @@ export const uploadSubBuffers = (
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
     const commonOffset = bufferPropOffset(elements, name, key)
 
-    let data
-    if (index) {
-      data = []
-      const indexProps = bufferProps[key]
-      for (let i = 0; i < indexProps.length; i++) {
-        data[i] = indexProps[i]
-      }
-    } else { data = bufferProps[key] }
+    if (index) return // TEST
+
+    const data = bufferProps[key]
     const arr = index ? new Uint16Array(data) : new Float32Array(data)
     const size = index ? 2 : 4
 
     gl.bindBuffer(target, buffers[key])
     gl.bufferSubData(target, commonOffset * size, arr)
   })
+}
+
+export const uploadIndexBuffers = (
+  gl, elements, name, buffers, propSchema
+) => {
+  const bufferKeys = getBufferKeys(propSchema)
+  const indexKey = bufferKeys.find(key => propSchema[key].index)
+
+  let data = []
+  for (let i = 0; i < elements.length; i++) {
+    const indexProps = elements[i].bufferPropsMap[name][indexKey]
+    data = data.concat(indexProps)
+  }
+  const arr = new Uint16Array(data)
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers[indexKey])
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, arr, gl.STATIC_DRAW)
 }
 
 export const initFramebufferObject = (gl) => {

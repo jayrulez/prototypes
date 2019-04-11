@@ -92,3 +92,17 @@ export const allocateBufferSizes = (
     )
   }
 }
+
+export const divideElementsByCode = (elements, name) => {
+  const results = {}
+
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i]
+    if (!element.plugins[name]) continue
+
+    const code = element.codes[name]
+    results[code] ? push(results[code], element) : results[code] = [element]
+  }
+
+  return Object.keys(results).map(key => results[key])
+}

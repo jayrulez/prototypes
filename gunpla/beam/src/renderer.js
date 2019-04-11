@@ -5,6 +5,7 @@ import {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
+  uploadIndexBuffers,
   uploadTexture,
   resetBeforeDraw,
   draw
@@ -18,7 +19,8 @@ import {
   generateChar,
   allocateBufferSizes,
   divideUploadKeys,
-  alignBufferProps
+  alignBufferProps,
+  divideElementsByCode
 } from './utils/misc.js'
 
 const defaultUtils = {
@@ -28,6 +30,7 @@ const defaultUtils = {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
+  uploadIndexBuffers,
   uploadTexture,
   resetBeforeDraw,
   draw
@@ -115,7 +118,7 @@ export class Renderer {
         setCharToMaps(uniformProps[key], char, elementCodeMaps)
         code += char
       })
-      element.codes[name] = code
+      element.codes[name] = code || 'A'
     }
   }
 
@@ -157,8 +160,8 @@ export class Renderer {
   }
 
   render () {
-    const { gl, glUtils, plugins, globals, elements } = this
-    if (!elements.length) return
+    const { gl, glUtils, plugins, globals, elements: subElements } = this
+    if (!subElements.length) return
 
     const { resetBeforeDraw, draw } = glUtils
     resetBeforeDraw(gl)
@@ -175,16 +178,25 @@ export class Renderer {
         .keys(propSchema)
         .find(key => propSchema[key].index)
 
-      let totalLength = 0
-      for (let i = 0; i < elements.length; i++) {
-        totalLength += elements[i].bufferPropsMap[name][indexKey].length
-      }
+      const elementGroups = divideElementsByCode(subElements, name)
+      const { uploadIndexBuffers } = glUtils
 
-      const props = {
-        ...plugin.propsByElement(elements[0]), // FIXME
-        ...plugin.propsByGlobals(globals)
+      for (let i = 0; i < elementGroups.length; i++) {
+        const subElements = elementGroups[i]
+        uploadIndexBuffers(gl, subElements, name, buffers, propSchema)
+        let totalLength = 0
+        for (let i = 0; i < subElements.length; i++) {
+          totalLength += subElements[i].bufferPropsMap[name][indexKey].length
+        }
+        const props = {
+          // Should always has length, always same element props in same batch
+          ...plugin.propsByElement(subElements[0]),
+          ...plugin.propsByGlobals(globals)
+        }
+        draw(
+          gl, programInfo, buffers, propSchema, totalLength, textureMap, props
+        )
       }
-      draw(gl, programInfo, buffers, propSchema, totalLength, textureMap, props)
     }
   }
 }
