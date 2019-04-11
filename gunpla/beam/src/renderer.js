@@ -192,6 +192,8 @@ export class Renderer {
       const elementGroups = divideElementsByCode(elements, name)
       const { uploadIndexBuffers } = glUtils
 
+      plugin.beforeRender(gl)
+
       for (let i = 0; i < elementGroups.length; i++) {
         const groupedElements = elementGroups[i]
         uploadIndexBuffers(gl, bufferIndexGroup[i], buffers, propSchema)

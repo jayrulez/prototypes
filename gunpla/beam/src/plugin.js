@@ -23,4 +23,8 @@ export class ShadePlugin {
   propsByGlobals (globals) {
     return {}
   }
+
+  beforeRender (gl) {
+
+  }
 }
