@@ -67,7 +67,10 @@ export const uploadTexture = (gl, image) => {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
 
-  if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+  if (
+    isPowerOf2(image.width) && isPowerOf2(image.height) &&
+    image.nodeName !== 'VIDEO'
+  ) {
     gl.generateMipmap(gl.TEXTURE_2D)
   } else {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
@@ -261,6 +264,9 @@ export const draw = (
         gl.uniform1i(location, 0)
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, textureMap.get(prop))
+        gl.texImage2D(
+          gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, prop
+        )
       }
     }
     uniformSetterMapping[type]()

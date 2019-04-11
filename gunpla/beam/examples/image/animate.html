@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+    <style>
+      * { background: black; margin: auto 0; padding: 0; }
+      body { display: flex; justify-content: center; }
+      canvas { width: 100%; height: 100% }
+      button { position: fixed; top: 0; left: 0; color: white; }
+    </style>
+  </head>
+  <body>
+    <button id="btn-play">Play</button>
+    <br/>
+    <!-- Provide your video here -->
+    <video src="./a.mov" id="video-a" autoplay loop hidden></video>
+    <video src="./b.mov" id="video-b" autoplay loop hidden></video>
+    <canvas id="gl-canvas" width="400" height="400"></canvas>
+<script type="module">
+import { ImagePlugin, ImageElement } from './image.js'
+import {
+  Element,
+  Renderer,
+  setCamera,
+  setPerspective
+} from '../../src/index.js'
+
+const { cos, sin } = Math
+const videoA = document.getElementById('video-a')
+const videoB = document.getElementById('video-b')
+const button = document.getElementById('btn-play')
+const canvas = document.getElementById('gl-canvas')
+canvas.height = window.innerHeight / 2
+canvas.width = window.innerWidth / 2
+
+const imagePlugin = new ImagePlugin()
+const renderer = new Renderer(canvas, [imagePlugin])
+renderer.setGlobal('camera', setCamera([0, 0, 10]))
+renderer.setGlobal('perspective', setPerspective(canvas))
+
+button.addEventListener('click',() => {
+  const ratioA = videoA.videoHeight / videoA.videoWidth
+  const ratioB = videoB.videoHeight / videoB.videoWidth
+  const videoElementA = new ImageElement({
+    position: [-1, 1, 7], img: videoA, aspectRatio: ratioA
+  })
+  const videoElementB = new ImageElement({
+    position: [1, 1, 5], img: videoB, aspectRatio: ratioB
+  })
+  videoA.play()
+  videoB.play()
+  renderer.addElement(videoElementA)
+  renderer.addElement(videoElementB)
+  tick()
+})
+
+let i = 0
+const tick = () => {
+  i += 0.015
+  const eye = [cos(i) * 2, sin(i) * 2, 10]
+  renderer.setGlobal('camera', setCamera(eye))
+  renderer.render()
+  window.requestAnimationFrame(tick)
+}
+
+window.renderer = renderer
+</script>
+  </body>
+</html>

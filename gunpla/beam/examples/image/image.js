@@ -62,11 +62,12 @@ export class ImagePlugin extends ShadePlugin {
 
   propsByElement ({ props }) {
     const p = props.position
+    const r = props.aspectRatio || 1
     const basePositions = [
-      -1.0, -1.0, 1.0,
-      1.0, -1.0, 1.0,
-      1.0, 1.0, 1.0,
-      -1.0, 1.0, 1.0
+      -1.0, -1.0 * r, 1.0,
+      1.0, -1.0 * r, 1.0,
+      1.0, 1.0 * r, 1.0,
+      -1.0, 1.0 * r, 1.0
     ]
     const texCoord = [
       0.0, 0.0,
