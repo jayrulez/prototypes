@@ -11,6 +11,7 @@ export class ShadePlugin {
     this.elementCodeMaps = [new WeakMap(), {}]
     this.buffers = {}
     this.bufferSizes = {}
+    this.bufferIndexGroup = []
     this.textureMap = new WeakMap()
     this.offscreen = false
   }

@@ -120,6 +120,14 @@ export class Renderer {
         code += char
       })
       element.codes[name] = code || 'A'
+
+      const elementGroups = divideElementsByCode(elements, name)
+      const indexKey = Object
+        .keys(propSchema)
+        .find(key => propSchema[key].index)
+      plugin.bufferIndexGroup = createBufferIndexGroup(
+        elementGroups, plugin, indexKey
+      )
     }
   }
 
@@ -172,6 +180,7 @@ export class Renderer {
       const {
         programInfo,
         buffers,
+        bufferIndexGroup,
         propSchema,
         textureMap
       } = plugin
@@ -181,10 +190,6 @@ export class Renderer {
 
       const elementGroups = divideElementsByCode(elements, name)
       const { uploadIndexBuffers } = glUtils
-
-      const bufferIndexGroup = createBufferIndexGroup(
-        elementGroups, plugin, indexKey
-      )
 
       for (let i = 0; i < elementGroups.length; i++) {
         const groupedElements = elementGroups[i]
