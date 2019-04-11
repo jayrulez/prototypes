@@ -44,9 +44,12 @@ export const setCharToMaps = (data, char, [weakMap, map]) => {
 export const alignBufferProps = (
   baseElement, name, bufferKeys, bufferProps, propSchema
 ) => {
-  if (!baseElement) return bufferProps
   const indexKey = bufferKeys.find(key => propSchema[key].index)
-  if (!indexKey) return bufferProps
+  if (
+    !baseElement ||
+    !indexKey ||
+    !baseElement.bufferPropsMap[name]
+  ) return bufferProps
 
   const indexValueOffset = max(baseElement.bufferPropsMap[name][indexKey]) + 1
 
