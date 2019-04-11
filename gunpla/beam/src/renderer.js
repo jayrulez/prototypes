@@ -18,6 +18,7 @@ import {
   setCharToMaps,
   generateChar,
   allocateBufferSizes,
+  createBufferIndexGroup,
   divideUploadKeys,
   alignBufferProps,
   divideElementsByCode
@@ -160,8 +161,8 @@ export class Renderer {
   }
 
   render () {
-    const { gl, glUtils, plugins, globals, elements: subElements } = this
-    if (!subElements.length) return
+    const { gl, glUtils, plugins, globals, elements } = this
+    if (!elements.length) return
 
     const { resetBeforeDraw, draw } = glUtils
     resetBeforeDraw(gl)
@@ -178,19 +179,26 @@ export class Renderer {
         .keys(propSchema)
         .find(key => propSchema[key].index)
 
-      const elementGroups = divideElementsByCode(subElements, name)
+      const elementGroups = divideElementsByCode(elements, name)
       const { uploadIndexBuffers } = glUtils
 
+      const bufferIndexGroup = createBufferIndexGroup(
+        elementGroups, plugin, indexKey
+      )
+
       for (let i = 0; i < elementGroups.length; i++) {
-        const subElements = elementGroups[i]
-        uploadIndexBuffers(gl, subElements, name, buffers, propSchema)
+        const groupedElements = elementGroups[i]
+        uploadIndexBuffers(gl, bufferIndexGroup[i], buffers, propSchema)
+
         let totalLength = 0
-        for (let i = 0; i < subElements.length; i++) {
-          totalLength += subElements[i].bufferPropsMap[name][indexKey].length
+        for (let i = 0; i < groupedElements.length; i++) {
+          totalLength += (
+            groupedElements[i].bufferPropsMap[name][indexKey].length
+          )
         }
         const props = {
           // Should always has length, always same element props in same batch
-          ...plugin.propsByElement(subElements[0]),
+          ...plugin.propsByElement(groupedElements[0]),
           ...plugin.propsByGlobals(globals)
         }
         draw(

@@ -66,6 +66,22 @@ export const bufferPropOffset = (elements, name, key) => {
   return sum
 }
 
+export const createBufferIndexGroup = (elementGroups, plugin, indexKey) => {
+  const { name } = plugin.constructor
+
+  const bufferIndexGroup = []
+  for (let i = 0; i < elementGroups.length; i++) {
+    const elements = elementGroups[i]
+    let indexGroup = []
+    for (let j = 0; j < elements.length; j++) {
+      const indexProps = elements[j].bufferPropsMap[name][indexKey]
+      indexGroup = indexGroup.concat(indexProps)
+    }
+    push(bufferIndexGroup, indexGroup)
+  }
+  return bufferIndexGroup
+}
+
 export const divideUploadKeys = (
   elements, name, bufferKeys, bufferProps, propSchema, bufferChunkSize
 ) => {

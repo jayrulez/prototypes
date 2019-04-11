@@ -142,17 +142,11 @@ export const uploadSubBuffers = (
 }
 
 export const uploadIndexBuffers = (
-  gl, elements, name, buffers, propSchema
+  gl, indexGroup, buffers, propSchema
 ) => {
   const bufferKeys = getBufferKeys(propSchema)
   const indexKey = bufferKeys.find(key => propSchema[key].index)
-
-  let data = []
-  for (let i = 0; i < elements.length; i++) {
-    const indexProps = elements[i].bufferPropsMap[name][indexKey]
-    data = data.concat(indexProps)
-  }
-  const arr = new Uint16Array(data)
+  const arr = new Uint16Array(indexGroup)
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers[indexKey])
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, arr, gl.STATIC_DRAW)
