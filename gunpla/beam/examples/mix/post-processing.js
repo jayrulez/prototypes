@@ -159,7 +159,7 @@ vec3 computeColor(vec3 ro, vec3 rd) {
 }
 
 void main() {
-  vec2 resolution = vec2(${window.innerWidth}, ${window.innerHeight});
+  vec2 resolution = vec2(${window.innerWidth / 3}, ${window.innerHeight / 3});
   vec2 q = gl_FragCoord.xy / resolution.xy;
   vec2 coord = 2.0 * q - 1.0;
   coord.x *= resolution.x / resolution.y;

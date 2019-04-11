@@ -6,9 +6,10 @@
   <style>
     * { background: black; margin: auto 0; padding: 0; }
     body { display: flex; justify-content: center; }
+    canvas { width: 100%; height: 100% }
   </style>
   <body>
-    <canvas id="gl-canvas" width="400" height="400"></canvas>
+    <canvas id="gl-canvas"></canvas>
 <script type="module">
 import { CubePlugin, CubeElement } from '../cube/cube.js'
 import { ImagePlugin, ImageElement, loadImages } from '../image/image.js'
@@ -24,22 +25,29 @@ import {
 } from '../../src/index.js'
 
 const canvas = document.getElementById('gl-canvas')
-canvas.height = window.innerHeight
-canvas.width = window.innerWidth
+canvas.height = window.innerHeight / 3
+canvas.width = window.innerWidth / 3
 
+const { random, cos, sin } = Math
+const urls = ['../image/black-hole.jpg']
 const imagePlugin = new ImagePlugin()
 const cubePlugin = new CubePlugin()
 const postProcessingPlugin = new PostProcessingPlugin()
+const eye = [0, 0, 40]
+const perspective = setPerspective(canvas)
+
 const renderer = new Renderer(canvas, [
-  cubePlugin, postProcessingPlugin
+  cubePlugin, postProcessingPlugin, imagePlugin
 ])
-renderer.setGlobal('perspective', setPerspective(canvas))
-
-const urls = ['../image/black-hole.jpg', '../image/gundam.jpg']
-const { random, cos, sin } = Math
-
-loadImages(urls).then(([imgA,  imgB]) => {
+// Fix the image
+imagePlugin.propsByGlobals = () => ({
+  viewMat: setCamera(eye), projectionMat: perspective
+})
+renderer.setGlobal('perspective', perspective)
+loadImages(urls).then(([blackHole]) => {
   const post = new PostProcessingElement()
+  const image = new ImageElement({ position: [0, 0, 35], img: blackHole })
+  renderer.addElement(image)
   renderer.addElement(post)
   const N = 2
 
