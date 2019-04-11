@@ -130,7 +130,7 @@ export const uploadSubBuffers = (
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
     const commonOffset = bufferPropOffset(elements, name, key)
 
-    if (index) return // TEST
+    if (index) return
 
     const data = bufferProps[key]
     const arr = index ? new Uint16Array(data) : new Float32Array(data)
@@ -219,6 +219,7 @@ export const initFramebufferObject = (gl) => {
 export const resetBeforeDraw = gl => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clearDepth(1.0)
+  gl.disable(gl.BLEND)
   gl.enable(gl.DEPTH_TEST)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 }
@@ -251,7 +252,7 @@ export const draw = (
       [ShaderTypes.vec4]: () => gl.uniform4fv(location, prop),
       [ShaderTypes.vec3]: () => gl.uniform3fv(location, prop),
       [ShaderTypes.vec2]: () => gl.uniform2fv(location, prop),
-      [ShaderTypes.float]: () => gl.uniform1fv(location, prop),
+      [ShaderTypes.float]: () => gl.uniform1f(location, prop),
       [ShaderTypes.int]: () => gl.uniform1i(location, prop),
       [ShaderTypes.mat4]: () => gl.uniformMatrix4fv(location, false, prop),
       [ShaderTypes.mat3]: () => gl.uniformMatrix3fv(location, false, prop),

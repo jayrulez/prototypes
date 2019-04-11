@@ -33,9 +33,7 @@ const postProcessingPlugin = new PostProcessingPlugin()
 const renderer = new Renderer(canvas, [
   cubePlugin, imagePlugin, postProcessingPlugin
 ])
-renderer.setGlobal('camera', setCamera([0, 0, 10]))
 renderer.setGlobal('perspective', setPerspective(canvas))
-renderer.setGlobal('k', 10)
 
 const urls = ['../image/black-hole.jpg', '../image/gundam.jpg']
 loadImages(urls).then(([imgA,  imgB]) => {
@@ -59,8 +57,19 @@ loadImages(urls).then(([imgA,  imgB]) => {
   renderer.addElement(imageB2)
   renderer.addElement(cube)
   renderer.addElement(post)
-  renderer.render()
 })
+
+let i = 0
+const { random, cos, sin } = Math
+const tick = () => {
+  i += 0.1
+  const eye = [cos(i) * 40, sin(i) * 40, 40 + i]
+  renderer.setGlobal('camera', setCamera(eye))
+  renderer.setGlobal('k', -i)
+  renderer.render()
+  window.requestAnimationFrame(tick)
+}
+tick()
 
 window.renderer = renderer
 </script>
