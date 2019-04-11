@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <body>
+    <canvas id="gl-canvas" width="400" height="400"></canvas>
+<script type="module">
+import { CubePlugin, CubeElement } from '../cube/cube.js'
+import { ImagePlugin, ImageElement, loadImages } from '../image/image.js'
+import {
+  Element,
+  Renderer,
+  setCamera,
+  setPerspective
+} from '../../src/index.js'
+
+const canvas = document.getElementById('gl-canvas')
+
+const imagePlugin = new ImagePlugin()
+const cubePlugin = new CubePlugin()
+const renderer = new Renderer(canvas, [cubePlugin, imagePlugin])
+renderer.setGlobal('camera', setCamera([0, 0, 10]))
+renderer.setGlobal('perspective', setPerspective(canvas))
+
+const urls = ['../image/black-hole.jpg', '../image/gundam.jpg']
+loadImages(urls).then(([imgA,  imgB]) => {
+  const imageA1 = new ImageElement({
+    position: [-1, 1, -3], img: imgA
+  })
+  const imageA2 = new ImageElement({
+    position: [1, 1, -3], img: imgA
+  })
+  const imageB1 = new ImageElement({
+    position: [-1, -1, -3], img: imgB
+  })
+  const imageB2 = new ImageElement({
+    position: [1, -1, -3], img: imgB
+  })
+  const cube = new CubeElement({ position: [3, 0, 0] })
+  renderer.addElement(imageA1)
+  renderer.addElement(imageA2)
+  renderer.addElement(imageB1)
+  renderer.addElement(imageB2)
+  renderer.addElement(cube)
+  renderer.render()
+})
+
+window.renderer = renderer
+</script>
+  </body>
+</html>

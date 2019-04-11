@@ -18,6 +18,7 @@ import {
   setCharToMaps,
   generateChar,
   allocateBufferSizes,
+  getLastPluggedElement,
   createBufferIndexGroup,
   divideUploadKeys,
   alignBufferProps,
@@ -73,7 +74,7 @@ export class Renderer {
       const baseBufferProps = plugin.propsByElement(element)
       const bufferKeys = getBufferKeys(propSchema)
       const { bufferChunkSize } = config
-      const lastElement = elements[elements.length - 1]
+      const lastElement = getLastPluggedElement(elements, name)
       const bufferProps = alignBufferProps(
         lastElement, name, bufferKeys, baseBufferProps, propSchema
       )

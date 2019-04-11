@@ -61,9 +61,18 @@ export const alignBufferProps = (
 export const bufferPropOffset = (elements, name, key) => {
   let sum = 0
   for (let i = 0; i < elements.length; i++) {
+    if (!elements[i].plugins[name]) continue
     sum += elements[i].bufferPropsMap[name][key].length
   }
   return sum
+}
+
+export const getLastPluggedElement = (elements, name) => {
+  for (let i = elements.length - 1; i >= 0; i--) {
+    if (elements[i].plugins[name]) {
+      return elements[i]
+    }
+  }
 }
 
 export const createBufferIndexGroup = (elementGroups, plugin, indexKey) => {
