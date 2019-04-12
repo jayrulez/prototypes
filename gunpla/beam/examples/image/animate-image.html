@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <style>
+    * { background: black; margin: auto 0; padding: 0; }
+    body { display: flex; justify-content: center; }
+    canvas { width: 100%; height: 100% }
+  </style>
+  <body>
+    <canvas id="gl-canvas"></canvas>
+<script type="module">
+import { ImagePlugin, ImageElement, loadImages } from './image.js'
+import {
+  Element,
+  Renderer,
+  setCamera,
+  setPerspective
+} from '../../src/index.js'
+
+const { cos, sin } = Math
+const canvas = document.getElementById('gl-canvas')
+canvas.height = window.innerHeight
+canvas.width = window.innerWidth
+
+const imagePlugin = new ImagePlugin()
+const renderer = new Renderer(canvas, [imagePlugin])
+renderer.setGlobal('camera', setCamera([0, 0, 40]))
+renderer.setGlobal('perspective', setPerspective(canvas))
+
+loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
+  const N = 10
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const image = new ImageElement({
+        position: [i * 3 - N, j * 3 - N, -3],
+        img: (i + j) % 2 === 0 ? imgA : imgB
+      })
+      renderer.addElement(image)
+    }
+  }
+
+  tick()
+})
+
+let i = 0
+const tick = () => {
+  i += 0.05
+  const eye = [cos(i) * 5, sin(i) * 5, 40]
+  renderer.setGlobal('camera', setCamera(eye))
+  renderer.render()
+  window.requestAnimationFrame(tick)
+}
+
+window.renderer = renderer
+</script>
+  </body>
+</html>
