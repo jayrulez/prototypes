@@ -48,6 +48,7 @@ npm install -g http-server && http-server .
 ``` html
 <canvas id="demo" width="400" height="400"></canvas>
 <script type="module">
+// TODO 改进这里的 setter API
 import { Renderer, setCamera, setPerspective } from '../../src/index.js'
 import { CubeElement, CubePlugin } from './cube.js'
 
@@ -74,10 +75,10 @@ window.renderer = renderer
 
 
 ## 着色插件定制
-Beam 在示例中配套提供了若干可直接使用的着色插件，但它的 opt-in 扩展式架构决定了我们很可能遇到这些插件尚不足以满足需求的情形。这时，你可以选择定制或从头实现出你的新着色插件。着色插件具备一套的 Schema 规范，能做到既在多数场景下无需直接操作 GL 状态，又能在需要的时候保留一定的控制力。
+Beam 在示例中配套提供了若干可直接使用的着色插件，但它的 opt-in 扩展式架构决定了我们很可能遇到这些插件尚不足以满足需求的情形。这时，你可以选择定制或从头实现出你的新着色插件。着色插件具备一套简便的 Schema 规范，能做到既在多数场景下无需直接操作 GL 状态，又能在需要的时候保留一定的控制力。
 
 对于 Beam 的着色插件机制，请参见 [Shade Plugin](./docs/shade-plugin.md) 文档。
 
 
 ## API
-Beam 仍然在快速演化中，这里暂时只能列出较为基础的 [API](./docs/api.md) 设计文档。
+Beam 仍然在快速演化中，这里暂时只能列出较为基础的 [API](./docs/api.md) 文档。
