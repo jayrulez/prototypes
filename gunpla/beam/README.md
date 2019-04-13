@@ -15,7 +15,7 @@ Beam 尝试用全新的理念，来支撑这些既强调图形渲染又追求规
 * 基于核心库来自动化地管理缓冲区、纹理等 WebGL 资源，并合并 Draw Call。这些优化几乎完全对上层透明。
 * 基于可增删、可插拔的着色插件来定制渲染能力。你选择或定制什么样的着色插件，它就是什么样的渲染引擎。
 
-这样，基于极轻的核心运行时加上可自由组合的着色插件，引擎就能方便地在兼顾易用性和体积的前提下，嵌入上层系统中使用了。
+这样，基于极轻的核心运行时加上可自由组合的着色插件，引擎就能在兼顾易用性和体积的前提下，无缝地嵌入上层系统中使用了。
 
 那么，什么是着色插件呢？在经典的前向渲染流程中，场景是需要通过一系列的着色器分多次绘制的。我们将这个渲染路径下的每个着色器抽取出来并规范化，就能得到可标准化的着色插件和可插拔的渲染路径了。
 
@@ -46,12 +46,12 @@ npm install -g http-server && http-server .
 你也能很容易地新建自己的示例来体验它。例如，基于已有的 `CubePlugin`，一个基本的，用于绘制立方体的 Beam 应用形如这样：
 
 ``` html
-<canvas id="gl-canvas" width="400" height="400"></canvas>
+<canvas id="demo" width="400" height="400"></canvas>
 <script type="module">
 import { Renderer, setCamera, setPerspective } from '../../src/index.js'
 import { CubeElement, CubePlugin } from './cube.js'
 
-const canvas = document.getElementById('gl-canvas')
+const canvas = document.getElementById('demo')
 
 const cubePlugin = new CubePlugin()
 const renderer = new Renderer(canvas, [cubePlugin])
@@ -68,10 +68,16 @@ window.renderer = renderer
 </script>
 ```
 
+我们在这个示例中实例化出了一个 `renderer` 渲染器，并使用其 `addElement` 方法为其添加了若干个 `CubeElement` 元素实例。在 Beam 中，元素只是纯数据 Props 的载体，不包含渲染状态与逻辑。而着色插件则会识别出其所支持的元素，将元素内形如 `position` 的语义化数据字段转换为 GPU 支持的缓冲区、纹理等数据，在最后 `render` 时渲染出全部元素。
 
-## 着色插件开发
-对于 Beam 的插件定制，请参见 [Shade Plugin](./docs/shade-plugin.md) 文档。
+在存在可用的着色插件时对 Beam 的基础使用，仅仅需要包括调用 `addElement` / `changeElement` / `removeElement` 这些操作元素的 API，再加上最终的 `render` 方法。这就是它的核心能力了。
+
+
+## 着色插件定制
+Beam 在示例中配套提供了若干可直接使用的着色插件，但它的 opt-in 扩展式架构决定了我们很可能遇到这些插件尚不足以满足需求的情形。这时，你可以选择定制或从头实现出你的新着色插件。着色插件具备一套的 Schema 规范，能做到既在多数场景下无需直接操作 GL 状态，又能在需要的时候保留一定的控制力。
+
+对于 Beam 的着色插件机制，请参见 [Shade Plugin](./docs/shade-plugin.md) 文档。
 
 
 ## API
-Beam 仍然在快速变化中，这里暂时只能列出粗略的 [API](./docs/api.md) 设计文档。
+Beam 仍然在快速演化中，这里暂时只能列出较为基础的 [API](./docs/api.md) 设计文档。
