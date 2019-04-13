@@ -43,7 +43,7 @@ cd beam
 npm install -g http-server && http-server .
 ```
 
-你也能很容易地新建自己的示例来体验它。例如，基于已有的 `CubePlugin`，一个基本的，用于绘制立方体的 Beam 应用形如这样：
+你也能很容易地新建自己的示例来体验它。例如，基于已有的 `CubePlugin`，一个用于绘制立方体的简单 Beam 应用形如这样：
 
 ``` html
 <canvas id="demo" width="400" height="400"></canvas>
