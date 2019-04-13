@@ -36,7 +36,41 @@ Beam 选择通过极轻的核心加上 opt-in 的插件架构，实现对于更�
 
 
 ## 上手使用
-TODO
+Beam 是纯粹且不需要第三方依赖的前端基础库，建议通过源码目录下的 examples 来熟悉它。由于它采用 `<script type="module">` 的源码形式来优化开发体验，需要高版本 Chrome 并启动静态服务器来运行示例：
+
+``` bash
+cd beam
+npm install -g http-server && http-server .
+```
+
+你也能很容易地新建自己的示例来体验它。例如，基于已有的 `CubePlugin`，一个基本的，用于绘制立方体的 Beam 应用形如这样：
+
+``` html
+<canvas id="gl-canvas" width="400" height="400"></canvas>
+<script type="module">
+import { Renderer, setCamera, setPerspective } from '../../src/index.js'
+import { CubeElement, CubePlugin } from './cube.js'
+
+const canvas = document.getElementById('gl-canvas')
+
+const cubePlugin = new CubePlugin()
+const renderer = new Renderer(canvas, [cubePlugin])
+renderer.setGlobal('camera', setCamera([0, 10, 10]))
+renderer.setGlobal('perspective', setPerspective(canvas))
+
+const cubeA = new CubeElement({ position: [0, 0, 0] })
+const cubeB = new CubeElement({ position: [3, 0, 0] })
+const cubeC = new CubeElement({ position: [-3, 0, 0] })
+const cubeD = new CubeElement({ position: [0, -3, 0] })
+renderer.addElement(cubeA)
+renderer.addElement(cubeB)
+renderer.addElement(cubeC)
+renderer.addElement(cubeD)
+
+renderer.render()
+window.renderer = renderer
+</script>
+```
 
 
 ## 着色插件开发
