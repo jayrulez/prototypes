@@ -5,7 +5,12 @@
 ## Renderer
 引擎对象实例
 
-* `Renderer` - 实例化引擎
+### Properties
+* `config` - 默认 Buffer 尺寸等配置
+* `globals` - 渲染时全局数据字段容器
+* `elements` - 元素数组
+
+### Methods
 * `addElement` - 新增 Element
 * `changeElement` - 修改 Element
 * `removeElement` - 移除 Element
