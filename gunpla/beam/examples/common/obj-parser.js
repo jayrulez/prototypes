@@ -60,7 +60,8 @@ export class ObjParser {
             const group = line
               .replace('f ', '')
               .split(' ')
-              .map(abc => parseInt(abc.split('/')[0]))
+              // OBJ face index starts from 1
+              .map(abc => parseInt(abc.split('/')[0] - 1))
             join(model.indices, group)
           }
         }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <body>
+    <canvas id="gl-canvas" width="400" height="400"></canvas>
+<script type="module">
+import { Renderer, setCamera, setPerspective } from '../../src/index.js'
+import { ObjParser } from '../common/obj-parser.js'
+import { TextElement, TextPlugin } from './text.js'
+
+const canvas = document.getElementById('gl-canvas')
+
+const textPlugin = new TextPlugin()
+const renderer = new Renderer(canvas, [textPlugin])
+renderer.setGlobal('camera', setCamera([0, 400, 700], [0, 150, 0]))
+renderer.setGlobal('perspective', setPerspective(canvas))
+
+fetch('../common/text.obj').then(resp => resp.text()).then(str => {
+  const parser = new ObjParser()
+  const [model] = parser.parse(str)
+  const textElement = new TextElement(model)
+  renderer.addElement(textElement)
+  renderer.render()
+})
+
+window.renderer = renderer
+</script>
+  </body>
+</html>
