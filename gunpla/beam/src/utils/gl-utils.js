@@ -220,7 +220,7 @@ export const initFramebufferObject = (gl) => {
 }
 
 export const resetBeforeDraw = gl => {
-  gl.clearColor(0.0, 0.0, 0.0, 1.0)
+  gl.clearColor(0.0, 0.0, 0.0, 0.0)
   gl.clearDepth(1.0)
   gl.disable(gl.BLEND)
   gl.enable(gl.DEPTH_TEST)
