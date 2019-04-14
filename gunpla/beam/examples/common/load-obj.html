@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <body>
+<script type="module">
+import { ObjParser } from './obj-parser.js'
+
+const main = str => {
+  const parser = new ObjParser()
+  parser.parse(str)
+}
+
+// Provide OBJ file here
+fetch('./text.obj').then(resp => resp.text().then(main))
+</script>
+  </body>
+</html>
