@@ -4,7 +4,7 @@ import {
   ShaderTypes,
   PropTypes
 } from '../../src/index.js'
-import { create } from '../../src/utils/mat4.js'
+import { create } from '../common/mat4.js'
 
 const vertexShader = `
 attribute vec4 pos;

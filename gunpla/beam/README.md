@@ -48,9 +48,10 @@ npm install -g http-server && http-server .
 ``` html
 <canvas id="demo" width="400" height="400"></canvas>
 <script type="module">
-// TODO 改进这里的 setter API
-import { Renderer, setCamera, setPerspective } from '../../src/index.js'
+import { Renderer } from '../../src/index.js'
 import { CubeElement, CubePlugin } from './cube.js'
+// TODO 改进这里的 setter API
+import { setCamera, setPerspective } from '../common/misc.js'
 
 const canvas = document.getElementById('demo')
 

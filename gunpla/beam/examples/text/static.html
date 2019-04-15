@@ -11,9 +11,10 @@
   <body>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
-import { Renderer, setCamera, setPerspective } from '../../src/index.js'
+import { Renderer } from '../../src/index.js'
 import { ObjParser } from '../common/obj-parser.js'
 import { TextElement, TextPlugin } from './text.js'
+import { setCamera, setPerspective } from '../common/misc.js'
 
 const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight

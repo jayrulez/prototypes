@@ -9,8 +9,9 @@
   <body>
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
-import { Renderer, setCamera, setPerspective } from '../../src/index.js'
+import { Renderer } from '../../src/index.js'
 import { CubeElement, CubePlugin } from './cube.js'
+import { setCamera, setPerspective } from '../common/misc.js'
 
 const canvas = document.getElementById('gl-canvas')
 
