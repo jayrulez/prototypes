@@ -31,7 +31,7 @@
 ### Methods
 * `propsByElement` - 指定如何从生成 props
 * `propsByGlobal` - 指定如何从 global 生成 props
-* `beforeRender` - 在一次 Draw Call 前改变 GL 状态
+* `beforeDraw` - 在一次 Draw Call 前改变 GL 状态
 
 
 ## Element

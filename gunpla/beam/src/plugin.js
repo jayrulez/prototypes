@@ -24,7 +24,7 @@ export class ShadePlugin {
     return {}
   }
 
-  beforeRender (gl) {
+  beforeDraw (gl) {
 
   }
 }

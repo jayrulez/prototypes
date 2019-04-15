@@ -210,7 +210,7 @@ export class PostProcessingPlugin extends ShadePlugin {
     return { k }
   }
 
-  beforeRender (gl) {
+  beforeDraw (gl) {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE)
     gl.enable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)

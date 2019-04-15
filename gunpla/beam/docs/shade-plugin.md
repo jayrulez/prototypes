@@ -22,7 +22,7 @@ Beam 全部的实际渲染能力都是建立在着色插件的基础上的。一
 * 指定 Props 数据到着色器映射关系的 `propSchema`
 * 指定如何从 Element 获得 Props 的 `propsByElement`
 * 指定如何从 Globals 获得 Props 的 `propsByGlobals`
-* 若干能在特定渲染阶段控制 GL 对象的回调，如 `beforeRender` 等
+* 若干能在特定渲染阶段控制 GL 对象的回调，如 `beforeDraw` 等
 
 可以通过参考 examples 中的实例，来理解着色插件的这些配置是如何确定的。
 
