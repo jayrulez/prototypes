@@ -12,22 +12,24 @@
     <canvas id="gl-canvas"></canvas>
 <script type="module">
 import { Demo3DRenderer } from '../common/demo-renderers.js'
-import { ObjParser } from '../common/obj-parser.js'
-import { TextElement, TextPlugin } from './text.js'
+import { loadGLTF } from '../common/gltf-loader.js'
+import { MeshElement, MeshPlugin } from './mesh.js'
 
 const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight
 canvas.width = window.innerWidth
 
-const textPlugin = new TextPlugin()
-const renderer = new Demo3DRenderer(canvas, [textPlugin])
-renderer.setCamera([0, 400, 700], [0, 150, 0])
+const meshPlugin = new MeshPlugin()
+const renderer = new Demo3DRenderer(canvas, [meshPlugin])
 
-fetch('../common/beam.obj').then(resp => resp.text()).then(str => {
-  const parser = new ObjParser()
-  const [model] = parser.parse(str)
-  const textElement = new TextElement(model)
-  renderer.addElement(textElement)
+const basePath = '../common/gltf/damaged-helmet/'
+const src = basePath + 'DamagedHelmet.gltf'
+
+renderer.setCamera([0, 0, 5])
+
+loadGLTF(src, basePath).then(([bufferInfos, image]) => {
+  const meshElement = new MeshElement({ bufferInfos, image })
+  renderer.addElement(meshElement)
   renderer.render()
 })
 

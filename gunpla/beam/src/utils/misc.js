@@ -87,6 +87,8 @@ export const createBufferIndexGroup = (elementGroups, plugin, indexKey) => {
     let indexGroup = []
     for (let j = 0; j < elements.length; j++) {
       const indexProps = elements[j].bufferPropsMap[name][indexKey]
+      // can be [0, 1, 2, 2, 3, 4...] with normal array
+      // and [ArrayBuffer, ArrayBuffer] with array buffer
       indexGroup = indexGroup.concat(indexProps)
     }
     push(bufferIndexGroup, indexGroup)
@@ -103,7 +105,10 @@ export const divideUploadKeys = (
     const key = bufferKeys[i]
     const size = bufferTypeSize(propSchema, key)
     const baseSpace = bufferPropOffset(elements, name, key) * size
-    const spaceRequired = baseSpace + bufferProps[key].length * size
+    const spaceRequired = baseSpace + (bufferProps[key] instanceof ArrayBuffer)
+      ? bufferProps[key].byteLength
+      : bufferProps[key].length * size
+
     spaceRequired < bufferChunkSize ? push(subKeys, key) : push(fullKeys, key)
   }
   return [fullKeys, subKeys]
@@ -115,9 +120,10 @@ export const allocateBufferSizes = (
   for (let i = 0; i < fullKeys.length; i++) {
     const key = fullKeys[i]
     const size = bufferTypeSize(propSchema, key)
-    bufferSizes[key] += Math.max(
-      bufferChunkSize, bufferProps[key].length * size
-    )
+    const length = bufferProps[key] instanceof ArrayBuffer
+      ? bufferProps[key].byteLength
+      : bufferProps[key].length * size
+    bufferSizes[key] += Math.max(bufferChunkSize, length)
   }
 }
 

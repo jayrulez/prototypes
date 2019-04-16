@@ -34,7 +34,7 @@ void main() {
 }
 `
 
-export class TextPlugin extends ShadePlugin {
+export class MeshPlugin extends ShadePlugin {
   constructor () {
     super()
 
@@ -60,8 +60,13 @@ export class TextPlugin extends ShadePlugin {
   }
 
   propsByElement ({ props }) {
-    const { positions, normals, indices } = props
-    return { pos: positions, normal: normals, index: indices }
+    const { attributeInfos, indicesInfo } = props.bufferInfos
+    // debugger
+    return {
+      pos: attributeInfos[1].data,
+      normal: attributeInfos[0].data,
+      index: indicesInfo.data
+    }
   }
 
   propsByGlobals (globals) {
@@ -73,9 +78,9 @@ export class TextPlugin extends ShadePlugin {
   }
 }
 
-export class TextElement extends Element {
+export class MeshElement extends Element {
   constructor (props) {
     super(props)
-    this.plugins = { TextPlugin }
+    this.plugins = { MeshPlugin }
   }
 }

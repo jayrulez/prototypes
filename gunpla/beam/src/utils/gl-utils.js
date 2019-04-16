@@ -116,7 +116,9 @@ export const uploadFullBuffers = (
     const { index } = propSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
     let data = props[key]
+    if (data[0] instanceof ArrayBuffer) data = data[0]
     const arr = index ? new Uint16Array(data) : new Float32Array(data)
+
     gl.bindBuffer(target, buffers[key])
     gl.bufferData(target, bufferSizes[key], gl.STATIC_DRAW)
     gl.bufferData(target, arr, gl.STATIC_DRAW)
@@ -135,7 +137,9 @@ export const uploadSubBuffers = (
 
     if (index) return
 
-    const data = bufferProps[key]
+    let data = bufferProps[key]
+    if (data[0] instanceof ArrayBuffer) data = data[0]
+
     const arr = index ? new Uint16Array(data) : new Float32Array(data)
     const size = index ? 2 : 4
 
@@ -149,7 +153,9 @@ export const uploadIndexBuffers = (
 ) => {
   const bufferKeys = getBufferKeys(propSchema)
   const indexKey = bufferKeys.find(key => propSchema[key].index)
-  const arr = new Uint16Array(indexGroup)
+  let data = indexGroup
+  if (data[0] instanceof ArrayBuffer) data = data[0]
+  const arr = new Uint16Array(data)
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers[indexKey])
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, arr, gl.STATIC_DRAW)
@@ -220,7 +226,7 @@ export const initFramebufferObject = (gl) => {
 }
 
 export const resetBeforeDraw = gl => {
-  gl.clearColor(0.0, 0.0, 0.0, 0.0)
+  gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clearDepth(1.0)
   gl.disable(gl.BLEND)
   gl.enable(gl.DEPTH_TEST)

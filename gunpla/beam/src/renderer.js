@@ -200,9 +200,12 @@ export class Renderer {
 
         let totalLength = 0
         for (let i = 0; i < groupedElements.length; i++) {
-          totalLength += (
-            groupedElements[i].bufferPropsMap[name][indexKey].length
-          )
+          const indexProp = groupedElements[i].bufferPropsMap[name][indexKey]
+          if (indexProp instanceof ArrayBuffer) {
+            totalLength += indexProp.byteLength / 2
+          } else {
+            totalLength += indexProp.length
+          }
         }
         const props = {
           // Should always has length, always same element props in same batch
