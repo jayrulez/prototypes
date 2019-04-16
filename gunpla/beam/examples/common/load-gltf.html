@@ -8,7 +8,11 @@
 import { loadGLTF } from './gltf-loader.js'
 
 const src = './gltf/damaged-helmet/DamagedHelmet.gltf'
-loadGLTF(src, './gltf/damaged-helmet/')
+const basePath = './gltf/damaged-helmet/'
+
+loadGLTF(src, basePath).then(([bufferInfos, image]) => {
+  console.log(bufferInfos, image)
+})
 </script>
   </body>
 </html>

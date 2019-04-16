@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <style>
+    * { margin: auto 0; padding: 0; }
+    body { display: flex; justify-content: center; }
+    canvas { width: 100%; height: 100% }
+  </style>
+  <body>
+    <canvas id="gl-canvas"></canvas>
+<script type="module">
+import { Demo3DRenderer } from '../common/demo-renderers.js'
+import { ObjParser } from '../common/obj-parser.js'
+import { TextElement, TextPlugin } from './text.js'
+
+const canvas = document.getElementById('gl-canvas')
+canvas.height = window.innerHeight
+canvas.width = window.innerWidth
+
+const textPlugin = new TextPlugin()
+const renderer = new Demo3DRenderer(canvas, [textPlugin])
+renderer.setCamera([0, 400, 700], [0, 150, 0])
+
+fetch('../common/beam.obj').then(resp => resp.text()).then(str => {
+  const parser = new ObjParser()
+  const [model] = parser.parse(str)
+  const textElement = new TextElement(model)
+  renderer.addElement(textElement)
+  renderer.render()
+})
+
+window.renderer = renderer
+</script>
+  </body>
+</html>

@@ -2,7 +2,30 @@
 
 const fetchGLTF = src => fetch(src).then(resp => resp.json())
 
-const fetchBuffer = src => fetch(src).then(resp => resp.arrayBuffer())
+const fetchBin = src => fetch(src).then(resp => resp.arrayBuffer())
+
+const loadImage = src => new Promise(resolve => {
+  const image = new Image()
+  image.onload = () => resolve(image)
+  image.src = src
+})
+
+const fetchBufferInfos = (
+  binPath, attributeInfos, indicesInfo
+) => new Promise(resolve => {
+  fetchBin(binPath).then(buffer => {
+    attributeInfos.forEach(attributeInfo => {
+      const { byteOffset, byteLength } = attributeInfo.bufferView
+      attributeInfo.data = buffer.slice(byteOffset, byteOffset + byteLength)
+    })
+    const { byteOffset, byteLength } = indicesInfo.bufferView
+    indicesInfo.data = buffer.slice(byteOffset, byteOffset + byteLength)
+    resolve({
+      attributeInfos,
+      indicesInfo
+    })
+  })
+})
 
 // const defined = field => field !== undefined && field !== null
 
@@ -21,8 +44,8 @@ const initBufferInfo = (gltf, bufferName, accessorName) => {
   }
 }
 
-export const loadGLTF = (src, basePath) => new Promise((resolve) => {
-  fetchGLTF(src).then(gltf => {
+export const loadGLTF = (src, basePath) => {
+  return fetchGLTF(src).then(gltf => {
     const mesh = gltf.meshes[0]
     const primitive = mesh.primitives[0]
     const { attributes } = primitive
@@ -34,21 +57,14 @@ export const loadGLTF = (src, basePath) => new Promise((resolve) => {
       return initBufferInfo(gltf, attributeName, accessorName)
     })
     const indicesInfo = initBufferInfo(gltf, 'INDEX', primitive.indices)
-    const bufferPath = basePath + indicesInfo.uri
-
-    fetchBuffer(bufferPath).then(buffer => {
-      attributeInfos.forEach(attributeInfo => {
-        const { byteOffset, byteLength } = attributeInfo.bufferView
-        attributeInfo.data = buffer.slice(byteOffset, byteOffset + byteLength)
-      })
-      const { byteOffset, byteLength } = indicesInfo.bufferView
-      indicesInfo.data = buffer.slice(byteOffset, byteOffset + byteLength)
-      resolve({
-        attributeInfos,
-        indicesInfo
-      })
-    })
+    const binPath = basePath + indicesInfo.uri
+    const imagePath = basePath + gltf.images[0].uri
 
     window.gltf = gltf
+
+    return Promise.all([
+      fetchBufferInfos(binPath, attributeInfos, indicesInfo),
+      loadImage(imagePath)
+    ])
   })
-})
+}
