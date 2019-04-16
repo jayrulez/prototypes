@@ -10,17 +10,13 @@
   <body>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
+import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { CubePlugin, CubeElement } from '../cube/cube.js'
 import { ImagePlugin, ImageElement, loadImages } from '../image/image.js'
 import {
   PostProcessingPlugin,
   PostProcessingElement
 } from './post-processing.js'
-import {
-  Element,
-  Renderer
-} from '../../src/index.js'
-import { setCamera, setPerspective } from '../common/misc.js'
 
 const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight
@@ -29,11 +25,10 @@ canvas.width = window.innerWidth
 const imagePlugin = new ImagePlugin()
 const cubePlugin = new CubePlugin()
 const postProcessingPlugin = new PostProcessingPlugin()
-const renderer = new Renderer(canvas, [
+const renderer = new Demo3DRenderer(canvas, [
   cubePlugin, imagePlugin, postProcessingPlugin
 ])
-renderer.setGlobal('camera', setCamera([0, 0, 10]))
-renderer.setGlobal('perspective', setPerspective(canvas))
+renderer.setCamera([0, 0, 10])
 renderer.setGlobal('k', 10)
 
 const urls = ['../image/black-hole.jpg', '../image/gundam.jpg']

@@ -17,12 +17,8 @@
     <video src="./b.mov" id="video-b" autoplay loop hidden></video>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
-import { ImagePlugin, ImageElement } from './image.js'
-import {
-  Element,
-  Renderer
-} from '../../src/index.js'
-import { setCamera, setPerspective } from '../common/misc.js'
+import { Demo3DRenderer } from '../common/demo-renderers.js'
+import { ImagePlugin, ImageElement, loadImages } from './image.js'
 
 const { cos, sin } = Math
 const videoA = document.getElementById('video-a')
@@ -33,9 +29,8 @@ canvas.height = window.innerHeight / 2
 canvas.width = window.innerWidth / 2
 
 const imagePlugin = new ImagePlugin()
-const renderer = new Renderer(canvas, [imagePlugin])
-renderer.setGlobal('camera', setCamera([0, 0, 10]))
-renderer.setGlobal('perspective', setPerspective(canvas))
+const renderer = new Demo3DRenderer(canvas, [imagePlugin])
+renderer.setCamera([0, 0, 10])
 
 button.addEventListener('click',() => {
   const ratioA = videoA.videoHeight / videoA.videoWidth
@@ -56,8 +51,7 @@ button.addEventListener('click',() => {
 let i = 0
 const tick = () => {
   i += 0.015
-  const eye = [cos(i) * 2, sin(i) * 2, 10]
-  renderer.setGlobal('camera', setCamera(eye))
+  renderer.setCamera([cos(i) * 2, sin(i) * 2, 10])
   renderer.render()
   window.requestAnimationFrame(tick)
 }

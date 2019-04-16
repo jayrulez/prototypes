@@ -9,17 +9,14 @@
   <body>
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
-import { Renderer } from '../../src/index.js'
+import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { CubeElement, CubePlugin } from './cube.js'
-import { setCamera, setPerspective } from '../common/misc.js'
 
 const canvas = document.getElementById('gl-canvas')
 
 const cubePlugin = new CubePlugin()
 const config = { bufferChunkSize: 1000 * 1024 }
-const renderer = new Renderer(canvas, [cubePlugin], config)
-renderer.setGlobal('camera', setCamera([0, 10, 10]))
-renderer.setGlobal('perspective', setPerspective(canvas))
+const renderer = new Demo3DRenderer(canvas, [cubePlugin], config)
 
 const N = 5
 for (let i = 0; i < N; i++) {
@@ -38,8 +35,7 @@ let i = 0
 const { random, cos, sin } = Math
 const tick = () => {
   i += 0.01
-  const eye = [cos(i) * 40, sin(i) * 40, 40]
-  renderer.setGlobal('camera', setCamera(eye))
+  renderer.setCamera([cos(i) * 40, sin(i) * 40, 40])
   for (let i = 0; i < renderer.elements.length; i++) {
     const element = renderer.elements[i]
     const [x, y, z] = element.props.position

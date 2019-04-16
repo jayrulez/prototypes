@@ -3,25 +3,20 @@
   <head>
     <title>Demo</title>
     <style>
-      * { margin: auto 0; padding: 0; }
+      * { background: black; margin: auto 0; padding: 0; }
     </style>
   </head>
   <body>
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
+import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { ImagePlugin, ImageElement, loadImages } from './image.js'
-import {
-  Element,
-  Renderer
-} from '../../src/index.js'
-import { setCamera, setPerspective } from '../common/misc.js'
 
 const canvas = document.getElementById('gl-canvas')
 
 const imagePlugin = new ImagePlugin()
-const renderer = new Renderer(canvas, [imagePlugin])
-renderer.setGlobal('camera', setCamera([0, 0, 10]))
-renderer.setGlobal('perspective', setPerspective(canvas))
+const renderer = new Demo3DRenderer(canvas, [imagePlugin])
+renderer.setCamera([0, 0, 10])
 
 loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
   const imageA1 = new ImageElement({

@@ -11,17 +11,14 @@
   <body>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
+import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { CubePlugin, CubeElement } from '../cube/cube.js'
 import { ImagePlugin, ImageElement, loadImages } from '../image/image.js'
 import {
   PostProcessingPlugin,
   PostProcessingElement
 } from './post-processing.js'
-import {
-  Element,
-  Renderer
-} from '../../src/index.js'
-import { setCamera, setPerspective } from '../common/misc.js'
+import { lookAt, perspective } from '../common/mat4.js'
 
 const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight / 3
@@ -33,16 +30,18 @@ const imagePlugin = new ImagePlugin()
 const cubePlugin = new CubePlugin()
 const postProcessingPlugin = new PostProcessingPlugin()
 const eye = [0, 0, 40]
-const perspective = setPerspective(canvas)
 
-const renderer = new Renderer(canvas, [
+const renderer = new Demo3DRenderer(canvas, [
   cubePlugin, postProcessingPlugin, imagePlugin
 ])
 // Fix the image
 imagePlugin.propsByGlobals = () => ({
-  viewMat: setCamera(eye), projectionMat: perspective
+  viewMat: lookAt([], eye, [0, 0, 0], [0, 1, 0]),
+  projectionMat: perspective(
+    [], Math.PI / 6, canvas.clientWidth / canvas.clientHeight, 0.1, 1000
+  )
 })
-renderer.setGlobal('perspective', perspective)
+
 loadImages(urls).then(([blackHole]) => {
   const post = new PostProcessingElement()
   const image = new ImageElement({ position: [0, 0, 35], img: blackHole })
@@ -66,8 +65,7 @@ loadImages(urls).then(([blackHole]) => {
 let i = 0
 const tick = () => {
   i += 0.1
-  const eye = [cos(i) * 40, sin(i) * 40, 40 + i]
-  renderer.setGlobal('camera', setCamera(eye))
+  renderer.setCamera([cos(i) * 40, sin(i) * 40, 40 + i])
   renderer.setGlobal('k', -i)
   for (let i = 0; i < renderer.elements.length; i++) {
     const element = renderer.elements[i]

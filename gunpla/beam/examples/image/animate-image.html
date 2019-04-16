@@ -11,12 +11,8 @@
   <body>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
+import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { ImagePlugin, ImageElement, loadImages } from './image.js'
-import {
-  Element,
-  Renderer
-} from '../../src/index.js'
-import { setCamera, setPerspective } from '../common/misc.js'
 
 const { cos, sin } = Math
 const canvas = document.getElementById('gl-canvas')
@@ -24,9 +20,8 @@ canvas.height = window.innerHeight
 canvas.width = window.innerWidth
 
 const imagePlugin = new ImagePlugin()
-const renderer = new Renderer(canvas, [imagePlugin])
-renderer.setGlobal('camera', setCamera([0, 0, 40]))
-renderer.setGlobal('perspective', setPerspective(canvas))
+const renderer = new Demo3DRenderer(canvas, [imagePlugin])
+renderer.setCamera([0, 0, 40])
 
 loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
   const N = 10
@@ -46,8 +41,7 @@ loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
 let i = 0
 const tick = () => {
   i += 0.05
-  const eye = [cos(i) * 5, sin(i) * 5, 40]
-  renderer.setGlobal('camera', setCamera(eye))
+  renderer.setCamera([cos(i) * 5, sin(i) * 5, 40])
   renderer.render()
   window.requestAnimationFrame(tick)
 }
