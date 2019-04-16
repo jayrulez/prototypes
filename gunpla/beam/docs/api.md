@@ -14,6 +14,7 @@
 * `addElement` - 新增 Element
 * `changeElement` - 修改 Element
 * `removeElement` - 移除 Element
+* `setGlobal` - 设置全局字段
 * `render` - 渲染
 
 

@@ -16,12 +16,13 @@ const canvas = document.getElementById('gl-canvas')
 
 const cubePlugin = new CubePlugin()
 const renderer = new Demo3DRenderer(canvas, [cubePlugin])
-renderer.setCamera([0, 10, 10])
 
 const cubeA = new CubeElement({ position: [0, 0, 0] })
 const cubeB = new CubeElement({ position: [3, 0, 0] })
 const cubeC = new CubeElement({ position: [-3, 0, 0] })
 const cubeD = new CubeElement({ position: [0, -3, 0] })
+
+renderer.setCamera([0, 10, 10])
 renderer.addElement(cubeA)
 renderer.addElement(cubeB)
 renderer.addElement(cubeC)
