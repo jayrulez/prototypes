@@ -24,14 +24,16 @@ const renderer = new Demo3DRenderer(canvas, [imagePlugin])
 renderer.setCamera([0, 0, 40])
 
 loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
-  const N = 10
+  const N = 8
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
-      const image = new ImageElement({
+      const image = (i + j) % 2 === 0 ? imgA : imgB
+      const imageElement = new ImageElement({
         position: [i * 3 - N, j * 3 - N, -3],
-        img: (i + j) % 2 === 0 ? imgA : imgB
+        imgA: image,
+        imgB: image
       })
-      renderer.addElement(image)
+      renderer.addElement(imageElement)
     }
   }
 

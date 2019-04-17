@@ -36,10 +36,10 @@ button.addEventListener('click',() => {
   const ratioA = videoA.videoHeight / videoA.videoWidth
   const ratioB = videoB.videoHeight / videoB.videoWidth
   const videoElementA = new ImageElement({
-    position: [-1, 1, 7], img: videoA, aspectRatio: ratioA
+    position: [-1, 1, 7], imgA: videoA, imgB: videoA, aspectRatio: ratioA
   })
   const videoElementB = new ImageElement({
-    position: [1, 1, 5], img: videoB, aspectRatio: ratioB
+    position: [1, 1, 5], imgA: videoB, imgB: videoB, aspectRatio: ratioB
   })
   videoA.play()
   videoB.play()

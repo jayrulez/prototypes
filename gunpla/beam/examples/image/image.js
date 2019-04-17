@@ -25,11 +25,16 @@ void main() {
 `
 
 const fragmentShader = `
-uniform sampler2D img;
+uniform sampler2D imgA;
+uniform sampler2D imgB;
 varying highp vec2 vTexCoord;
 
 void main() {
-  gl_FragColor = texture2D(img, vTexCoord);
+  highp vec4 colorA = texture2D(imgA, vTexCoord);
+  highp vec4 colorB = texture2D(imgB, vTexCoord);
+  gl_FragColor = colorA * colorB;
+  // gl_FragColor = colorA * colorB;
+  // gl_FragColor = texture2D(img, vTexCoord);
 }
 `
 
@@ -47,7 +52,8 @@ export class ImagePlugin extends ShadePlugin {
     this.shaderSchema.uniforms = {
       viewMat: mat4,
       projectionMat: mat4,
-      img: sampler2D
+      imgA: sampler2D,
+      imgB: sampler2D
     }
 
     const { buffer, texture } = PropTypes
@@ -56,7 +62,8 @@ export class ImagePlugin extends ShadePlugin {
       pos: { type: buffer, n: 3 },
       texCoord: { type: buffer, n: 2 },
       index: { type: buffer, index: true },
-      img: { type: texture }
+      imgA: { type: texture, unit: 0 },
+      imgB: { type: texture, unit: 1 }
     }
   }
 
@@ -85,7 +92,8 @@ export class ImagePlugin extends ShadePlugin {
       pos,
       texCoord,
       index: [0, 1, 2, 0, 2, 3],
-      img: props.img
+      imgA: props.imgA,
+      imgB: props.imgB
     }
   }
 

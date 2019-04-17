@@ -268,8 +268,9 @@ export const draw = (
       [ShaderTypes.mat3]: () => gl.uniformMatrix3fv(location, false, prop),
       [ShaderTypes.mat2]: () => gl.uniformMatrix2fv(location, false, prop),
       [ShaderTypes.sampler2D]: () => {
-        gl.uniform1i(location, 0)
-        gl.activeTexture(gl.TEXTURE0)
+        const { unit = 0 } = propSchema[key]
+        gl.uniform1i(location, unit)
+        gl.activeTexture(gl.TEXTURE0 + unit)
         gl.bindTexture(gl.TEXTURE_2D, textureMap.get(prop))
         gl.texImage2D(
           gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, prop

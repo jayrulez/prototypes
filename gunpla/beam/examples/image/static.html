@@ -20,16 +20,16 @@ renderer.setCamera([0, 0, 10])
 
 loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
   const imageA1 = new ImageElement({
-    position: [-1, 1, -3], img: imgA
+    position: [-1, 1, -3], imgA: imgA, imgB: imgA
   })
   const imageA2 = new ImageElement({
-    position: [1, 1, -3], img: imgA
+    position: [1, 1, -3], imgA, imgB
   })
   const imageB1 = new ImageElement({
-    position: [-1, -1, -3], img: imgB
+    position: [-1, -1, -3], imgA: imgB, imgB: imgA
   })
   const imageB2 = new ImageElement({
-    position: [1, -1, -3], img: imgB
+    position: [1, -1, -3], imgA: imgB, imgB
   })
   renderer.addElement(imageA1)
   renderer.addElement(imageA2)
