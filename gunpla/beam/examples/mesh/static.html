@@ -14,7 +14,7 @@
 import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { loadGLTF } from '../common/gltf-loader.js'
 import { MeshElement, MeshPlugin } from './mesh.js'
-import { loadCubeMap } from './cubemap-loader.js'
+import { loadCubeMaps } from './cubemap-loader.js'
 
 const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight
@@ -28,14 +28,14 @@ const src = basePath + 'DamagedHelmet.gltf'
 
 renderer.setCamera([0, -6, 2])
 
-loadGLTF(src, basePath).then(([bufferInfos, image]) => {
+Promise.all([
+  loadGLTF(src, basePath),
+  loadCubeMaps('../common/textures/papermill')
+]).then(([[bufferInfos, image], cubeMaps]) => {
   const meshElement = new MeshElement({ bufferInfos, image })
+  renderer.setGlobal('cubeMaps', cubeMaps)
   renderer.addElement(meshElement)
   renderer.render()
-})
-
-loadCubeMap('../common/textures/papermill').then(lights => {
-  console.log(lights)
 })
 window.renderer = renderer
 </script>

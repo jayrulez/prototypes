@@ -6,26 +6,26 @@ const loadImage = src => new Promise(resolve => {
   image.src = src
 })
 
-export const loadCubeMap = basePath => new Promise(resolve => {
-  const lights = [
+export const loadCubeMaps = basePath => new Promise(resolve => {
+  const cubeMaps = [
     { type: 'diffuse', level: 0, urls: [], images: [] },
     { type: 'specular', level: 9, urls: [], images: [] }
   ]
   const dirs = ['right', 'left', 'top', 'bottom', 'front', 'back']
 
-  lights.forEach(({ type, level }, i) => {
+  cubeMaps.forEach(({ type, level }, i) => {
     dirs.forEach(dir => {
       for (let j = 0; j <= level; j++) {
-        lights[i].urls.push(`${basePath}/${type}/${type}_${dir}_${j}.jpg`)
+        cubeMaps[i].urls.push(`${basePath}/${type}/${type}_${dir}_${j}.jpg`)
       }
     })
   })
 
-  const lightPromises = lights
+  const lightPromises = cubeMaps
     .map(light => Promise.all(light.urls.map(loadImage)))
 
   Promise.all(lightPromises).then(lightImages => {
-    lightImages.forEach((images, i) => { lights[i].images = images })
-    resolve(lights)
+    lightImages.forEach((images, i) => { cubeMaps[i].images = images })
+    resolve(cubeMaps)
   })
 })
