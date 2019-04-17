@@ -33,8 +33,6 @@ void main() {
   highp vec4 colorA = texture2D(imgA, vTexCoord);
   highp vec4 colorB = texture2D(imgB, vTexCoord);
   gl_FragColor = colorA * colorB;
-  // gl_FragColor = colorA * colorB;
-  // gl_FragColor = texture2D(img, vTexCoord);
 }
 `
 
