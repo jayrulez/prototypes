@@ -4,7 +4,7 @@ import {
   ShaderTypes,
   PropTypes
 } from '../../src/index.js'
-import { create, multiply } from '../common/mat4.js'
+import { create, multiply, rotate } from '../common/mat4.js'
 
 const vertexShader = `
 #define USE_IBL 1
@@ -120,10 +120,14 @@ export class MeshPlugin extends ShadePlugin {
   }
 
   propsByGlobals (globals) {
+    const modelMat = rotate([], create(), Math.PI, [0, 1, 0])
+    const viewProjectionMat = multiply([], globals.perspective, globals.camera)
+    const mvpMat = multiply([], viewProjectionMat, modelMat)
+
     return {
       u_NormalMatrix: create(),
-      u_ModelMatrix: create(),
-      u_MVPMatrix: multiply([], globals.perspective, globals.camera)
+      u_ModelMatrix: modelMat,
+      u_MVPMatrix: mvpMat
     }
   }
 }

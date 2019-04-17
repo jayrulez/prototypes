@@ -25,7 +25,7 @@ const renderer = new Demo3DRenderer(canvas, [meshPlugin])
 const basePath = '../common/gltf/damaged-helmet/'
 const src = basePath + 'DamagedHelmet.gltf'
 
-renderer.setCamera([0, 0, 5])
+renderer.setCamera([0, -6, 2])
 
 loadGLTF(src, basePath).then(([bufferInfos, image]) => {
   const meshElement = new MeshElement({ bufferInfos, image })
