@@ -14,6 +14,7 @@
 import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { loadGLTF } from '../common/gltf-loader.js'
 import { MeshElement, MeshPlugin } from './mesh.js'
+import { loadCubeMap } from './cubemap-loader.js'
 
 const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight
@@ -33,6 +34,9 @@ loadGLTF(src, basePath).then(([bufferInfos, image]) => {
   renderer.render()
 })
 
+loadCubeMap('../common/textures/papermill').then(lights => {
+  console.log(lights)
+})
 window.renderer = renderer
 </script>
   </body>
