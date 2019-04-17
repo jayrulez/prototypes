@@ -50,13 +50,13 @@ export class ImagePlugin extends ShadePlugin {
       img: sampler2D
     }
 
-    const { attribute, uniform } = PropTypes
+    const { buffer, texture } = PropTypes
     // TODO uniform fallback / config / fbo support
     this.propSchema = {
-      pos: { type: attribute, n: 3 },
-      texCoord: { type: attribute, n: 2 },
-      index: { type: attribute, index: true },
-      img: { type: uniform }
+      pos: { type: buffer, n: 3 },
+      texCoord: { type: buffer, n: 2 },
+      index: { type: buffer, index: true },
+      img: { type: texture }
     }
   }
 

@@ -188,10 +188,10 @@ export class PostProcessingPlugin extends ShadePlugin {
     this.shaderSchema.attributes = { pos: vec3 }
     this.shaderSchema.uniforms = { k: float }
 
-    const { attribute } = PropTypes
+    const { buffer } = PropTypes
     this.propSchema = {
-      pos: { type: attribute, n: 3 },
-      index: { type: attribute, index: true }
+      pos: { type: buffer, n: 3 },
+      index: { type: buffer, index: true }
     }
   }
 

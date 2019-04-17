@@ -264,7 +264,6 @@ export const draw = (
       [ShaderTypes.vec3]: () => gl.uniform3fv(location, prop),
       [ShaderTypes.vec2]: () => gl.uniform2fv(location, prop),
       [ShaderTypes.float]: () => gl.uniform1f(location, prop),
-      [ShaderTypes.int]: () => gl.uniform1i(location, prop),
       [ShaderTypes.mat4]: () => gl.uniformMatrix4fv(location, false, prop),
       [ShaderTypes.mat3]: () => gl.uniformMatrix3fv(location, false, prop),
       [ShaderTypes.mat2]: () => gl.uniformMatrix2fv(location, false, prop),
@@ -275,6 +274,9 @@ export const draw = (
         gl.texImage2D(
           gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, prop
         )
+      },
+      [ShaderTypes.samplerCube]: () => {
+
       }
     }
     uniformSetterMapping[type]()

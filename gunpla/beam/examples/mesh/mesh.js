@@ -98,13 +98,13 @@ export class MeshPlugin extends ShadePlugin {
       img: sampler2D
     }
 
-    const { attribute, uniform } = PropTypes
+    const { buffer, texture } = PropTypes
     this.propSchema = {
-      a_Position: { type: attribute, n: 3 },
-      a_Normal: { type: attribute, n: 3 },
-      a_UV: { type: attribute, n: 2 },
-      index: { type: attribute, index: true },
-      img: { type: uniform }
+      a_Position: { type: buffer, n: 3 },
+      a_Normal: { type: buffer, n: 3 },
+      a_UV: { type: buffer, n: 2 },
+      index: { type: buffer, index: true },
+      img: { type: texture }
     }
   }
 

@@ -51,11 +51,11 @@ export class TextPlugin extends ShadePlugin {
       normalMat: mat4
     }
 
-    const { attribute } = PropTypes
+    const { buffer } = PropTypes
     this.propSchema = {
-      pos: { type: attribute, n: 3 },
-      normal: { type: attribute, n: 3 },
-      index: { type: attribute, index: true }
+      pos: { type: buffer, n: 3 },
+      normal: { type: buffer, n: 3 },
+      index: { type: buffer, index: true }
     }
   }
 

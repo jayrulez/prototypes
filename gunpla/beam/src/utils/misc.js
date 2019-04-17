@@ -20,7 +20,7 @@ export const bufferTypeSize = (propSchema, key) => propSchema[key].n ? 4 : 2
 
 export const getBufferKeys = (propSchema) => Object
   .keys(propSchema)
-  .filter(key => propSchema[key].type === PropTypes.attribute)
+  .filter(key => propSchema[key].type === PropTypes.buffer)
 
 let i = 66 // ASCII 'B' for Beam
 export const generateChar = () => {

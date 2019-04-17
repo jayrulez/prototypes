@@ -102,11 +102,11 @@ export class CubePlugin extends ShadePlugin {
       projectionMat: mat4
     }
 
-    const { attribute } = PropTypes
+    const { buffer } = PropTypes
     this.propSchema = {
-      pos: { type: attribute, n: 3 },
-      color: { type: attribute, n: 4 },
-      index: { type: attribute, index: true }
+      pos: { type: buffer, n: 3 },
+      color: { type: buffer, n: 4 },
+      index: { type: buffer, index: true }
     }
   }
 

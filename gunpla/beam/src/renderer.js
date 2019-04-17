@@ -110,7 +110,7 @@ export class Renderer {
       }
       const textureKeys = Object
         .keys(propSchema)
-        .filter(key => propSchema[key].type === PropTypes.uniform)
+        .filter(key => propSchema[key].type === PropTypes.texture)
 
       textureKeys.forEach(key => {
         const image = uniformProps[key]
