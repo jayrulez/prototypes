@@ -70,6 +70,8 @@ void main()
 
 const fragmentShader = `
 uniform sampler2D img;
+uniform samplerCube u_DiffuseEnvSampler;
+uniform samplerCube u_SpecularEnvSampler;
 varying highp vec2 v_UV;
 varying highp vec3 vLighting;
 
@@ -83,7 +85,7 @@ export class MeshPlugin extends ShadePlugin {
   constructor () {
     super()
 
-    const { vec2, vec3, vec4, mat4, sampler2D } = ShaderTypes
+    const { vec2, vec3, vec4, mat4, sampler2D, samplerCube } = ShaderTypes
     this.vertexShader = vertexShader
     this.fragmentShader = fragmentShader
     this.shaderSchema.attributes = {
@@ -95,6 +97,8 @@ export class MeshPlugin extends ShadePlugin {
       u_MVPMatrix: mat4,
       u_ModelMatrix: mat4,
       u_NormalMatrix: mat4,
+      u_DiffuseEnvSampler: samplerCube,
+      u_SpecularEnvSampler: samplerCube,
       img: sampler2D
     }
 
@@ -103,6 +107,8 @@ export class MeshPlugin extends ShadePlugin {
       a_Position: { type: buffer, n: 3 },
       a_Normal: { type: buffer, n: 3 },
       a_UV: { type: buffer, n: 2 },
+      u_DiffuseEnvSampler: { type: texture, unit: 0, cube: true },
+      u_SpecularEnvSampler: { type: texture, unit: 1, cube: true },
       index: { type: buffer, index: true },
       img: { type: texture }
     }
@@ -127,7 +133,9 @@ export class MeshPlugin extends ShadePlugin {
     return {
       u_NormalMatrix: create(),
       u_ModelMatrix: modelMat,
-      u_MVPMatrix: mvpMat
+      u_MVPMatrix: mvpMat,
+      u_DiffuseEnvSampler: globals.cubeMaps[0],
+      u_SpecularEnvSampler: globals.cubeMaps[1]
     }
   }
 }

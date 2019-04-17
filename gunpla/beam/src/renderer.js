@@ -104,7 +104,7 @@ export class Renderer {
 
       const { textureMap, elementCodeMaps } = plugin
       const { uploadTexture } = glUtils
-      const uniformProps = {
+      const props = {
         ...plugin.propsByGlobals(globals),
         ...plugin.propsByElement(element)
       }
@@ -113,18 +113,18 @@ export class Renderer {
         .filter(key => propSchema[key].type === PropTypes.texture)
 
       textureKeys.forEach(key => {
-        const image = uniformProps[key]
-        if (!textureMap.get(image)) {
-          const texture = uploadTexture(gl, image)
-          textureMap.set(image, texture)
+        const imageLike = props[key] // can be cubemap config or image
+        if (!textureMap.get(imageLike)) {
+          const texture = uploadTexture(gl, imageLike, propSchema[key])
+          textureMap.set(imageLike, texture)
         }
       })
 
       let code = ''
       textureKeys.forEach(key => {
-        let char = getCharFromMaps(uniformProps[key], elementCodeMaps)
+        let char = getCharFromMaps(props[key], elementCodeMaps)
         if (!char) char = generateChar()
-        setCharToMaps(uniformProps[key], char, elementCodeMaps)
+        setCharToMaps(props[key], char, elementCodeMaps)
         code += char
       })
       element.codes[name] = code || 'A'

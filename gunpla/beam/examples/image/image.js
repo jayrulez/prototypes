@@ -60,8 +60,8 @@ export class ImagePlugin extends ShadePlugin {
       pos: { type: buffer, n: 3 },
       texCoord: { type: buffer, n: 2 },
       index: { type: buffer, index: true },
-      imgA: { type: texture, unit: 0 },
-      imgB: { type: texture, unit: 1 }
+      imgA: { type: texture, unit: 0, flip: true },
+      imgB: { type: texture, unit: 1, flip: true }
     }
   }
 

@@ -62,11 +62,11 @@ export const initProgramInfo = (
   }
 }
 
-export const uploadTexture = (gl, image) => {
+const upload2DTexture = (gl, image, schemaValue) => {
   const texture = gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, texture)
-  // FIXME
-  // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+
+  if (schemaValue.flip) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
 
   if (
@@ -80,6 +80,52 @@ export const uploadTexture = (gl, image) => {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
   }
   return texture
+}
+
+const uploadCubeTexture = (gl, cubeMap, schemaValue) => {
+  const { unit = 0 } = schemaValue
+  const { level, images } = cubeMap
+  const faces = [
+    gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+    gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+    gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+    gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+    gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+    gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+  ]
+  const texture = gl.createTexture()
+  gl.activeTexture(gl.TEXTURE0 + unit)
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture)
+  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+  if (level < 2) {
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+  } else {
+    gl.texParameteri(
+      gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR
+    )
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+  }
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
+
+  let count = 0
+  for (let i = 0; i < faces.length; i++) {
+    for (let j = 0; j <= level; j++) {
+      const face = faces[i]
+      // TODO SRGB_EXT
+      gl.texImage2D(face, j, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[count])
+      count++
+    }
+  }
+
+  return texture
+}
+
+export const uploadTexture = (gl, imageLike, schemaValue) => {
+  return schemaValue.cube
+    ? uploadCubeTexture(gl, imageLike, schemaValue)
+    : upload2DTexture(gl, imageLike, schemaValue)
 }
 
 export const initBufferInfo = (gl, propSchema, bufferChunkSize) => {
