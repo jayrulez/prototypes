@@ -499,7 +499,7 @@ export class MeshPlugin extends ShadePlugin {
       u_LightDirection: [0.0, 0.5, 0.5],
       u_LightColor: [1.0, 1.0, 1.0],
       u_NormalScale: 1.0,
-      u_EmissiveFactor: [0.0, 0.0, 0.0],
+      u_EmissiveFactor: [1.0, 1.0, 1.0],
       u_OcclusionStrength: 1.0,
       u_MetallicRoughnessValues: [1.0, 1.0],
       u_BaseColorFactor: [1.0, 1.0, 1.0, 1.0],
