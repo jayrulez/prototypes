@@ -7,7 +7,13 @@ import {
   bufferPropOffset
 } from '../utils/misc.js'
 
-export const getWebGLInstance = canvas => canvas.getContext('webgl')
+export const getWebGLInstance = canvas => {
+  const gl = canvas.getContext('webgl')
+  // TODO extension detect
+  gl.getExtension('EXT_shader_texture_lod')
+  gl.getExtension('OES_standard_derivatives')
+  return gl
+}
 
 const compileShader = (gl, type, source) => {
   const shader = gl.createShader(type)

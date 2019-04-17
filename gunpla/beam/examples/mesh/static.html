@@ -14,7 +14,7 @@
 import { Demo3DRenderer } from '../common/demo-renderers.js'
 import { loadGLTF } from '../common/gltf-loader.js'
 import { MeshElement, MeshPlugin } from './mesh.js'
-import { loadCubeMaps } from './cubemap-loader.js'
+import { loadCubeMaps, loadImage } from './loader.js'
 
 const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight
@@ -30,10 +30,12 @@ renderer.setCamera([0, -6, 2])
 
 Promise.all([
   loadGLTF(src, basePath),
-  loadCubeMaps('../common/textures/papermill')
-]).then(([[bufferInfos, images], cubeMaps]) => {
+  loadCubeMaps('../common/textures/papermill'),
+  loadImage('../common/textures/brdfLUT.png')
+]).then(([[bufferInfos, images], cubeMaps, brdf]) => {
   const meshElement = new MeshElement({ bufferInfos, images })
   renderer.setGlobal('cubeMaps', cubeMaps)
+  renderer.setGlobal('brdf', brdf)
   renderer.addElement(meshElement)
   renderer.render()
 })
