@@ -27,8 +27,6 @@ const fetchBufferInfos = (
   })
 })
 
-// const defined = field => field !== undefined && field !== null
-
 const initBufferInfo = (gltf, bufferName, accessorName) => {
   const accessor = gltf.accessors[accessorName]
   const bufferView = gltf.bufferViews[accessor.bufferView]
@@ -58,13 +56,12 @@ export const loadGLTF = (src, basePath) => {
     })
     const indicesInfo = initBufferInfo(gltf, 'INDEX', primitive.indices)
     const binPath = basePath + indicesInfo.uri
-    const imagePath = basePath + gltf.images[0].uri
 
-    window.gltf = gltf
+    window.gltf = gltf // for debug
 
     return Promise.all([
       fetchBufferInfos(binPath, attributeInfos, indicesInfo),
-      loadImage(imagePath)
+      Promise.all(gltf.images.map(({ uri }) => loadImage(basePath + uri)))
     ])
   })
 }

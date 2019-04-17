@@ -31,8 +31,8 @@ renderer.setCamera([0, -6, 2])
 Promise.all([
   loadGLTF(src, basePath),
   loadCubeMaps('../common/textures/papermill')
-]).then(([[bufferInfos, image], cubeMaps]) => {
-  const meshElement = new MeshElement({ bufferInfos, image })
+]).then(([[bufferInfos, images], cubeMaps]) => {
+  const meshElement = new MeshElement({ bufferInfos, images })
   renderer.setGlobal('cubeMaps', cubeMaps)
   renderer.addElement(meshElement)
   renderer.render()

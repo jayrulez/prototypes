@@ -121,7 +121,7 @@ export class MeshPlugin extends ShadePlugin {
       a_Normal: attributeInfos[0].data,
       a_UV: attributeInfos[2].data,
       index: indicesInfo.data,
-      img: props.image
+      img: props.images[0]
     }
   }
 
