@@ -12,7 +12,7 @@
     <canvas id="gl-canvas"></canvas>
 <script type="module">
 import { Demo3DRenderer } from '../common/demo-renderers.js'
-import { ObjParser } from '../common/obj-parser.js'
+import { parseOBJ } from '../common/obj-loader.js'
 import { TextElement, TextPlugin } from './text.js'
 
 const canvas = document.getElementById('gl-canvas')
@@ -24,8 +24,7 @@ const renderer = new Demo3DRenderer(canvas, [textPlugin])
 renderer.setCamera([0, 400, 700], [0, 150, 0])
 
 fetch('../common/beam.obj').then(resp => resp.text()).then(str => {
-  const parser = new ObjParser()
-  const [model] = parser.parse(str)
+  const [model] = parseOBJ(str)
   const textElement = new TextElement(model)
   renderer.addElement(textElement)
   renderer.render()

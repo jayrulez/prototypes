@@ -5,11 +5,10 @@
   </head>
   <body>
 <script type="module">
-import { ObjParser } from './obj-parser.js'
+import { parseOBJ } from './obj-loader.js'
 
 const main = str => {
-  const parser = new ObjParser()
-  const models = parser.parse(str)
+  const models = parseOBJ(str)
   console.log(models)
 }
 
