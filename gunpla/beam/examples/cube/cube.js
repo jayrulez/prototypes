@@ -91,13 +91,13 @@ export class CubePlugin extends ShadePlugin {
     super()
 
     const { vec3, vec4, mat4 } = ShaderTypes
-    this.programSchema.vertexShader = vertexShader
-    this.programSchema.fragmentShader = fragmentShader
-    this.programSchema.attributes = {
+    this.shaderSchema.vertexShader = vertexShader
+    this.shaderSchema.fragmentShader = fragmentShader
+    this.shaderSchema.attributes = {
       pos: vec3,
       color: vec4
     }
-    this.programSchema.uniforms = {
+    this.shaderSchema.uniforms = {
       viewMat: mat4,
       projectionMat: mat4
     }

@@ -84,14 +84,14 @@ export class MeshPlugin extends ShadePlugin {
     super()
 
     const { vec2, vec3, vec4, mat4, sampler2D } = ShaderTypes
-    this.programSchema.vertexShader = vertexShader
-    this.programSchema.fragmentShader = fragmentShader
-    this.programSchema.attributes = {
+    this.shaderSchema.vertexShader = vertexShader
+    this.shaderSchema.fragmentShader = fragmentShader
+    this.shaderSchema.attributes = {
       a_UV: vec2,
       a_Position: vec3,
       a_Normal: vec4
     }
-    this.programSchema.uniforms = {
+    this.shaderSchema.uniforms = {
       u_MVPMatrix: mat4,
       u_ModelMatrix: mat4,
       u_NormalMatrix: mat4,

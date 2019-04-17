@@ -23,11 +23,11 @@
 
 ### Properties
 * `propSchema` - Props 字段到 Buffer/Uniform 的类型信息
+* `shaderSchema` - 着色器变量的类型信息
   * `vertexShader` - 顶点着色器字符串
   * `fragmentShader` - 片元着色器字符串
   * `attributes` - Attribute 变量类型信息
   * `uniforms`- Uniform 变量类型信息
-* `programSchema` - 着色器程序内变量的类型信息
 
 ### Methods
 * `propsByElement` - 指定如何从生成 props

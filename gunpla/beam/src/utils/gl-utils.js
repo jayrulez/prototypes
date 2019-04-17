@@ -39,22 +39,22 @@ const initShader = (gl, vSource, fSource) => {
   return shaderProgram
 }
 
-export const initProgramInfo = (gl, programSchema) => {
-  const { vertexShader, fragmentShader } = programSchema
+export const initProgramInfo = (gl, shaderSchema) => {
+  const { vertexShader, fragmentShader } = shaderSchema
   const program = initShader(gl, vertexShader, fragmentShader)
   return {
     program,
-    attributes: Object.keys(programSchema.attributes).reduce((map, key) => ({
+    attributes: Object.keys(shaderSchema.attributes).reduce((map, key) => ({
       ...map,
       [key]: {
-        type: programSchema.attributes[key],
+        type: shaderSchema.attributes[key],
         location: gl.getAttribLocation(program, key)
       }
     }), {}),
-    uniforms: Object.keys(programSchema.uniforms).reduce((map, key) => ({
+    uniforms: Object.keys(shaderSchema.uniforms).reduce((map, key) => ({
       ...map,
       [key]: {
-        type: programSchema.uniforms[key],
+        type: shaderSchema.uniforms[key],
         location: gl.getUniformLocation(program, key)
       }
     }), {})

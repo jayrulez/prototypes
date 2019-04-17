@@ -55,8 +55,8 @@ export class Renderer {
     const { bufferChunkSize } = this.config
     this.gl = getWebGLInstance(canvas)
     this.plugins.forEach(plugin => {
-      const { programSchema, propSchema } = plugin
-      plugin.programInfo = initProgramInfo(this.gl, programSchema)
+      const { shaderSchema, propSchema } = plugin
+      plugin.programInfo = initProgramInfo(this.gl, shaderSchema)
       plugin.buffers = initBufferInfo(this.gl, propSchema, bufferChunkSize)
       plugin.bufferSizes = getBufferKeys(propSchema)
         .reduce((map, key) => ({ ...map, [key]: bufferChunkSize }), {})
