@@ -22,10 +22,10 @@
 着色插件
 
 ### Properties
+* `vertexShader` - 顶点着色器字符串
+* `fragmentShader` - 片元着色器字符串
 * `propSchema` - Props 字段到 Buffer/Uniform 的类型信息
 * `shaderSchema` - 着色器变量的类型信息
-  * `vertexShader` - 顶点着色器字符串
-  * `fragmentShader` - 片元着色器字符串
   * `attributes` - Attribute 变量类型信息
   * `uniforms`- Uniform 变量类型信息
 

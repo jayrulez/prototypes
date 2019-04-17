@@ -39,8 +39,9 @@ const initShader = (gl, vSource, fSource) => {
   return shaderProgram
 }
 
-export const initProgramInfo = (gl, shaderSchema) => {
-  const { vertexShader, fragmentShader } = shaderSchema
+export const initProgramInfo = (
+  gl, shaderSchema, vertexShader, fragmentShader
+) => {
   const program = initShader(gl, vertexShader, fragmentShader)
   return {
     program,

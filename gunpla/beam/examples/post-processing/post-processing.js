@@ -183,8 +183,8 @@ export class PostProcessingPlugin extends ShadePlugin {
     super()
 
     const { vec3, float } = ShaderTypes
-    this.shaderSchema.vertexShader = vertexShader
-    this.shaderSchema.fragmentShader = fragmentShader
+    this.vertexShader = vertexShader
+    this.fragmentShader = fragmentShader
     this.shaderSchema.attributes = { pos: vec3 }
     this.shaderSchema.uniforms = { k: float }
 

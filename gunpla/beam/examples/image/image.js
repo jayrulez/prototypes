@@ -38,8 +38,8 @@ export class ImagePlugin extends ShadePlugin {
     super()
 
     const { vec2, vec3, mat4, sampler2D } = ShaderTypes
-    this.shaderSchema.vertexShader = vertexShader
-    this.shaderSchema.fragmentShader = fragmentShader
+    this.vertexShader = vertexShader
+    this.fragmentShader = fragmentShader
     this.shaderSchema.attributes = {
       pos: vec3,
       texCoord: vec2

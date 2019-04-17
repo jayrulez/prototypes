@@ -1,9 +1,9 @@
 export class ShadePlugin {
   constructor () {
     this.programInfo = null
+    this.vertexShader = ''
+    this.fragmentShader = ''
     this.shaderSchema = {
-      vertexShader: '',
-      fragmentShader: '',
       attributes: {},
       uniforms: {}
     }
