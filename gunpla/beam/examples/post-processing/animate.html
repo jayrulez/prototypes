@@ -11,7 +11,7 @@
   <body>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
-import { Demo3DRenderer } from '../common/demo-renderers.js'
+import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { CubePlugin, CubeElement } from '../cube/cube.js'
 import { ImagePlugin, ImageElement, loadImages } from '../image/image.js'
 import {
@@ -31,7 +31,7 @@ const cubePlugin = new CubePlugin()
 const postProcessingPlugin = new PostProcessingPlugin()
 const eye = [0, 0, 40]
 
-const renderer = new Demo3DRenderer(canvas, [
+const renderer = new Basic3DRenderer(canvas, [
   cubePlugin, postProcessingPlugin, imagePlugin
 ])
 // Fix the image

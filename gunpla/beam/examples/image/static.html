@@ -9,13 +9,13 @@
   <body>
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
-import { Demo3DRenderer } from '../common/demo-renderers.js'
+import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { ImagePlugin, ImageElement, loadImages } from './image.js'
 
 const canvas = document.getElementById('gl-canvas')
 
 const imagePlugin = new ImagePlugin()
-const renderer = new Demo3DRenderer(canvas, [imagePlugin])
+const renderer = new Basic3DRenderer(canvas, [imagePlugin])
 renderer.setCamera([0, 0, 10])
 
 loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {

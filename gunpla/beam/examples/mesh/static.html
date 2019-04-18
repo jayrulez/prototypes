@@ -11,7 +11,7 @@
   <body>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
-import { Demo3DRenderer } from '../common/demo-renderers.js'
+import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { loadGLTF } from '../common/gltf-loader.js'
 import { MeshElement, MeshPlugin } from './mesh.js'
 import { loadCubeMaps, loadImage } from './loader.js'
@@ -21,7 +21,7 @@ canvas.height = window.innerHeight
 canvas.width = window.innerWidth
 
 const meshPlugin = new MeshPlugin()
-const renderer = new Demo3DRenderer(canvas, [meshPlugin])
+const renderer = new Basic3DRenderer(canvas, [meshPlugin])
 
 const basePath = '../common/gltf/damaged-helmet/'
 const src = basePath + 'DamagedHelmet.gltf'

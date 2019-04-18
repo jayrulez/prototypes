@@ -17,7 +17,7 @@
     <video src="./b.mov" id="video-b" autoplay loop hidden></video>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
-import { Demo3DRenderer } from '../common/demo-renderers.js'
+import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { ImagePlugin, ImageElement, loadImages } from './image.js'
 
 const { cos, sin } = Math
@@ -29,7 +29,7 @@ canvas.height = window.innerHeight / 2
 canvas.width = window.innerWidth / 2
 
 const imagePlugin = new ImagePlugin()
-const renderer = new Demo3DRenderer(canvas, [imagePlugin])
+const renderer = new Basic3DRenderer(canvas, [imagePlugin])
 renderer.setCamera([0, 0, 10])
 
 button.addEventListener('click',() => {

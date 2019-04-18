@@ -48,13 +48,13 @@ npm install -g http-server && http-server .
 ``` html
 <canvas id="demo" width="400" height="400"></canvas>
 <script type="module">
-import { Demo3DRenderer } from '../common/demo-renderers.js'
+import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { CubeElement, CubePlugin } from './cube.js'
 
 const canvas = document.getElementById('gl-canvas')
 
 const cubePlugin = new CubePlugin()
-const renderer = new Demo3DRenderer(canvas, [cubePlugin])
+const renderer = new Basic3DRenderer(canvas, [cubePlugin])
 
 const cubeA = new CubeElement({ position: [0, 0, 0] })
 const cubeB = new CubeElement({ position: [3, 0, 0] })

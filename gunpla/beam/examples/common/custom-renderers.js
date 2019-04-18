@@ -1,7 +1,7 @@
 import { create, lookAt, perspective } from './mat4.js'
 import { Renderer } from '../../src/renderer.js'
 
-export class Demo3DRenderer extends Renderer {
+export class Basic3DRenderer extends Renderer {
   constructor (...args) {
     super(...args)
     this.setCamera()
