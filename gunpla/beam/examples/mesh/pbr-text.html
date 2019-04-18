@@ -28,16 +28,21 @@ const src = basePath + 'DamagedHelmet.gltf'
 
 renderer.setCamera([0, 400, 700], [0, 150, 0])
 
+const materialURL = '../common/textures/materials/'
+
+const urls = [
+  [
+    'gold/gold-scuffed-basecolor-boosted.png',
+    'metal/metal-splotchy-normal.png',
+    'metal/metal-splotchy-metal-roughness.png',
+    'metal/metal-splotchy-emissive.png',
+    'metal/metal-splotchy-metal.png', // AO
+  ]
+]
+
 Promise.all([
   fetch('../common/beam.obj').then(resp => resp.text()),
-  Promise.all([
-    loadImage('../common/textures/materials/gold/gold-scuffed-basecolor-boosted.png'),
-    // loadImage('../common/textures/materials/metal/metal-splotchy-albedo.png'),
-    loadImage('../common/textures/materials/metal/metal-splotchy-normal.png'),
-    loadImage('../common/textures/materials/metal/metal-splotchy-metal-roughness.png'),
-    loadImage('../common/textures/materials/metal/metal-splotchy-emissive.png'),
-    loadImage('../common/textures/materials/metal/metal-splotchy-metal.png') // AO
-  ]),
+  Promise.all(urls[0].map(url => loadImage(materialURL + url))),
   loadCubeMaps('../common/textures/papermill'),
   loadImage('../common/textures/brdfLUT.png')
 ]).then(([str, images, cubeMaps, brdf]) => {
