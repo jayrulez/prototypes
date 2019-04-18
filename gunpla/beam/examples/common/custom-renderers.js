@@ -11,6 +11,9 @@ export class Basic3DRenderer extends Renderer {
   setCamera (eye = [0, 0, 0], center = [0, 0, 0], up = [0, 1, 0]) {
     const viewMat = create()
     lookAt(viewMat, eye, center, up)
+    this.setGlobal('cameraEye', eye)
+    this.setGlobal('cameraCenter', center)
+    this.setGlobal('cameraUp', up)
     this.setGlobal('camera', viewMat)
   }
 

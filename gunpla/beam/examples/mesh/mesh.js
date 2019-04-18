@@ -438,26 +438,12 @@ export class MeshPlugin extends ShadePlugin {
       u_ScaleIBLAmbient: vec4
     }
 
-    const { buffer, texture, uniform } = PropTypes
+    const { buffer, texture } = PropTypes
     this.propSchema = {
       index: { type: buffer, index: true },
       a_Position: { type: buffer, n: 3 },
       a_Normal: { type: buffer, n: 3 },
       a_UV: { type: buffer, n: 2 },
-      u_NormalMatrix: { type: uniform },
-      u_ModelMatrix: { type: uniform },
-      u_MVPMatrix: { type: uniform },
-      u_LightDirection: { type: uniform },
-      u_LightColor: { type: uniform },
-      u_NormalScale: { type: uniform },
-      u_EmissiveFactor: { type: uniform },
-      u_OcclusionStrength: { type: uniform },
-      u_MetallicRoughnessValues: { type: uniform },
-      u_BaseColorFactor: { type: uniform },
-      u_Camera: { type: uniform },
-      u_ScaleDiffBaseMR: { type: uniform },
-      u_ScaleFGDSpec: { type: uniform },
-      u_ScaleIBLAmbient: { type: uniform },
       u_DiffuseEnvSampler: { type: texture, unit: 0, cube: true },
       u_SpecularEnvSampler: { type: texture, unit: 1, cube: true },
       u_brdfLUT: { type: texture, unit: 2, srgb: true },
@@ -486,7 +472,7 @@ export class MeshPlugin extends ShadePlugin {
   }
 
   propsByGlobals (globals) {
-    const modelMat = rotate([], create(), Math.PI, [0, 1, 0])
+    const modelMat = rotate([], create(), 0, [0, 1, 0])
     const viewProjectionMat = multiply([], globals.perspective, globals.camera)
     const mvpMat = multiply([], viewProjectionMat, modelMat)
 
@@ -501,13 +487,13 @@ export class MeshPlugin extends ShadePlugin {
       u_NormalScale: 1.0,
       u_EmissiveFactor: [1.0, 1.0, 1.0],
       u_OcclusionStrength: 1.0,
-      u_MetallicRoughnessValues: [1.0, 1.0],
-      u_BaseColorFactor: [1.0, 1.0, 1.0, 1.0],
+      u_MetallicRoughnessValues: [1, 1],
+      u_BaseColorFactor: [1.0, 1.0, 1.0, 1.0].map(x => x * 1),
       u_brdfLUT: globals.brdf,
-      u_Camera: [0, -6, 2],
+      u_Camera: globals.cameraEye,
       u_ScaleDiffBaseMR: [0.0, 0.0, 0.0, 0.0],
       u_ScaleFGDSpec: [0.0, 0.0, 0.0, 0.0],
-      u_ScaleIBLAmbient: [1.0, 1.0, 1.0, 1.0]
+      u_ScaleIBLAmbient: [1.0, 1.0, 1.0, 1.0].map(x => x * 1)
     }
   }
 }

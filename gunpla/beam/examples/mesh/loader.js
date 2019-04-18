@@ -29,3 +29,14 @@ export const loadCubeMaps = basePath => new Promise(resolve => {
     resolve(cubeMaps)
   })
 })
+
+export const obj2BufferInfos = model => {
+  return {
+    attributeInfos: [
+      { data: model.normals },
+      { data: model.positions },
+      { data: model.texCoords }
+    ],
+    indicesInfo: { data: model.indices }
+  }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+  </head>
+  <style>
+    * { margin: auto 0; padding: 0; }
+    body { display: flex; justify-content: center; }
+    canvas { width: 100%; height: 100% }
+  </style>
+  <body>
+    <canvas id="gl-canvas"></canvas>
+<script type="module">
+import { Basic3DRenderer } from '../common/custom-renderers.js'
+import { parseOBJ } from '../common/obj-loader.js'
+import { MeshElement, MeshPlugin } from './mesh.js'
+import { loadCubeMaps, loadImage, obj2BufferInfos } from './loader.js'
+
+const canvas = document.getElementById('gl-canvas')
+canvas.height = window.innerHeight
+canvas.width = window.innerWidth
+
+const meshPlugin = new MeshPlugin()
+const renderer = new Basic3DRenderer(canvas, [meshPlugin])
+
+const basePath = '../common/gltf/damaged-helmet/'
+const src = basePath + 'DamagedHelmet.gltf'
+
+renderer.setCamera([0, 400, 700], [0, 150, 0])
+
+Promise.all([
+  fetch('../common/beam.obj').then(resp => resp.text()),
+  Promise.all([
+    loadImage('../common/textures/materials/gold/gold-scuffed-basecolor-boosted.png'),
+    // loadImage('../common/textures/materials/metal/metal-splotchy-albedo.png'),
+    loadImage('../common/textures/materials/metal/metal-splotchy-normal.png'),
+    loadImage('../common/textures/materials/metal/metal-splotchy-metal-roughness.png'),
+    loadImage('../common/textures/materials/metal/metal-splotchy-emissive.png'),
+    loadImage('../common/textures/materials/metal/metal-splotchy-metal.png') // AO
+  ]),
+  loadCubeMaps('../common/textures/papermill'),
+  loadImage('../common/textures/brdfLUT.png')
+]).then(([str, images, cubeMaps, brdf]) => {
+  const [model] = parseOBJ(str)
+  const bufferInfos = obj2BufferInfos(model)
+  const meshElement = new MeshElement({ bufferInfos, images })
+  renderer.setGlobal('cubeMaps', cubeMaps)
+  renderer.setGlobal('brdf', brdf)
+  renderer.addElement(meshElement)
+  renderer.render()
+})
+window.renderer = renderer
+</script>
+  </body>
+</html>

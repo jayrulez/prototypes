@@ -13,6 +13,7 @@ export const ShaderTypes = {
 export const PropTypes = {
   buffer: 0,
   texture: 1,
+  // FIXME remove uniform type
   uniform: 2
 }
 
