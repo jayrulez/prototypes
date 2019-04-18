@@ -338,7 +338,32 @@ export const draw = (
         )
       },
       [ShaderTypes.samplerCube]: () => {
+        const { unit = 0 } = propSchema[key]
+        const faces = [
+          gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+          gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+          gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+          gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+          gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+          gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+        ]
+        const { images, level } = prop
+        const space = extensions.EXT_SRGB.SRGB_EXT
 
+        gl.uniform1i(location, unit)
+        gl.activeTexture(gl.TEXTURE0 + unit)
+
+        let count = 0
+        for (let i = 0; i < faces.length; i++) {
+          for (let j = 0; j <= level; j++) {
+            const face = faces[i]
+            // TODO SRGB_EXT detect
+            gl.texImage2D(
+              face, j, space, space, gl.UNSIGNED_BYTE, images[count]
+            )
+            count++
+          }
+        }
       }
     }
     uniformSetterMapping[type]()
