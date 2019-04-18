@@ -7,11 +7,17 @@ import {
   bufferPropOffset
 } from '../utils/misc.js'
 
+// TODO per plugin
+const extensions = {}
+
 export const getWebGLInstance = canvas => {
   const gl = canvas.getContext('webgl')
   // TODO extension detect
-  gl.getExtension('EXT_shader_texture_lod')
-  gl.getExtension('OES_standard_derivatives')
+  extensions.EXT_shader_texture_lod = gl.getExtension('EXT_shader_texture_lod')
+  extensions.OES_standard_derivatives = gl.getExtension(
+    'OES_standard_derivatives'
+  )
+  extensions.EXT_SRGB = gl.getExtension('EXT_SRGB')
   return gl
 }
 
@@ -73,7 +79,9 @@ const upload2DTexture = (gl, image, schemaValue) => {
   gl.bindTexture(gl.TEXTURE_2D, texture)
 
   if (schemaValue.flip) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+
+  const space = gl.RGBA
+  gl.texImage2D(gl.TEXTURE_2D, 0, space, space, gl.UNSIGNED_BYTE, image)
 
   if (
     isPowerOf2(image.width) && isPowerOf2(image.height) &&
@@ -119,8 +127,9 @@ const uploadCubeTexture = (gl, cubeMap, schemaValue) => {
   for (let i = 0; i < faces.length; i++) {
     for (let j = 0; j <= level; j++) {
       const face = faces[i]
-      // TODO SRGB_EXT
-      gl.texImage2D(face, j, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[count])
+      // TODO SRGB_EXT detect
+      const space = extensions.EXT_SRGB.SRGB_EXT
+      gl.texImage2D(face, j, space, space, gl.UNSIGNED_BYTE, images[count])
       count++
     }
   }

@@ -460,7 +460,7 @@ export class MeshPlugin extends ShadePlugin {
       u_ScaleIBLAmbient: { type: uniform },
       u_DiffuseEnvSampler: { type: texture, unit: 0, cube: true },
       u_SpecularEnvSampler: { type: texture, unit: 1, cube: true },
-      u_brdfLUT: { type: texture, unit: 2 },
+      u_brdfLUT: { type: texture, unit: 2, srgb: true },
       u_BaseColorSampler: { type: texture, unit: 3 },
       u_NormalSampler: { type: texture, unit: 4 },
       u_EmissiveSampler: { type: texture, unit: 5 },
