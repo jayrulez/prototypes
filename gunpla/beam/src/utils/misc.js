@@ -15,6 +15,10 @@ export const push = (arr, x) => { arr[arr.length] = x }
 
 export const isPowerOf2 = value => (value & (value - 1)) === 0
 
+export const mapValue = (obj, mapper) => Object
+  .keys(obj)
+  .reduce((newObj, key) => ({ ...newObj, [key]: mapper(obj, key) }), {})
+
 // Prop keys with numComponents must be attribute floats
 export const bufferTypeSize = (propSchema, key) => propSchema[key].n ? 4 : 2
 

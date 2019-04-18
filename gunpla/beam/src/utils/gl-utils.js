@@ -4,7 +4,8 @@ import { ShaderTypes } from '../consts.js'
 import {
   isPowerOf2,
   getBufferKeys,
-  bufferPropOffset
+  bufferPropOffset,
+  mapValue
 } from '../utils/misc.js'
 
 // TODO per plugin
@@ -55,23 +56,18 @@ export const initProgramInfo = (
   gl, shaderSchema, vertexShader, fragmentShader
 ) => {
   const program = initShader(gl, vertexShader, fragmentShader)
-  return {
-    program,
-    attributes: Object.keys(shaderSchema.attributes).reduce((map, key) => ({
-      ...map,
-      [key]: {
-        type: shaderSchema.attributes[key],
-        location: gl.getAttribLocation(program, key)
-      }
-    }), {}),
-    uniforms: Object.keys(shaderSchema.uniforms).reduce((map, key) => ({
-      ...map,
-      [key]: {
-        type: shaderSchema.uniforms[key],
-        location: gl.getUniformLocation(program, key)
-      }
-    }), {})
-  }
+  // map from { normal: 0, position: 1, uv: 2 }
+  // to { normal: { type, location } }
+  const attributes = mapValue(shaderSchema.attributes, (attributes, key) => ({
+    type: attributes[key],
+    location: gl.getAttribLocation(program, key)
+  }))
+  const uniforms = mapValue(shaderSchema.uniforms, (uniforms, key) => ({
+    type: uniforms[key],
+    location: gl.getUniformLocation(program, key)
+  }))
+
+  return { program, attributes, uniforms }
 }
 
 const upload2DTexture = (gl, image, schemaValue) => {
