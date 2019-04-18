@@ -4,57 +4,43 @@
     <title>Demo</title>
   </head>
   <style>
-    * { margin: auto 0; padding: 0; }
+    * { margin: auto 0; padding: 0; color: #666; }
     body { display: flex; justify-content: center; }
     canvas { width: 100%; height: 100% }
+    #control {
+      position: fixed; top: 0; right: 0; width: 300px; height: 200px;
+      padding: 10px; box-sizing: border-box;
+      background: white; opacity: 0.3;
+    }
   </style>
   <body>
+    <div id="control">
+      <input type="range" min="-180" max="180" value="0" id="x-rotate">
+      <label for="x-rotate">X Rotate</label>
+
+      <input type="range" min="-180" max="180" value="0" id="y-rotate">
+      <label for="y-rotate">Y Rotate</label>
+
+      <input type="range" min="-180" max="180" value="0" id="z-rotate">
+      <label for="z-rotate">Z Rotate</label>
+
+      <input type="range" min="0" max="1" value="1" step="0.01" id="metallic">
+      <label for="metallic">金属度</label>
+
+      <input type="range" min="0" max="1" value="1" step="0.01" id="roughness">
+      <label for="roughness">粗糙度</label>
+
+      <input type="range" min="0" max="1" value="1" step="0.01" id="base-color-factor">
+      <label for="base-color-factor">基础色强度</label>
+
+      <input type="range" min="0" max="1" value="1" step="0.01" id="ibl-ambient">
+      <label for="ibl-ambient">环境光强度</label>
+    </div>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
-import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { parseOBJ } from '../common/obj-loader.js'
-import { MeshElement, MeshPlugin } from './mesh.js'
-import { loadCubeMaps, loadImage, obj2BufferInfos } from './loader.js'
+import { main } from './text-main.js'
 
-const canvas = document.getElementById('gl-canvas')
-canvas.height = window.innerHeight
-canvas.width = window.innerWidth
-
-const meshPlugin = new MeshPlugin()
-const renderer = new Basic3DRenderer(canvas, [meshPlugin])
-
-const basePath = '../common/gltf/damaged-helmet/'
-const src = basePath + 'DamagedHelmet.gltf'
-
-renderer.setCamera([0, 400, 700], [0, 150, 0])
-
-const materialURL = '../common/textures/materials/'
-
-const urls = [
-  [
-    'gold/gold-scuffed-basecolor-boosted.png',
-    'metal/metal-splotchy-normal.png',
-    'metal/metal-splotchy-metal-roughness.png',
-    'metal/metal-splotchy-emissive.png',
-    'metal/metal-splotchy-metal.png', // AO
-  ]
-]
-
-Promise.all([
-  fetch('../common/beam.obj').then(resp => resp.text()),
-  Promise.all(urls[0].map(url => loadImage(materialURL + url))),
-  loadCubeMaps('../common/textures/papermill'),
-  loadImage('../common/textures/brdfLUT.png')
-]).then(([str, images, cubeMaps, brdf]) => {
-  const [model] = parseOBJ(str)
-  const bufferInfos = obj2BufferInfos(model)
-  const meshElement = new MeshElement({ bufferInfos, images })
-  renderer.setGlobal('cubeMaps', cubeMaps)
-  renderer.setGlobal('brdf', brdf)
-  renderer.addElement(meshElement)
-  renderer.render()
-})
-window.renderer = renderer
+main()
 </script>
   </body>
 </html>

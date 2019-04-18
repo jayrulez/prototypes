@@ -293,7 +293,14 @@ export const resetBeforeDraw = gl => {
 }
 
 export const draw = (
-  gl, programInfo, buffers, propSchema, totalLength, textureMap, props
+  gl,
+  programInfo,
+  buffers,
+  propSchema,
+  totalLength,
+  textureMap,
+  props,
+  texLoaded
 ) => {
   gl.useProgram(programInfo.program)
 
@@ -325,6 +332,7 @@ export const draw = (
       [ShaderTypes.mat3]: () => gl.uniformMatrix3fv(location, false, prop),
       [ShaderTypes.mat2]: () => gl.uniformMatrix2fv(location, false, prop),
       [ShaderTypes.sampler2D]: () => {
+        if (texLoaded) return
         const { unit = 0 } = propSchema[key]
         gl.uniform1i(location, unit)
         gl.activeTexture(gl.TEXTURE0 + unit)
@@ -334,6 +342,7 @@ export const draw = (
         )
       },
       [ShaderTypes.samplerCube]: () => {
+        if (texLoaded) return
         const { unit = 0 } = propSchema[key]
         const faces = [
           gl.TEXTURE_CUBE_MAP_POSITIVE_X,

@@ -472,28 +472,45 @@ export class MeshPlugin extends ShadePlugin {
   }
 
   propsByGlobals (globals) {
-    const modelMat = rotate([], create(), 0, [0, 1, 0])
-    const viewProjectionMat = multiply([], globals.perspective, globals.camera)
+    const {
+      brdf,
+      camera,
+      cameraEye,
+      cubeMaps,
+      modelRotate = [],
+      metallic = 1,
+      roughness = 1,
+      baseColorFactor = 1,
+      scaleIBLAmbient = 1,
+      perspective
+    } = globals
+    const [rx = 0, ry = 0, rz = 0] = modelRotate
+
+    const modelMat = create()
+    rotate(modelMat, modelMat, rx / 180 * Math.PI, [1, 0, 0])
+    rotate(modelMat, modelMat, ry / 180 * Math.PI, [0, 1, 0])
+    rotate(modelMat, modelMat, rz / 180 * Math.PI, [0, 0, 1])
+    const viewProjectionMat = multiply([], perspective, camera)
     const mvpMat = multiply([], viewProjectionMat, modelMat)
 
     return {
       u_NormalMatrix: create(),
       u_ModelMatrix: modelMat,
       u_MVPMatrix: mvpMat,
-      u_DiffuseEnvSampler: globals.cubeMaps[0],
-      u_SpecularEnvSampler: globals.cubeMaps[1],
+      u_DiffuseEnvSampler: cubeMaps[0],
+      u_SpecularEnvSampler: cubeMaps[1],
       u_LightDirection: [0.0, 0.5, 0.5],
       u_LightColor: [1.0, 1.0, 1.0],
       u_NormalScale: 1.0,
       u_EmissiveFactor: [1.0, 1.0, 1.0],
       u_OcclusionStrength: 1.0,
-      u_MetallicRoughnessValues: [1, 1],
-      u_BaseColorFactor: [1.0, 1.0, 1.0, 1.0].map(x => x * 1),
-      u_brdfLUT: globals.brdf,
-      u_Camera: globals.cameraEye,
+      u_MetallicRoughnessValues: [metallic, roughness],
+      u_BaseColorFactor: [1.0, 1.0, 1.0, 1.0].map(x => x * baseColorFactor),
+      u_brdfLUT: brdf,
+      u_Camera: cameraEye,
       u_ScaleDiffBaseMR: [0.0, 0.0, 0.0, 0.0],
       u_ScaleFGDSpec: [0.0, 0.0, 0.0, 0.0],
-      u_ScaleIBLAmbient: [1.0, 1.0, 1.0, 1.0].map(x => x * 1)
+      u_ScaleIBLAmbient: [1.0, 1.0, 1.0, 1.0].map(x => x * scaleIBLAmbient)
     }
   }
 }

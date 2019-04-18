@@ -36,6 +36,7 @@ Promise.all([
   const meshElement = new MeshElement({ bufferInfos, images })
   renderer.setGlobal('cubeMaps', cubeMaps)
   renderer.setGlobal('brdf', brdf)
+  renderer.setGlobal('modelRotate', [0, 180, 0])
   renderer.addElement(meshElement)
   renderer.render()
 })

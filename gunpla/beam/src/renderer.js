@@ -42,6 +42,7 @@ export class Renderer {
   constructor (
     canvas, plugins, config = RendererConfig, utils = defaultUtils
   ) {
+    this.texLoaded = false
     this.plugins = plugins
     this.globals = {}
     this.config = config
@@ -137,6 +138,7 @@ export class Renderer {
         elementGroups, plugin, indexKey
       )
     }
+    this.texLoaded = false
   }
 
   changeElement (element, props) {
@@ -220,8 +222,16 @@ export class Renderer {
           ...plugin.propsByGlobals(globals)
         }
         draw(
-          gl, programInfo, buffers, propSchema, totalLength, textureMap, props
+          gl,
+          programInfo,
+          buffers,
+          propSchema,
+          totalLength,
+          textureMap,
+          props,
+          this.texLoaded
         )
+        this.texLoaded = true
       }
     }
   }
