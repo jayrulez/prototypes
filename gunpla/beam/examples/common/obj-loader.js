@@ -48,7 +48,8 @@ export const parseOBJ = str => {
           join(model.positions, arr)
         },
         'vt': line => {
-          const arr = toFloatArr('vt', line)
+          // fix three exported OBJ uv
+          const arr = toFloatArr('vt', line).map(x => x / 100)
           join(model.texCoords, arr)
         },
         'vn': line => {

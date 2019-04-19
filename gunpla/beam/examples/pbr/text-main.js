@@ -16,19 +16,43 @@ export const main = () => {
   renderer.setCamera([0, 400, 700], [0, 150, 0])
 
   const materialURL = '../common/textures/materials/'
+
+  // [Albedo, Normal, MetalRoughness, Emissive, AO]
   const urls = [
     [
       'gold/gold-scuffed-basecolor-boosted.png',
       'metal/metal-splotchy-normal.png',
       'metal/metal-splotchy-metal-roughness.png',
       'metal/metal-splotchy-emissive.png',
-      'metal/metal-splotchy-metal.png' // fake AO
+      'metal/metal-splotchy-metal.png' // FIXME
+    ],
+    [
+      'chess-color.jpg',
+      'metal/metal-splotchy-normal.png',
+      'metal/metal-splotchy-metal-roughness.png',
+      'metal/metal-splotchy-emissive.png',
+      'metal/metal-splotchy-metal.png' // FIXME
+    ],
+    [
+      'corkboard3b/corkboard3b-albedo.png',
+      'corkboard3b/corkboard3b-normal.png',
+      'metal/metal-splotchy-metal-roughness.png', // FIXME
+      'metal/metal-splotchy-emissive.png', // FIXME
+      'corkboard3b/corkboard3b-ao.png'
+    ],
+    [
+      'rust-coated/rust-coated-basecolor.png',
+      'rust-coated/rust-coated-normal.png',
+      'metal/metal-splotchy-metal-roughness.png', // FIXME
+      'metal/metal-splotchy-emissive.png', // FIXME
+      'metal/metal-splotchy-metal.png' // FIXME
     ]
   ]
+  const urlIndex = parseInt(window.location.hash[1]) || 0 // #0, #1, #2...
 
   Promise.all([
     fetch('../common/beam.obj').then(resp => resp.text()),
-    Promise.all(urls[0].map(url => loadImage(materialURL + url))),
+    Promise.all(urls[urlIndex].map(url => loadImage(materialURL + url))),
     loadCubeMaps('../common/textures/papermill'),
     loadImage('../common/textures/brdfLUT.png')
   ]).then(([str, images, cubeMaps, brdf]) => {
