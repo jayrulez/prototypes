@@ -34,6 +34,13 @@ export const main = () => {
       'metal/metal-splotchy-metal.png' // FIXME
     ],
     [
+      'metal/metal-splotchy-albedo.png',
+      'metal/metal-splotchy-normal.png',
+      'metal/metal-splotchy-metal-roughness.png',
+      'metal/metal-splotchy-emissive.png',
+      'metal/metal-splotchy-metal.png' // FIXME
+    ],
+    [
       'corkboard3b/corkboard3b-albedo.png',
       'corkboard3b/corkboard3b-normal.png',
       'metal/metal-splotchy-metal-roughness.png', // FIXME
