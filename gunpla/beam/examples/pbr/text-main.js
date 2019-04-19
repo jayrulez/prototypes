@@ -41,38 +41,50 @@ export const main = () => {
     renderer.render()
   })
 
-  const xRotate = document.getElementById('x-rotate')
-  const yRotate = document.getElementById('y-rotate')
-  const zRotate = document.getElementById('z-rotate')
-  ;[xRotate, yRotate, zRotate].forEach(input => {
+  const $xRotate = document.getElementById('x-rotate')
+  const $yRotate = document.getElementById('y-rotate')
+  const $zRotate = document.getElementById('z-rotate')
+  ;[$xRotate, $yRotate, $zRotate].forEach(input => {
     input.addEventListener('input', () => {
-      const [rx, ry, rz] = [xRotate.value, yRotate.value, zRotate.value]
+      const [rx, ry, rz] = [$xRotate.value, $yRotate.value, $zRotate.value]
       renderer.setGlobal('modelRotate', [rx, ry, rz])
       renderer.render()
     })
   })
 
-  const metallic = document.getElementById('metallic')
-  metallic.addEventListener('input', () => {
-    renderer.setGlobal('metallic', metallic.value)
+  const $metallic = document.getElementById('metallic')
+  $metallic.addEventListener('input', () => {
+    renderer.setGlobal('metallic', $metallic.value)
     renderer.render()
   })
 
-  const roughness = document.getElementById('roughness')
-  roughness.addEventListener('input', () => {
-    renderer.setGlobal('roughness', roughness.value)
+  const $roughness = document.getElementById('roughness')
+  $roughness.addEventListener('input', () => {
+    renderer.setGlobal('roughness', $roughness.value)
     renderer.render()
   })
 
-  const baseColorFactor = document.getElementById('base-color-factor')
-  baseColorFactor.addEventListener('input', () => {
-    renderer.setGlobal('baseColorFactor', baseColorFactor.value)
+  const $baseColorFactor = document.getElementById('base-color-factor')
+  $baseColorFactor.addEventListener('input', () => {
+    renderer.setGlobal('baseColorFactor', $baseColorFactor.value)
     renderer.render()
   })
 
-  const iblAmbient = document.getElementById('ibl-ambient')
-  iblAmbient.addEventListener('input', () => {
-    renderer.setGlobal('scaleIBLAmbient', iblAmbient.value)
+  const $iblAmbient = document.getElementById('ibl-ambient')
+  $iblAmbient.addEventListener('input', () => {
+    renderer.setGlobal('scaleIBLAmbient', $iblAmbient.value)
+    renderer.render()
+  })
+
+  const $lightRotate = document.getElementById('light-rotate')
+  $lightRotate.addEventListener('input', () => {
+    renderer.setGlobal('lightRotate', $lightRotate.value)
+    renderer.render()
+  })
+
+  const $lightPitch = document.getElementById('light-pitch')
+  $lightPitch.addEventListener('input', () => {
+    renderer.setGlobal('lightPitch', $lightPitch.value)
     renderer.render()
   })
 

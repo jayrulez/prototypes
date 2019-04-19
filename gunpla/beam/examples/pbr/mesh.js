@@ -482,14 +482,19 @@ export class MeshPlugin extends ShadePlugin {
       roughness = 1,
       baseColorFactor = 1,
       scaleIBLAmbient = 1,
+      lightRotate = 0,
+      lightPitch = 0,
       perspective
     } = globals
     const [rx = 0, ry = 0, rz = 0] = modelRotate
-
+    const { sin, cos } = Math
     const modelMat = create()
     rotate(modelMat, modelMat, rx / 180 * Math.PI, [1, 0, 0])
     rotate(modelMat, modelMat, ry / 180 * Math.PI, [0, 1, 0])
     rotate(modelMat, modelMat, rz / 180 * Math.PI, [0, 0, 1])
+
+    const [r, p] = [lightRotate / 180 * Math.PI, lightPitch / 180 * Math.PI]
+    const lightDir = [sin(r) * cos(p), sin(p), cos(r) * cos(p)]
     const viewProjectionMat = multiply([], perspective, camera)
     const mvpMat = multiply([], viewProjectionMat, modelMat)
 
@@ -499,7 +504,7 @@ export class MeshPlugin extends ShadePlugin {
       u_MVPMatrix: mvpMat,
       u_DiffuseEnvSampler: cubeMaps[0],
       u_SpecularEnvSampler: cubeMaps[1],
-      u_LightDirection: [0.0, 0.5, 0.5],
+      u_LightDirection: lightDir,
       u_LightColor: [1.0, 1.0, 1.0],
       u_NormalScale: 1.0,
       u_EmissiveFactor: [1.0, 1.0, 1.0],
