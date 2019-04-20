@@ -163,6 +163,7 @@ export class Renderer {
         gl, bufferKeys, name, subElements, bufferProps, buffers, propSchema
       )
     }
+    this.texLoaded = false
   }
 
   removeElement (element) {
@@ -172,6 +173,7 @@ export class Renderer {
     for (let i = 0; i < copyElements.length; i++) {
       this.addElement(copyElements[i])
     }
+    this.texLoaded = false
   }
 
   setGlobal (field, props) {
@@ -231,8 +233,8 @@ export class Renderer {
           props,
           this.texLoaded
         )
-        this.texLoaded = true
       }
+      this.texLoaded = true
     }
   }
 }
