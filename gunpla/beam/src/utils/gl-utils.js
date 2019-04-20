@@ -187,8 +187,6 @@ export const uploadFullBuffers = (
 export const uploadSubBuffers = (
   gl, bufferKeys, name, elements, bufferProps, buffers, propSchema
 ) => {
-  if (!bufferKeys.length) return
-
   bufferKeys.forEach(key => {
     const { index } = propSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
@@ -204,6 +202,17 @@ export const uploadSubBuffers = (
 
     gl.bindBuffer(target, buffers[key])
     gl.bufferSubData(target, commonOffset * size, arr)
+  })
+}
+
+export const clearBuffers = (gl, bufferSizes, buffers, propSchema) => {
+  const bufferKeys = getBufferKeys(propSchema)
+  bufferKeys.forEach(key => {
+    const { index } = propSchema[key]
+    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+
+    gl.bindBuffer(target, buffers[key])
+    gl.bufferData(target, bufferSizes[key], gl.STATIC_DRAW)
   })
 }
 

@@ -6,6 +6,7 @@ import {
   uploadSubBuffers,
   uploadFullBuffers,
   uploadIndexBuffers,
+  clearBuffers,
   uploadTexture,
   resetBeforeDraw,
   draw
@@ -33,6 +34,7 @@ const defaultUtils = {
   uploadSubBuffers,
   uploadFullBuffers,
   uploadIndexBuffers,
+  clearBuffers,
   uploadTexture,
   resetBeforeDraw,
   draw
@@ -167,13 +169,20 @@ export class Renderer {
   }
 
   removeElement (element) {
-    const copyElements = this.elements.filter(el => el !== element)
+    const { gl, plugins } = this
+    const { clearBuffers } = this.glUtils
+    const remainedElements = this.elements.filter(el => el !== element)
+
+    for (let i = 0; i < plugins.length; i++) {
+      const { propSchema, buffers, bufferSizes } = plugins[i]
+      clearBuffers(gl, bufferSizes, buffers, propSchema)
+    }
+
     this.elements = []
     // TODO perf
-    for (let i = 0; i < copyElements.length; i++) {
-      this.addElement(copyElements[i])
+    for (let i = 0; i < remainedElements.length; i++) {
+      this.addElement(remainedElements[i])
     }
-    this.texLoaded = false
   }
 
   setGlobal (field, props) {
@@ -182,7 +191,6 @@ export class Renderer {
 
   render () {
     const { gl, glUtils, plugins, globals, elements } = this
-    if (!elements.length) return
 
     const { resetBeforeDraw, draw } = glUtils
     resetBeforeDraw(gl)
