@@ -18,8 +18,7 @@ const cubePlugin = new CubePlugin()
 const config = { bufferChunkSize: 1000 * 1024 }
 const renderer = new Basic3DRenderer(canvas, [cubePlugin], config)
 
-// FIXME perf
-const N = 2
+const N = 8
 for (let i = 0; i < N; i++) {
   for (let j = 0; j < N; j++) {
     for (let k = 0; k < N; k++) {

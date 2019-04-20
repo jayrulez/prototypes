@@ -108,11 +108,11 @@ export const divideUploadKeys = (
   for (let i = 0; i < bufferKeys.length; i++) {
     const key = bufferKeys[i]
     const size = bufferTypeSize(propSchema, key)
-    const baseSpace = bufferPropOffset(elements, name, key) * size
-    const spaceRequired = baseSpace + (bufferProps[key] instanceof ArrayBuffer)
+    const baseOffset = bufferPropOffset(elements, name, key) * size
+    const bufferLength = bufferProps[key] instanceof ArrayBuffer
       ? bufferProps[key].byteLength
       : bufferProps[key].length * size
-
+    const spaceRequired = baseOffset + bufferLength
     spaceRequired < bufferChunkSize ? push(subKeys, key) : push(fullKeys, key)
   }
   return [fullKeys, subKeys]
