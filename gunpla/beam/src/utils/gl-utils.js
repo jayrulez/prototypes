@@ -153,11 +153,11 @@ export const initBufferInfo = (gl, propSchema, bufferChunkSize) => {
   return buffers
 }
 
-export const uploadFullBuffers = (
-  gl, bufferKeys, name, elements, bufferSizes, buffers, propSchema
-) => {
+export const uploadFullBuffers = (gl, plugin, bufferKeys, elements) => {
   if (!bufferKeys.length) return
 
+  const { buffers, bufferSizes, propSchema } = plugin
+  const { name } = plugin.constructor
   // Join props of elements
   // props: { keyA, keyB, keyC... }
   const props = bufferKeys.reduce((map, key) => ({ ...map, [key]: [] }), {})
@@ -184,12 +184,13 @@ export const uploadFullBuffers = (
   })
 }
 
-export const uploadSubBuffers = (
-  gl, bufferKeys, name, elements, bufferProps, buffers, propSchema
-) => {
+export const uploadSubBuffers = (gl, plugin, bufferKeys, elements, element) => {
+  const { buffers, propSchema } = plugin
+  const { name } = plugin.constructor
   bufferKeys.forEach(key => {
     const { index } = propSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+    const bufferProps = element.bufferPropsMap[name]
     const commonOffset = bufferPropOffset(elements, name, key)
 
     if (index) return
@@ -205,7 +206,8 @@ export const uploadSubBuffers = (
   })
 }
 
-export const clearBuffers = (gl, bufferSizes, buffers, propSchema) => {
+export const clearBuffers = (gl, plugin) => {
+  const { bufferSizes, buffers, propSchema } = plugin
   const bufferKeys = getBufferKeys(propSchema)
   bufferKeys.forEach(key => {
     const { index } = propSchema[key]
@@ -216,12 +218,13 @@ export const clearBuffers = (gl, bufferSizes, buffers, propSchema) => {
   })
 }
 
-export const uploadIndexBuffer = (
-  gl, indexGroup, buffers, propSchema
-) => {
+export const uploadIndexBuffer = (gl, plugin, i) => {
+  const { buffers, propSchema, indexBufferGroups } = plugin
+  const indexBufferGroup = indexBufferGroups[i]
   const bufferKeys = getBufferKeys(propSchema)
   const indexKey = bufferKeys.find(key => propSchema[key].index)
-  let data = indexGroup
+
+  let data = indexBufferGroup
   if (data[0] instanceof ArrayBuffer) data = data[0]
   const arr = new Uint16Array(data)
 
@@ -302,20 +305,12 @@ export const resetBeforeDraw = (gl, clearColor) => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 }
 
-export const draw = (
-  gl,
-  programInfo,
-  buffers,
-  propSchema,
-  totalLength,
-  textureMap,
-  props,
-  texLoaded
-) => {
-  gl.useProgram(programInfo.program)
-
-  let indexBuffer = null
+export const draw = (gl, plugin, props, totalLength, texLoaded) => {
+  const { programInfo, propSchema, buffers, textureMap } = plugin
   const bufferKeys = getBufferKeys(propSchema)
+
+  gl.useProgram(programInfo.program)
+  let indexBuffer = null
   bufferKeys.forEach(key => {
     if (!programInfo.attributes[key] && propSchema[key].index) {
       indexBuffer = buffers[key]
@@ -385,4 +380,30 @@ export const draw = (
   })
 
   gl.drawElements(gl.TRIANGLES, totalLength, gl.UNSIGNED_SHORT, 0)
+}
+
+export const drawByGroup = (gl, plugin, elementGroups, globals, texLoaded) => {
+  const { propSchema } = plugin
+  const { name } = plugin.constructor
+  const indexKey = Object
+    .keys(propSchema)
+    .find(key => propSchema[key].index)
+  for (let i = 0; i < elementGroups.length; i++) {
+    const groupedElements = elementGroups[i]
+    uploadIndexBuffer(gl, plugin, i)
+
+    let totalLength = 0
+    for (let i = 0; i < groupedElements.length; i++) {
+      const indexProp = groupedElements[i].bufferPropsMap[name][indexKey]
+      indexProp instanceof ArrayBuffer
+        ? totalLength += indexProp.byteLength / 2
+        : totalLength += indexProp.length
+    }
+    const props = {
+      // Should always has length, always same element props in same batch
+      ...plugin.propsByElement(groupedElements[0]),
+      ...plugin.propsByGlobals(globals)
+    }
+    draw(gl, plugin, props, totalLength, texLoaded)
+  }
 }

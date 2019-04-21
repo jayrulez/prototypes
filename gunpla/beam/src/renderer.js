@@ -5,11 +5,10 @@ import {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
-  uploadIndexBuffer,
   clearBuffers,
   uploadTexture,
   resetBeforeDraw,
-  draw
+  drawByGroup
 } from './utils/gl-utils.js'
 import { RendererConfig } from './consts.js'
 import {
@@ -31,11 +30,10 @@ const defaultUtils = {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
-  uploadIndexBuffer,
   clearBuffers,
   uploadTexture,
   resetBeforeDraw,
-  draw
+  drawByGroup
 }
 
 export class Renderer {
@@ -56,12 +54,7 @@ export class Renderer {
     const { bufferChunkSize } = this.config
     this.gl = getWebGLInstance(canvas)
     this.plugins.forEach(plugin => {
-      const {
-        vertexShader,
-        fragmentShader,
-        shaderSchema,
-        propSchema
-      } = plugin
+      const { vertexShader, fragmentShader, shaderSchema, propSchema } = plugin
       plugin.programInfo = initProgramInfo(
         this.gl, shaderSchema, vertexShader, fragmentShader
       )
@@ -78,7 +71,7 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) continue
 
-      const { buffers, propSchema, bufferSizes } = plugin
+      const { propSchema, bufferSizes } = plugin
       const baseBufferProps = plugin.propsByElement(element)
       const bufferKeys = getBufferKeys(propSchema)
       const { bufferChunkSize } = config
@@ -95,13 +88,9 @@ export class Renderer {
         fullKeys, propSchema, bufferSizes, bufferChunkSize, bufferProps
       )
       push(elements, element)
-      uploadFullBuffers(
-        gl, fullKeys, name, elements, bufferSizes, buffers, propSchema
-      )
+      uploadFullBuffers(gl, plugin, fullKeys, elements)
       const subElements = elements.slice(0, elements.length - 1)
-      uploadSubBuffers(
-        gl, subKeys, name, subElements, bufferProps, buffers, propSchema
-      )
+      uploadSubBuffers(gl, plugin, subKeys, subElements, element)
       updateCodeMapsByTextures(gl, element, globals, plugin, uploadTexture)
       divideElementGroups(elements, plugin)
     }
@@ -116,7 +105,7 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) continue
 
-      const { buffers, propSchema } = plugin
+      const { propSchema } = plugin
       const baseBufferProps = plugin.propsByElement(element)
       const bufferKeys = getBufferKeys(propSchema)
       const lastElement = elements[elements.indexOf(element) - 1]
@@ -126,21 +115,18 @@ export class Renderer {
       const { uploadSubBuffers } = glUtils
       element.bufferPropsMap[name] = bufferProps
       const subElements = elements.slice(0, elements.indexOf(element))
-      uploadSubBuffers(
-        gl, bufferKeys, name, subElements, bufferProps, buffers, propSchema
-      )
+      uploadSubBuffers(gl, plugin, bufferKeys, subElements, element)
     }
     this.texLoaded = false
   }
 
   removeElement (element) {
-    const { gl, plugins } = this
-    const { clearBuffers } = this.glUtils
+    const { gl, plugins, glUtils } = this
+    const { clearBuffers } = glUtils
     const remainedElements = this.elements.filter(el => el !== element)
 
     for (let i = 0; i < plugins.length; i++) {
-      const { propSchema, buffers, bufferSizes } = plugins[i]
-      clearBuffers(gl, bufferSizes, buffers, propSchema)
+      clearBuffers(gl, plugins[i])
     }
 
     this.elements = []
@@ -157,56 +143,16 @@ export class Renderer {
   render () {
     const { gl, glUtils, plugins, globals, elements, config } = this
     const { clearColor } = config
-    const { resetBeforeDraw, draw } = glUtils
+    const { resetBeforeDraw } = glUtils
     resetBeforeDraw(gl, clearColor)
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor
-      const {
-        programInfo,
-        buffers,
-        indexBufferGroups,
-        propSchema,
-        textureMap
-      } = plugin
-      const indexKey = Object
-        .keys(propSchema)
-        .find(key => propSchema[key].index)
-
       const elementGroups = divideElementsByCode(elements, name)
-      const { uploadIndexBuffer } = glUtils
+      const { drawByGroup } = glUtils
 
       plugin.beforeDraw(gl)
-
-      for (let i = 0; i < elementGroups.length; i++) {
-        const groupedElements = elementGroups[i]
-        uploadIndexBuffer(gl, indexBufferGroups[i], buffers, propSchema)
-
-        let totalLength = 0
-        for (let i = 0; i < groupedElements.length; i++) {
-          const indexProp = groupedElements[i].bufferPropsMap[name][indexKey]
-          if (indexProp instanceof ArrayBuffer) {
-            totalLength += indexProp.byteLength / 2
-          } else {
-            totalLength += indexProp.length
-          }
-        }
-        const props = {
-          // Should always has length, always same element props in same batch
-          ...plugin.propsByElement(groupedElements[0]),
-          ...plugin.propsByGlobals(globals)
-        }
-        draw(
-          gl,
-          programInfo,
-          buffers,
-          propSchema,
-          totalLength,
-          textureMap,
-          props,
-          this.texLoaded
-        )
-      }
+      drawByGroup(gl, plugin, elementGroups, globals, this.texLoaded)
       this.texLoaded = true
     }
   }

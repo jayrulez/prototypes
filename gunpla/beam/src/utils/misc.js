@@ -1,4 +1,4 @@
-// Include all non-gl utils methods for core renderer lib here
+// Include all non-gl util methods for core renderer lib here
 
 import { PropTypes } from '../consts.js'
 
@@ -161,8 +161,7 @@ export const updateCodeMapsByTextures = (
 // All plugin-related elements are divided into `elementGroups` in the shape of:
 // [Element[], Element[]...]
 // So we create corresponding `indexBufferGroups` in the shape of:
-// [[0, 1, 2, 0, 2, 3], [100, 101, 102, 100, 102, 103]...]
-// for each group of elements
+// [[0, 1, 2, 0, 2, 3...], [100, 101, 102, 100, 102, 103...]...]
 const createIndexBufferGroups = (elementGroups, plugin, indexKey) => {
   const { name } = plugin.constructor
   const indexBufferGroups = []
@@ -171,7 +170,7 @@ const createIndexBufferGroups = (elementGroups, plugin, indexKey) => {
     let indexGroup = []
     for (let j = 0; j < elements.length; j++) {
       const indexProps = elements[j].bufferPropsMap[name][indexKey]
-      // can be [0, 1, 2, 2, 3, 4...] with normal array
+      // Can be [0, 1, 2, 2, 3, 4...] with default array
       // and [ArrayBuffer, ArrayBuffer] with array buffer
       indexGroup = indexGroup.concat(indexProps)
     }
