@@ -5,7 +5,7 @@ import {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
-  uploadIndexBuffers,
+  uploadIndexBuffer,
   clearBuffers,
   uploadTexture,
   resetBeforeDraw,
@@ -18,7 +18,7 @@ import {
   allocateBufferSizes,
   getLastPluggedElement,
   updateCodeMapsByTextures,
-  createBufferIndexGroup,
+  createIndexBufferGroups,
   divideUploadKeys,
   alignBufferProps,
   divideElementsByCode
@@ -31,7 +31,7 @@ const defaultUtils = {
   initFramebufferObject,
   uploadSubBuffers,
   uploadFullBuffers,
-  uploadIndexBuffers,
+  uploadIndexBuffer,
   clearBuffers,
   uploadTexture,
   resetBeforeDraw,
@@ -45,7 +45,7 @@ export class Renderer {
     this.texLoaded = false
     this.plugins = plugins
     this.globals = {}
-    this.config = config
+    this.config = { ...RendererConfig, ...config }
     this.elements = []
     this.glUtils = utils
     const {
@@ -107,7 +107,7 @@ export class Renderer {
       const indexKey = Object
         .keys(propSchema)
         .find(key => propSchema[key].index)
-      plugin.bufferIndexGroup = createBufferIndexGroup(
+      plugin.indexBufferGroups = createIndexBufferGroups(
         elementGroups, plugin, indexKey
       )
     }
@@ -171,7 +171,7 @@ export class Renderer {
       const {
         programInfo,
         buffers,
-        bufferIndexGroup,
+        indexBufferGroups,
         propSchema,
         textureMap
       } = plugin
@@ -180,13 +180,13 @@ export class Renderer {
         .find(key => propSchema[key].index)
 
       const elementGroups = divideElementsByCode(elements, name)
-      const { uploadIndexBuffers } = glUtils
+      const { uploadIndexBuffer } = glUtils
 
       plugin.beforeDraw(gl)
 
       for (let i = 0; i < elementGroups.length; i++) {
         const groupedElements = elementGroups[i]
-        uploadIndexBuffers(gl, bufferIndexGroup[i], buffers, propSchema)
+        uploadIndexBuffer(gl, indexBufferGroups[i], buffers, propSchema)
 
         let totalLength = 0
         for (let i = 0; i < groupedElements.length; i++) {

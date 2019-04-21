@@ -32,18 +32,18 @@ renderer.setCamera([0, 0, 10])
 renderer.setGlobal('k', 10)
 
 const urls = ['../image/black-hole.jpg', '../image/gundam.jpg']
-loadImages(urls).then(([imgA,  imgB]) => {
+loadImages(urls).then(([img1,  img2]) => {
   const imageA1 = new ImageElement({
-    position: [-1, 1, -3], img: imgA
+    position: [-1, 1, -3], imgA: img1, imgB: img1
   })
   const imageA2 = new ImageElement({
-    position: [1, 1, -3], img: imgA
+    position: [1, 1, -3], imgA: img1, imgB: img1
   })
   const imageB1 = new ImageElement({
-    position: [-1, -1, -3], img: imgB
+    position: [-1, -1, -3], imgA: img2, imgB: img2
   })
   const imageB2 = new ImageElement({
-    position: [1, -1, -3], img: imgB
+    position: [1, -1, -3], imgA: img2, imgB: img2
   })
   const cube = new CubeElement({ position: [3, 0, 0] })
   const post = new PostProcessingElement()

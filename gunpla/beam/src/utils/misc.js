@@ -63,10 +63,14 @@ export const getLastPluggedElement = (elements, name) => {
   }
 }
 
-export const createBufferIndexGroup = (elementGroups, plugin, indexKey) => {
+// All plugin-related elements are divided into `elementGroups` in the shape of:
+// [Element[], Element[]...]
+// So we create corresponding `indexBufferGroups` in the shape of:
+// [[0, 1, 2, 0, 2, 3], [100, 101, 102, 100, 102, 103]...]
+// for each group of elements
+export const createIndexBufferGroups = (elementGroups, plugin, indexKey) => {
   const { name } = plugin.constructor
-
-  const bufferIndexGroup = []
+  const indexBufferGroups = []
   for (let i = 0; i < elementGroups.length; i++) {
     const elements = elementGroups[i]
     let indexGroup = []
@@ -76,9 +80,9 @@ export const createBufferIndexGroup = (elementGroups, plugin, indexKey) => {
       // and [ArrayBuffer, ArrayBuffer] with array buffer
       indexGroup = indexGroup.concat(indexProps)
     }
-    push(bufferIndexGroup, indexGroup)
+    push(indexBufferGroups, indexGroup)
   }
-  return bufferIndexGroup
+  return indexBufferGroups
 }
 
 export const divideUploadKeys = (

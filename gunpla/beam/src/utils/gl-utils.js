@@ -216,7 +216,7 @@ export const clearBuffers = (gl, bufferSizes, buffers, propSchema) => {
   })
 }
 
-export const uploadIndexBuffers = (
+export const uploadIndexBuffer = (
   gl, indexGroup, buffers, propSchema
 ) => {
   const bufferKeys = getBufferKeys(propSchema)

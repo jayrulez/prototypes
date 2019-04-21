@@ -44,7 +44,11 @@ imagePlugin.propsByGlobals = () => ({
 
 loadImages(urls).then(([blackHole]) => {
   const post = new PostProcessingElement()
-  const image = new ImageElement({ position: [0, 0, 35], img: blackHole })
+  const image = new ImageElement({
+    position: [0, 0, 35],
+    imgA: blackHole,
+    imgB: blackHole
+  })
   renderer.addElement(image)
   renderer.addElement(post)
   const N = 2
