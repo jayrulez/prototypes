@@ -1,4 +1,4 @@
-// Includes all non-gl utils methods for core renderer lib here
+// Include all non-gl utils methods for core renderer lib here
 
 import { PropTypes } from '../consts.js'
 
@@ -25,25 +25,6 @@ export const bufferTypeSize = (propSchema, key) => propSchema[key].n ? 4 : 2
 export const getBufferKeys = (propSchema) => Object
   .keys(propSchema)
   .filter(key => propSchema[key].type === PropTypes.buffer)
-
-let i = 66 // ASCII 'B' for Beam
-export const generateChar = () => {
-  const char = String.fromCharCode(i)
-  i++
-  return char
-}
-
-export const getCharFromMaps = (data, [weakMap, map]) => {
-  return data instanceof Object
-    ? (weakMap.get(data) || '')
-    : (map[data] || '')
-}
-
-export const setCharToMaps = (data, char, [weakMap, map]) => {
-  data instanceof Object
-    ? weakMap.set(data, char)
-    : map[data] = char
-}
 
 export const alignBufferProps = (
   baseElement, name, bufferKeys, bufferProps, propSchema
@@ -143,4 +124,54 @@ export const divideElementsByCode = (elements, name) => {
   }
 
   return Object.keys(results).map(key => results[key])
+}
+
+let i = 66 // ASCII 'B' for Beam
+const generateChar = () => {
+  const char = String.fromCharCode(i)
+  i++
+  return char
+}
+
+const getCharFromMaps = (data, [weakMap, map]) => {
+  return data instanceof Object
+    ? (weakMap.get(data) || '')
+    : (map[data] || '')
+}
+
+const setCharToMaps = (data, char, [weakMap, map]) => {
+  data instanceof Object
+    ? weakMap.set(data, char)
+    : map[data] = char
+}
+
+export const updateCodeMapsByTextures = (
+  gl, element, globals, plugin, uploadTexture
+) => {
+  const { propSchema, textureMap, elementCodeMaps } = plugin
+  const { name } = plugin.constructor
+  const props = {
+    ...plugin.propsByGlobals(globals),
+    ...plugin.propsByElement(element)
+  }
+  const textureKeys = Object
+    .keys(propSchema)
+    .filter(key => propSchema[key].type === PropTypes.texture)
+
+  textureKeys.forEach(key => {
+    const imageLike = props[key] // can be cubemap config or image
+    if (!textureMap.get(imageLike)) {
+      const texture = uploadTexture(gl, imageLike, propSchema[key])
+      textureMap.set(imageLike, texture)
+    }
+  })
+
+  let code = ''
+  textureKeys.forEach(key => {
+    let char = getCharFromMaps(props[key], elementCodeMaps)
+    if (!char) char = generateChar()
+    setCharToMaps(props[key], char, elementCodeMaps)
+    code += char
+  })
+  element.codes[name] = code || 'A'
 }

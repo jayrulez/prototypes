@@ -1,4 +1,4 @@
-// Includes all gl-related methods here
+// Include all gl-related methods here
 
 import { ShaderTypes } from '../consts.js'
 import {

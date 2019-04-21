@@ -11,15 +11,13 @@ import {
   resetBeforeDraw,
   draw
 } from './utils/gl-utils.js'
-import { RendererConfig, PropTypes } from './consts.js'
+import { RendererConfig } from './consts.js'
 import {
   push,
-  getCharFromMaps,
   getBufferKeys,
-  setCharToMaps,
-  generateChar,
   allocateBufferSizes,
   getLastPluggedElement,
+  updateCodeMapsByTextures,
   createBufferIndexGroup,
   divideUploadKeys,
   alignBufferProps,
@@ -104,34 +102,7 @@ export class Renderer {
       uploadSubBuffers(
         gl, subKeys, name, subElements, bufferProps, buffers, propSchema
       )
-
-      const { textureMap, elementCodeMaps } = plugin
-      const { uploadTexture } = glUtils
-      const props = {
-        ...plugin.propsByGlobals(globals),
-        ...plugin.propsByElement(element)
-      }
-      const textureKeys = Object
-        .keys(propSchema)
-        .filter(key => propSchema[key].type === PropTypes.texture)
-
-      textureKeys.forEach(key => {
-        const imageLike = props[key] // can be cubemap config or image
-        if (!textureMap.get(imageLike)) {
-          const texture = uploadTexture(gl, imageLike, propSchema[key])
-          textureMap.set(imageLike, texture)
-        }
-      })
-
-      let code = ''
-      textureKeys.forEach(key => {
-        let char = getCharFromMaps(props[key], elementCodeMaps)
-        if (!char) char = generateChar()
-        setCharToMaps(props[key], char, elementCodeMaps)
-        code += char
-      })
-      element.codes[name] = code || 'A'
-
+      updateCodeMapsByTextures(gl, element, globals, plugin, uploadTexture)
       const elementGroups = divideElementsByCode(elements, name)
       const indexKey = Object
         .keys(propSchema)
