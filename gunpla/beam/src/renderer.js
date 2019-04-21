@@ -161,10 +161,10 @@ export class Renderer {
   }
 
   render () {
-    const { gl, glUtils, plugins, globals, elements } = this
-
+    const { gl, glUtils, plugins, globals, elements, config } = this
+    const { clearColor } = config
     const { resetBeforeDraw, draw } = glUtils
-    resetBeforeDraw(gl)
+    resetBeforeDraw(gl, clearColor)
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor

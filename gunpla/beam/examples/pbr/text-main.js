@@ -10,8 +10,12 @@ export const main = () => {
   canvas.height = window.innerHeight
   canvas.width = window.innerWidth
 
+  const config = {
+    bufferChunkSize: 1000 * 1024,
+    clearColor: [0.0, 0.0, 0.0, 0.0]
+  }
   const meshPlugin = new MeshPlugin()
-  const renderer = new Basic3DRenderer(canvas, [meshPlugin])
+  const renderer = new Basic3DRenderer(canvas, [meshPlugin], config)
 
   renderer.setCamera([0, 400, 700], [0, 150, 0])
 

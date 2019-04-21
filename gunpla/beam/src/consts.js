@@ -18,5 +18,6 @@ export const PropTypes = {
 }
 
 export const RendererConfig = {
+  clearColor: [0.0, 0.0, 0.0, 1.0],
   bufferChunkSize: 100 * 1024
 }
