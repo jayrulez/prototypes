@@ -35,9 +35,9 @@ const compileShader = (gl, type, source) => {
   return shader
 }
 
-const initShader = (gl, vSource, fSource) => {
-  const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vSource)
-  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fSource)
+const initShader = (gl, vs, fs) => {
+  const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vs)
+  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fs)
 
   const shaderProgram = gl.createProgram()
   gl.attachShader(shaderProgram, vertexShader)
@@ -52,10 +52,8 @@ const initShader = (gl, vSource, fSource) => {
   return shaderProgram
 }
 
-export const initProgramInfo = (
-  gl, shaderSchema, vertexShader, fragmentShader
-) => {
-  const program = initShader(gl, vertexShader, fragmentShader)
+export const initProgramInfo = (gl, shaderSchema, vs, fs) => {
+  const program = initShader(gl, vs, fs)
   // map from { normal: 0, position: 1, uv: 2 }
   // to { normal: { type, location } }
   const attributes = mapValue(shaderSchema.attributes, (attributes, key) => ({
@@ -68,6 +66,137 @@ export const initProgramInfo = (
   }))
 
   return { program, attributes, uniforms }
+}
+
+export const initBufferInfo = (gl, propSchema, bufferChunkSize) => {
+  const buffers = {}
+  const bufferKeys = getBufferKeys(propSchema)
+  bufferKeys.forEach(key => {
+    const buffer = gl.createBuffer()
+    const { index } = propSchema[key]
+    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+    gl.bindBuffer(target, buffer)
+    gl.bufferData(target, bufferChunkSize, gl.STATIC_DRAW)
+    buffers[key] = buffer
+  })
+  return buffers
+}
+
+export const initFramebufferObject = (gl) => {
+  let framebuffer, texture, depthBuffer
+
+  const error = () => {
+    if (framebuffer) gl.deleteFramebuffer(framebuffer)
+    if (texture) gl.deleteTexture(texture)
+    if (depthBuffer) gl.deleteRenderbuffer(depthBuffer)
+    return null
+  }
+
+  framebuffer = gl.createFramebuffer()
+  if (!framebuffer) {
+    console.error('Failed to create framebuffer object')
+    return error()
+  }
+
+  texture = gl.createTexture()
+  if (!texture) {
+    console.error('Failed to create texture object')
+    return error()
+  }
+
+  depthBuffer = gl.createRenderbuffer()
+  if (!depthBuffer) {
+    console.error('Failed to create renderbuffer object')
+    return error()
+  }
+
+  const size = 1024
+
+  // Texture
+  gl.bindTexture(gl.TEXTURE_2D, texture)
+  gl.texImage2D(
+    gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null
+  )
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+
+  // Depth buffer
+  gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer)
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, size, size)
+
+  // FBO
+  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
+  gl.framebufferTexture2D(
+    gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0
+  )
+  gl.framebufferRenderbuffer(
+    gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer
+  )
+
+  const e = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
+  if (gl.FRAMEBUFFER_COMPLETE !== e) {
+    console.error('Frame buffer object is incomplete: ' + e.toString())
+    return error()
+  }
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+  gl.bindTexture(gl.TEXTURE_2D, null)
+  gl.bindRenderbuffer(gl.RENDERBUFFER, null)
+
+  return { framebuffer, texture }
+}
+
+export const uploadFullBuffers = (gl, plugin, bufferKeys, elements) => {
+  if (!bufferKeys.length) return
+
+  const { buffers, bufferSizes, propSchema } = plugin
+  const { name } = plugin.constructor
+  // Join props of elements
+  // props: { keyA, keyB, keyC... }
+  const props = bufferKeys.reduce((map, key) => ({ ...map, [key]: [] }), {})
+  for (let i = 0; i < elements.length; i++) {
+    const elementBufferProps = elements[i].bufferPropsMap[name]
+    if (!elementBufferProps) continue
+
+    for (let j = 0; j < bufferKeys.length; j++) {
+      const key = bufferKeys[j]
+      props[key] = props[key].concat(elementBufferProps[key])
+    }
+  }
+
+  bufferKeys.forEach(key => {
+    const { index } = propSchema[key]
+    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+    let data = props[key]
+    if (data[0] instanceof ArrayBuffer) data = data[0]
+    const arr = index ? new Uint16Array(data) : new Float32Array(data)
+
+    gl.bindBuffer(target, buffers[key])
+    gl.bufferData(target, bufferSizes[key], gl.STATIC_DRAW)
+    gl.bufferData(target, arr, gl.STATIC_DRAW)
+  })
+}
+
+export const uploadSubBuffers = (gl, plugin, bufferKeys, elements, element) => {
+  const { buffers, propSchema } = plugin
+  const { name } = plugin.constructor
+  bufferKeys.forEach(key => {
+    const { index } = propSchema[key]
+    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
+    const bufferProps = element.bufferPropsMap[name]
+    const commonOffset = bufferPropOffset(elements, name, key)
+
+    if (index) return
+
+    let data = bufferProps[key]
+    if (data[0] instanceof ArrayBuffer) data = data[0]
+
+    const arr = index ? new Uint16Array(data) : new Float32Array(data)
+    const size = index ? 2 : 4
+
+    gl.bindBuffer(target, buffers[key])
+    gl.bufferSubData(target, commonOffset * size, arr)
+  })
 }
 
 const upload2DTexture = (gl, image, schemaValue) => {
@@ -139,73 +268,6 @@ export const uploadTexture = (gl, imageLike, schemaValue) => {
     : upload2DTexture(gl, imageLike, schemaValue)
 }
 
-export const initBufferInfo = (gl, propSchema, bufferChunkSize) => {
-  const buffers = {}
-  const bufferKeys = getBufferKeys(propSchema)
-  bufferKeys.forEach(key => {
-    const buffer = gl.createBuffer()
-    const { index } = propSchema[key]
-    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
-    gl.bindBuffer(target, buffer)
-    gl.bufferData(target, bufferChunkSize, gl.STATIC_DRAW)
-    buffers[key] = buffer
-  })
-  return buffers
-}
-
-export const uploadFullBuffers = (gl, plugin, bufferKeys, elements) => {
-  if (!bufferKeys.length) return
-
-  const { buffers, bufferSizes, propSchema } = plugin
-  const { name } = plugin.constructor
-  // Join props of elements
-  // props: { keyA, keyB, keyC... }
-  const props = bufferKeys.reduce((map, key) => ({ ...map, [key]: [] }), {})
-  for (let i = 0; i < elements.length; i++) {
-    const elementBufferProps = elements[i].bufferPropsMap[name]
-    if (!elementBufferProps) continue
-
-    for (let j = 0; j < bufferKeys.length; j++) {
-      const key = bufferKeys[j]
-      props[key] = props[key].concat(elementBufferProps[key])
-    }
-  }
-
-  bufferKeys.forEach(key => {
-    const { index } = propSchema[key]
-    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
-    let data = props[key]
-    if (data[0] instanceof ArrayBuffer) data = data[0]
-    const arr = index ? new Uint16Array(data) : new Float32Array(data)
-
-    gl.bindBuffer(target, buffers[key])
-    gl.bufferData(target, bufferSizes[key], gl.STATIC_DRAW)
-    gl.bufferData(target, arr, gl.STATIC_DRAW)
-  })
-}
-
-export const uploadSubBuffers = (gl, plugin, bufferKeys, elements, element) => {
-  const { buffers, propSchema } = plugin
-  const { name } = plugin.constructor
-  bufferKeys.forEach(key => {
-    const { index } = propSchema[key]
-    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
-    const bufferProps = element.bufferPropsMap[name]
-    const commonOffset = bufferPropOffset(elements, name, key)
-
-    if (index) return
-
-    let data = bufferProps[key]
-    if (data[0] instanceof ArrayBuffer) data = data[0]
-
-    const arr = index ? new Uint16Array(data) : new Float32Array(data)
-    const size = index ? 2 : 4
-
-    gl.bindBuffer(target, buffers[key])
-    gl.bufferSubData(target, commonOffset * size, arr)
-  })
-}
-
 export const clearBuffers = (gl, plugin) => {
   const { bufferSizes, buffers, propSchema } = plugin
   const bufferKeys = getBufferKeys(propSchema)
@@ -218,7 +280,16 @@ export const clearBuffers = (gl, plugin) => {
   })
 }
 
-export const uploadIndexBuffer = (gl, plugin, i) => {
+export const resetBeforeDraw = (gl, clearColor) => {
+  const [r, g, b, a] = clearColor
+  gl.clearColor(r, g, b, a)
+  gl.clearDepth(1.0)
+  gl.disable(gl.BLEND)
+  gl.enable(gl.DEPTH_TEST)
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+}
+
+const uploadIndexBuffer = (gl, plugin, i) => {
   const { buffers, propSchema, indexBufferGroups } = plugin
   const indexBufferGroup = indexBufferGroups[i]
   const bufferKeys = getBufferKeys(propSchema)
@@ -232,80 +303,7 @@ export const uploadIndexBuffer = (gl, plugin, i) => {
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, arr, gl.STATIC_DRAW)
 }
 
-export const initFramebufferObject = (gl) => {
-  let framebuffer, texture, depthBuffer
-
-  const error = () => {
-    if (framebuffer) gl.deleteFramebuffer(framebuffer)
-    if (texture) gl.deleteTexture(texture)
-    if (depthBuffer) gl.deleteRenderbuffer(depthBuffer)
-    return null
-  }
-
-  framebuffer = gl.createFramebuffer()
-  if (!framebuffer) {
-    console.error('Failed to create framebuffer object')
-    return error()
-  }
-
-  texture = gl.createTexture()
-  if (!texture) {
-    console.error('Failed to create texture object')
-    return error()
-  }
-
-  depthBuffer = gl.createRenderbuffer()
-  if (!depthBuffer) {
-    console.error('Failed to create renderbuffer object')
-    return error()
-  }
-
-  const size = 1024
-
-  // Texture
-  gl.bindTexture(gl.TEXTURE_2D, texture)
-  gl.texImage2D(
-    gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null
-  )
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-
-  // Depth buffer
-  gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer)
-  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, size, size)
-
-  // FBO
-  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
-  gl.framebufferTexture2D(
-    gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0
-  )
-  gl.framebufferRenderbuffer(
-    gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer
-  )
-
-  const e = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
-  if (gl.FRAMEBUFFER_COMPLETE !== e) {
-    console.error('Frame buffer object is incomplete: ' + e.toString())
-    return error()
-  }
-
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-  gl.bindTexture(gl.TEXTURE_2D, null)
-  gl.bindRenderbuffer(gl.RENDERBUFFER, null)
-
-  return { framebuffer, texture }
-}
-
-export const resetBeforeDraw = (gl, clearColor) => {
-  const [r, g, b, a] = clearColor
-  gl.clearColor(r, g, b, a)
-  gl.clearDepth(1.0)
-  gl.disable(gl.BLEND)
-  gl.enable(gl.DEPTH_TEST)
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-}
-
-export const draw = (gl, plugin, props, totalLength, texLoaded) => {
+const draw = (gl, plugin, props, totalLength, texLoaded) => {
   const { programInfo, propSchema, buffers, textureMap } = plugin
   const bufferKeys = getBufferKeys(propSchema)
 

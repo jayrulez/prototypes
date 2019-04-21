@@ -3,10 +3,10 @@ import {
   initProgramInfo,
   initBufferInfo,
   initFramebufferObject,
-  uploadSubBuffers,
   uploadFullBuffers,
-  clearBuffers,
+  uploadSubBuffers,
   uploadTexture,
+  clearBuffers,
   resetBeforeDraw,
   drawByGroup
 } from './utils/gl-utils.js'
@@ -28,10 +28,10 @@ const defaultUtils = {
   initProgramInfo,
   initBufferInfo,
   initFramebufferObject,
-  uploadSubBuffers,
   uploadFullBuffers,
-  clearBuffers,
+  uploadSubBuffers,
   uploadTexture,
+  clearBuffers,
   resetBeforeDraw,
   drawByGroup
 }
