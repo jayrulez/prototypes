@@ -18,7 +18,7 @@ import {
   allocateBufferSizes,
   getLastPluggedElement,
   updateCodeMapsByTextures,
-  createIndexBufferGroups,
+  divideElementGroups,
   divideUploadKeys,
   alignBufferProps,
   divideElementsByCode
@@ -103,13 +103,7 @@ export class Renderer {
         gl, subKeys, name, subElements, bufferProps, buffers, propSchema
       )
       updateCodeMapsByTextures(gl, element, globals, plugin, uploadTexture)
-      const elementGroups = divideElementsByCode(elements, name)
-      const indexKey = Object
-        .keys(propSchema)
-        .find(key => propSchema[key].index)
-      plugin.indexBufferGroups = createIndexBufferGroups(
-        elementGroups, plugin, indexKey
-      )
+      divideElementGroups(elements, plugin)
     }
     this.texLoaded = false
   }

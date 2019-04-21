@@ -63,28 +63,6 @@ export const getLastPluggedElement = (elements, name) => {
   }
 }
 
-// All plugin-related elements are divided into `elementGroups` in the shape of:
-// [Element[], Element[]...]
-// So we create corresponding `indexBufferGroups` in the shape of:
-// [[0, 1, 2, 0, 2, 3], [100, 101, 102, 100, 102, 103]...]
-// for each group of elements
-export const createIndexBufferGroups = (elementGroups, plugin, indexKey) => {
-  const { name } = plugin.constructor
-  const indexBufferGroups = []
-  for (let i = 0; i < elementGroups.length; i++) {
-    const elements = elementGroups[i]
-    let indexGroup = []
-    for (let j = 0; j < elements.length; j++) {
-      const indexProps = elements[j].bufferPropsMap[name][indexKey]
-      // can be [0, 1, 2, 2, 3, 4...] with normal array
-      // and [ArrayBuffer, ArrayBuffer] with array buffer
-      indexGroup = indexGroup.concat(indexProps)
-    }
-    push(indexBufferGroups, indexGroup)
-  }
-  return indexBufferGroups
-}
-
 export const divideUploadKeys = (
   elements, name, bufferKeys, bufferProps, propSchema, bufferChunkSize
 ) => {
@@ -178,4 +156,38 @@ export const updateCodeMapsByTextures = (
     code += char
   })
   element.codes[name] = code || 'A'
+}
+
+// All plugin-related elements are divided into `elementGroups` in the shape of:
+// [Element[], Element[]...]
+// So we create corresponding `indexBufferGroups` in the shape of:
+// [[0, 1, 2, 0, 2, 3], [100, 101, 102, 100, 102, 103]...]
+// for each group of elements
+const createIndexBufferGroups = (elementGroups, plugin, indexKey) => {
+  const { name } = plugin.constructor
+  const indexBufferGroups = []
+  for (let i = 0; i < elementGroups.length; i++) {
+    const elements = elementGroups[i]
+    let indexGroup = []
+    for (let j = 0; j < elements.length; j++) {
+      const indexProps = elements[j].bufferPropsMap[name][indexKey]
+      // can be [0, 1, 2, 2, 3, 4...] with normal array
+      // and [ArrayBuffer, ArrayBuffer] with array buffer
+      indexGroup = indexGroup.concat(indexProps)
+    }
+    push(indexBufferGroups, indexGroup)
+  }
+  return indexBufferGroups
+}
+
+export const divideElementGroups = (elements, plugin) => {
+  const { propSchema } = plugin
+  const { name } = plugin.constructor
+  const elementGroups = divideElementsByCode(elements, name)
+  const indexKey = Object
+    .keys(propSchema)
+    .find(key => propSchema[key].index)
+  plugin.indexBufferGroups = createIndexBufferGroups(
+    elementGroups, plugin, indexKey
+  )
 }
