@@ -28,10 +28,10 @@ const defaultUtils = {
   initProgramInfo,
   initBufferInfo,
   initFramebufferObject,
-  uploadFullBuffers,
   uploadSubBuffers,
-  uploadTexture,
+  uploadFullBuffers,
   clearBuffers,
+  uploadTexture,
   resetBeforeDraw,
   drawByGroup
 }
@@ -71,28 +71,22 @@ export class Renderer {
       const { name } = plugin.constructor
       if (!element.plugins[name]) continue
 
-      const { propSchema, bufferSizes } = plugin
       const baseBufferProps = plugin.propsByElement(element)
-      const bufferKeys = getBufferKeys(propSchema)
       const { bufferChunkSize } = config
       const lastElement = getLastPluggedElement(elements, name)
-      const bufferProps = alignBufferProps(
-        lastElement, name, bufferKeys, baseBufferProps, propSchema
-      )
+      const bufferProps = alignBufferProps(plugin, baseBufferProps, lastElement)
       const [fullKeys, subKeys] = divideUploadKeys(
-        elements, name, bufferKeys, bufferProps, propSchema, bufferChunkSize
+        plugin, elements, bufferProps, bufferChunkSize
       )
       const { uploadSubBuffers, uploadFullBuffers } = glUtils
       element.bufferPropsMap[name] = bufferProps
-      allocateBufferSizes(
-        fullKeys, propSchema, bufferSizes, bufferChunkSize, bufferProps
-      )
+      allocateBufferSizes(plugin, fullKeys, bufferProps, bufferChunkSize)
       push(elements, element)
       uploadFullBuffers(gl, plugin, fullKeys, elements)
       const subElements = elements.slice(0, elements.length - 1)
       uploadSubBuffers(gl, plugin, subKeys, subElements, element)
-      updateCodeMapsByTextures(gl, element, globals, plugin, uploadTexture)
-      divideElementGroups(elements, plugin)
+      updateCodeMapsByTextures(gl, plugin, element, globals, uploadTexture)
+      divideElementGroups(plugin, elements)
     }
     this.texLoaded = false
   }
@@ -109,9 +103,7 @@ export class Renderer {
       const baseBufferProps = plugin.propsByElement(element)
       const bufferKeys = getBufferKeys(propSchema)
       const lastElement = elements[elements.indexOf(element) - 1]
-      const bufferProps = alignBufferProps(
-        lastElement, name, bufferKeys, baseBufferProps, propSchema
-      )
+      const bufferProps = alignBufferProps(plugin, baseBufferProps, lastElement)
       const { uploadSubBuffers } = glUtils
       element.bufferPropsMap[name] = bufferProps
       const subElements = elements.slice(0, elements.indexOf(element))

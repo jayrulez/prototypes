@@ -26,9 +26,10 @@ export const getBufferKeys = (propSchema) => Object
   .keys(propSchema)
   .filter(key => propSchema[key].type === PropTypes.buffer)
 
-export const alignBufferProps = (
-  baseElement, name, bufferKeys, bufferProps, propSchema
-) => {
+export const alignBufferProps = (plugin, bufferProps, baseElement) => {
+  const { propSchema } = plugin
+  const { name } = plugin.constructor
+  const bufferKeys = getBufferKeys(propSchema)
   const indexKey = bufferKeys.find(key => propSchema[key].index)
   if (
     !baseElement ||
@@ -64,8 +65,11 @@ export const getLastPluggedElement = (elements, name) => {
 }
 
 export const divideUploadKeys = (
-  elements, name, bufferKeys, bufferProps, propSchema, bufferChunkSize
+  plugin, elements, bufferProps, bufferChunkSize
 ) => {
+  const { propSchema } = plugin
+  const { name } = plugin.constructor
+  const bufferKeys = getBufferKeys(propSchema)
   const fullKeys = []
   const subKeys = []
   for (let i = 0; i < bufferKeys.length; i++) {
@@ -82,8 +86,9 @@ export const divideUploadKeys = (
 }
 
 export const allocateBufferSizes = (
-  fullKeys, propSchema, bufferSizes, bufferChunkSize, bufferProps
+  plugin, fullKeys, bufferProps, bufferChunkSize
 ) => {
+  const { propSchema, bufferSizes } = plugin
   for (let i = 0; i < fullKeys.length; i++) {
     const key = fullKeys[i]
     const size = bufferTypeSize(propSchema, key)
@@ -128,7 +133,7 @@ const setCharToMaps = (data, char, [weakMap, map]) => {
 }
 
 export const updateCodeMapsByTextures = (
-  gl, element, globals, plugin, uploadTexture
+  gl, plugin, element, globals, uploadTexture
 ) => {
   const { propSchema, textureMap, elementCodeMaps } = plugin
   const { name } = plugin.constructor
@@ -162,7 +167,7 @@ export const updateCodeMapsByTextures = (
 // [Element[], Element[]...]
 // So we create corresponding `indexBufferGroups` in the shape of:
 // [[0, 1, 2, 0, 2, 3...], [100, 101, 102, 100, 102, 103...]...]
-const createIndexBufferGroups = (elementGroups, plugin, indexKey) => {
+const createIndexBufferGroups = (plugin, elementGroups, indexKey) => {
   const { name } = plugin.constructor
   const indexBufferGroups = []
   for (let i = 0; i < elementGroups.length; i++) {
@@ -179,7 +184,7 @@ const createIndexBufferGroups = (elementGroups, plugin, indexKey) => {
   return indexBufferGroups
 }
 
-export const divideElementGroups = (elements, plugin) => {
+export const divideElementGroups = (plugin, elements) => {
   const { propSchema } = plugin
   const { name } = plugin.constructor
   const elementGroups = divideElementsByCode(elements, name)
@@ -187,6 +192,6 @@ export const divideElementGroups = (elements, plugin) => {
     .keys(propSchema)
     .find(key => propSchema[key].index)
   plugin.indexBufferGroups = createIndexBufferGroups(
-    elementGroups, plugin, indexKey
+    plugin, elementGroups, indexKey
   )
 }
