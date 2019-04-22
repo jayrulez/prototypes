@@ -12,8 +12,10 @@
 
 ### Methods
 * `addElement` - 新增 Element
+* `addElements` - 批量新增 Element
 * `changeElement` - 修改 Element
 * `removeElement` - 移除 Element
+* `removeElements` - 批量移除 Element
 * `setGlobal` - 设置全局字段
 * `render` - 渲染
 
