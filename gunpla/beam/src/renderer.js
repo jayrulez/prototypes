@@ -129,11 +129,13 @@ export class Renderer {
       const baseBufferProps = plugin.propsByElement(element)
       const bufferKeys = getBufferKeys(propSchema)
       const lastElement = elements[elements.indexOf(element) - 1]
-      const bufferProps = alignBufferProps(plugin, baseBufferProps, lastElement)
+      const bufferProps = alignBufferProps(
+        plugin, [baseBufferProps], lastElement, [element]
+      )
       const { uploadSubBuffers } = glUtils
       element.bufferPropsMap[name] = bufferProps
       const subElements = elements.slice(0, elements.indexOf(element))
-      uploadSubBuffers(gl, plugin, bufferKeys, subElements, element)
+      uploadSubBuffers(gl, plugin, bufferProps, bufferKeys, subElements)
     }
     this.texLoaded = false
   }

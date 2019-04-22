@@ -33,8 +33,7 @@ export const getBufferKeys = propSchema => Object
   .keys(propSchema)
   .filter(key => propSchema[key].type === PropTypes.buffer)
 
-// TODO align array buffer indices
-export const joinBufferProps = (
+const joinBufferProps = (
   plugin, bufferPropsGroup, relatedElements, baseIndexOffset = 0
 ) => {
   if (!bufferPropsGroup.length) return {}

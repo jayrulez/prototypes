@@ -19,6 +19,7 @@ const config = { bufferChunkSize: 1000 * 1024 }
 const renderer = new Basic3DRenderer(canvas, [cubePlugin], config)
 
 const N = 8
+const elements = []
 for (let i = 0; i < N; i++) {
   for (let j = 0; j < N; j++) {
     for (let k = 0; k < N; k++) {
@@ -26,10 +27,11 @@ for (let i = 0; i < N; i++) {
         position: [i * 3 - N, j * 3 - N, k * 3 - N],
         color: [1, 1, 1, 1]
       })
-      renderer.addElement(cube)
+      elements.push(cube)
     }
   }
 }
+renderer.addElements(elements)
 
 let i = 0
 const { random, cos, sin } = Math
