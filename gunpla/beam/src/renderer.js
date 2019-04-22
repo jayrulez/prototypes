@@ -69,7 +69,7 @@ export class Renderer {
     this.addElements([element])
   }
 
-  addElements (newElements) {
+  addElements (elements) {
     const { gl, config, plugins, glUtils, globals } = this
     const prevElements = this.elements
     const relatedElementsGroup = plugins.map(() => [])
@@ -77,9 +77,9 @@ export class Renderer {
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor
-      for (let j = 0; j < newElements.length; j++) {
-        if (!newElements[j].plugins[name]) continue
-        push(relatedElementsGroup[i], newElements[j])
+      for (let j = 0; j < elements.length; j++) {
+        if (!elements[j].plugins[name]) continue
+        push(relatedElementsGroup[i], elements[j])
       }
     }
 
@@ -113,7 +113,7 @@ export class Renderer {
       )
       divideElementGroups(plugin, newElements)
     }
-    concat(prevElements, newElements)
+    concat(prevElements, elements)
     this.texLoaded = false
   }
 
@@ -141,19 +141,20 @@ export class Renderer {
   }
 
   removeElement (element) {
+    this.removeElements([element])
+  }
+
+  removeElements (elements) {
     const { gl, plugins, glUtils } = this
     const { clearBuffers } = glUtils
-    const remainedElements = this.elements.filter(el => el !== element)
-
+    const remainedElements = this.elements.filter(
+      element => !elements.includes(element)
+    )
     for (let i = 0; i < plugins.length; i++) {
       clearBuffers(gl, plugins[i])
     }
-
     this.elements = []
-    // TODO perf
-    for (let i = 0; i < remainedElements.length; i++) {
-      this.addElement(remainedElements[i])
-    }
+    this.addElements(remainedElements)
   }
 
   setGlobal (field, props) {
