@@ -177,13 +177,14 @@ export const uploadFullBuffers = (gl, plugin, bufferKeys, elements) => {
   })
 }
 
-export const uploadSubBuffers = (gl, plugin, bufferKeys, elements, element) => {
+export const uploadSubBuffers = (
+  gl, plugin, bufferProps, bufferKeys, elements
+) => {
   const { buffers, propSchema } = plugin
   const { name } = plugin.constructor
   bufferKeys.forEach(key => {
     const { index } = propSchema[key]
     const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
-    const bufferProps = element.bufferPropsMap[name]
     const commonOffset = bufferPropOffset(elements, name, key)
 
     if (index) return

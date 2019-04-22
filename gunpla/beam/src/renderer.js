@@ -12,10 +12,11 @@ import {
 } from './utils/gl-utils.js'
 import { RendererConfig } from './consts.js'
 import {
+  concat,
   push,
   getBufferKeys,
   allocateBufferSizes,
-  getLastPluggedElement,
+  getLastRelatedElement,
   updateCodeMapsByTextures,
   divideElementGroups,
   divideUploadKeys,
@@ -65,29 +66,54 @@ export class Renderer {
   }
 
   addElement (element) {
-    const { gl, config, elements, plugins, glUtils, globals } = this
+    this.addElements([element])
+  }
+
+  addElements (newElements) {
+    const { gl, config, plugins, glUtils, globals } = this
+    const prevElements = this.elements
+    const relatedElementsGroup = plugins.map(() => [])
+
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor
-      if (!element.plugins[name]) continue
+      for (let j = 0; j < newElements.length; j++) {
+        if (!newElements[j].plugins[name]) continue
+        push(relatedElementsGroup[i], newElements[j])
+      }
+    }
 
-      const baseBufferProps = plugin.propsByElement(element)
+    for (let i = 0; i < plugins.length; i++) {
+      const plugin = plugins[i]
+      const { name } = plugin.constructor
+      const relatedElements = relatedElementsGroup[i]
+      if (!relatedElements.length) continue
+
+      const newElements = [...prevElements, ...relatedElements]
+      const bufferPropsGroup = []
+      for (let j = 0; j < relatedElements.length; j++) {
+        const bufferProps = plugin.propsByElement(relatedElements[j])
+        push(bufferPropsGroup, bufferProps)
+      }
       const { bufferChunkSize } = config
-      const lastElement = getLastPluggedElement(elements, name)
-      const bufferProps = alignBufferProps(plugin, baseBufferProps, lastElement)
+      const lastElement = getLastRelatedElement(prevElements, name)
+      const bufferProps = alignBufferProps(
+        plugin, bufferPropsGroup, lastElement, relatedElements
+      )
       const [fullKeys, subKeys] = divideUploadKeys(
-        plugin, elements, bufferProps, bufferChunkSize
+        plugin, prevElements, bufferProps, bufferChunkSize
       )
       const { uploadSubBuffers, uploadFullBuffers } = glUtils
-      element.bufferPropsMap[name] = bufferProps
+
       allocateBufferSizes(plugin, fullKeys, bufferProps, bufferChunkSize)
-      push(elements, element)
-      uploadFullBuffers(gl, plugin, fullKeys, elements)
-      const subElements = elements.slice(0, elements.length - 1)
-      uploadSubBuffers(gl, plugin, subKeys, subElements, element)
-      updateCodeMapsByTextures(gl, plugin, element, globals, uploadTexture)
-      divideElementGroups(plugin, elements)
+      uploadFullBuffers(gl, plugin, fullKeys, newElements)
+      uploadSubBuffers(gl, plugin, bufferProps, subKeys, prevElements)
+      updateCodeMapsByTextures(
+        gl, plugin, relatedElements, globals, uploadTexture
+      )
+      divideElementGroups(plugin, newElements)
     }
+    concat(prevElements, newElements)
     this.texLoaded = false
   }
 

@@ -13,20 +13,64 @@ export const max = arr => {
 
 export const push = (arr, x) => { arr[arr.length] = x }
 
+export const concat = (baseArr, newArr) => {
+  const baseLength = baseArr.length
+  for (let i = 0; i < newArr.length; i++) {
+    baseArr[baseLength + i] = newArr[i]
+  }
+}
+
 export const isPowerOf2 = value => (value & (value - 1)) === 0
 
-export const mapValue = (obj, mapper) => Object
+export const mapValue = (obj, valueMapper) => Object
   .keys(obj)
-  .reduce((newObj, key) => ({ ...newObj, [key]: mapper(obj, key) }), {})
+  .reduce((newObj, key) => ({ ...newObj, [key]: valueMapper(obj, key) }), {})
 
 // Prop keys with numComponents must be attribute floats
 export const bufferTypeSize = (propSchema, key) => propSchema[key].n ? 4 : 2
 
-export const getBufferKeys = (propSchema) => Object
+export const getBufferKeys = propSchema => Object
   .keys(propSchema)
   .filter(key => propSchema[key].type === PropTypes.buffer)
 
-export const alignBufferProps = (plugin, bufferProps, baseElement) => {
+// TODO align array buffer indices
+export const joinBufferProps = (
+  plugin, bufferPropsGroup, relatedElements, baseIndexOffset = 0
+) => {
+  if (!bufferPropsGroup.length) return {}
+  const { propSchema } = plugin
+  const { name } = plugin.constructor
+
+  const joinedBufferProps = mapValue(bufferPropsGroup[0], () => [])
+  const bufferKeys = Object.keys(bufferPropsGroup[0])
+  const indexKey = bufferKeys.find(key => propSchema[key].index)
+
+  let indexOffset = baseIndexOffset
+  for (let i = 0; i < bufferPropsGroup.length; i++) {
+    const bufferProps = bufferPropsGroup[i]
+    const element = relatedElements[i]
+    const offsetIndexArr = []
+    for (let i = 0; i < bufferProps[indexKey].length; i++) {
+      push(offsetIndexArr, bufferProps[indexKey][i] + indexOffset)
+    }
+    element.bufferPropsMap[name] = {
+      ...bufferProps, [indexKey]: offsetIndexArr
+    }
+    bufferKeys.forEach(key => {
+      concat(joinedBufferProps[key], element.bufferPropsMap[name][key])
+    })
+    indexOffset = max(offsetIndexArr) + 1
+  }
+  return joinedBufferProps
+}
+
+// TODO align array buffer indices
+export const alignBufferProps = (
+  plugin,
+  bufferPropsGroup,
+  baseElement,
+  relatedElements
+) => {
   const { propSchema } = plugin
   const { name } = plugin.constructor
   const bufferKeys = getBufferKeys(propSchema)
@@ -35,16 +79,11 @@ export const alignBufferProps = (plugin, bufferProps, baseElement) => {
     !baseElement ||
     !indexKey ||
     !baseElement.bufferPropsMap[name]
-  ) return bufferProps
+  ) return joinBufferProps(plugin, bufferPropsGroup, relatedElements, 0)
 
-  const indexValueOffset = max(baseElement.bufferPropsMap[name][indexKey]) + 1
+  const indexOffset = max(baseElement.bufferPropsMap[name][indexKey]) + 1
 
-  const offsetIndexArr = []
-  for (let i = 0; i < bufferProps[indexKey].length; i++) {
-    push(offsetIndexArr, bufferProps[indexKey][i] + indexValueOffset)
-  }
-
-  return { ...bufferProps, [indexKey]: offsetIndexArr }
+  return joinBufferProps(plugin, bufferPropsGroup, relatedElements, indexOffset)
 }
 
 export const bufferPropOffset = (elements, name, key) => {
@@ -56,7 +95,7 @@ export const bufferPropOffset = (elements, name, key) => {
   return sum
 }
 
-export const getLastPluggedElement = (elements, name) => {
+export const getLastRelatedElement = (elements, name) => {
   for (let i = elements.length - 1; i >= 0; i--) {
     if (elements[i].plugins[name]) {
       return elements[i]
@@ -133,34 +172,37 @@ const setCharToMaps = (data, char, [weakMap, map]) => {
 }
 
 export const updateCodeMapsByTextures = (
-  gl, plugin, element, globals, uploadTexture
+  gl, plugin, relatedElements, globals, uploadTexture
 ) => {
-  const { propSchema, textureMap, elementCodeMaps } = plugin
-  const { name } = plugin.constructor
-  const props = {
-    ...plugin.propsByGlobals(globals),
-    ...plugin.propsByElement(element)
-  }
-  const textureKeys = Object
-    .keys(propSchema)
-    .filter(key => propSchema[key].type === PropTypes.texture)
-
-  textureKeys.forEach(key => {
-    const imageLike = props[key] // can be cubemap config or image
-    if (!textureMap.get(imageLike)) {
-      const texture = uploadTexture(gl, imageLike, propSchema[key])
-      textureMap.set(imageLike, texture)
+  for (let i = 0; i < relatedElements.length; i++) {
+    const element = relatedElements[i]
+    const { propSchema, textureMap, elementCodeMaps } = plugin
+    const { name } = plugin.constructor
+    const props = {
+      ...plugin.propsByGlobals(globals),
+      ...plugin.propsByElement(element)
     }
-  })
+    const textureKeys = Object
+      .keys(propSchema)
+      .filter(key => propSchema[key].type === PropTypes.texture)
 
-  let code = ''
-  textureKeys.forEach(key => {
-    let char = getCharFromMaps(props[key], elementCodeMaps)
-    if (!char) char = generateChar()
-    setCharToMaps(props[key], char, elementCodeMaps)
-    code += char
-  })
-  element.codes[name] = code || 'A'
+    textureKeys.forEach(key => {
+      const imageLike = props[key] // can be cubemap config or image
+      if (!textureMap.get(imageLike)) {
+        const texture = uploadTexture(gl, imageLike, propSchema[key])
+        textureMap.set(imageLike, texture)
+      }
+    })
+
+    let code = ''
+    textureKeys.forEach(key => {
+      let char = getCharFromMaps(props[key], elementCodeMaps)
+      if (!char) char = generateChar()
+      setCharToMaps(props[key], char, elementCodeMaps)
+      code += char
+    })
+    element.codes[name] = code || 'A'
+  }
 }
 
 // All plugin-related elements are divided into `elementGroups` in the shape of:
