@@ -33,6 +33,20 @@ export const getBufferKeys = propSchema => Object
   .keys(propSchema)
   .filter(key => propSchema[key].type === PropTypes.buffer)
 
+// Plugin only cares about `relatedElements` marked by plugin's name
+export const createRelatedElementsGroup = (plugins, elements) => {
+  const relatedElementsGroup = plugins.map(() => [])
+  for (let i = 0; i < plugins.length; i++) {
+    const plugin = plugins[i]
+    const { name } = plugin.constructor
+    for (let j = 0; j < elements.length; j++) {
+      if (!elements[j].plugins[name]) continue
+      push(relatedElementsGroup[i], elements[j])
+    }
+  }
+  return relatedElementsGroup
+}
+
 const joinBufferProps = (
   plugin, bufferPropsGroup, relatedElements, baseIndexOffset = 0
 ) => {

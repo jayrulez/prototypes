@@ -15,6 +15,7 @@ import {
   concat,
   push,
   getBufferKeys,
+  createRelatedElementsGroup,
   allocateBufferSizes,
   getLastRelatedElement,
   updateCodeMapsByTextures,
@@ -72,16 +73,7 @@ export class Renderer {
   addElements (elements) {
     const { gl, config, plugins, glUtils, globals } = this
     const prevElements = this.elements
-    const relatedElementsGroup = plugins.map(() => [])
-
-    for (let i = 0; i < plugins.length; i++) {
-      const plugin = plugins[i]
-      const { name } = plugin.constructor
-      for (let j = 0; j < elements.length; j++) {
-        if (!elements[j].plugins[name]) continue
-        push(relatedElementsGroup[i], elements[j])
-      }
-    }
+    const relatedElementsGroup = createRelatedElementsGroup(plugins, elements)
 
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
