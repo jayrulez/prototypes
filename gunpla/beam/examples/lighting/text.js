@@ -13,14 +13,14 @@ attribute vec4 normal;
 uniform mat4 viewMat;
 uniform mat4 projectionMat;
 uniform mat4 normalMat;
+uniform vec3 directionalLightDir;
 
 varying highp vec4 vColor;
 
 void main() {
   vec4 color = vec4(1, 0, 0, 1);
-  vec3 lightDir = vec3(-0.35, 0.35, 0.87);
   vec3 normalDir = normalize(vec3(normalMat * normal));
-  float nDotL = max(dot(normalDir, lightDir), 0.0);
+  float nDotL = max(dot(normalDir, directionalLightDir), 0.0);
   vColor = vec4(color.rgb * nDotL, color.a);
   gl_Position = projectionMat * viewMat * pos;
 }
@@ -48,7 +48,8 @@ export class TextPlugin extends ShadePlugin {
     this.shaderSchema.uniforms = {
       viewMat: mat4,
       projectionMat: mat4,
-      normalMat: mat4
+      normalMat: mat4,
+      directionalLightDir: vec3
     }
 
     const { buffer } = PropTypes
@@ -65,10 +66,12 @@ export class TextPlugin extends ShadePlugin {
   }
 
   propsByGlobals (globals) {
+    const { directionalLightDir = [1, 0, 1] } = globals
     return {
       normalMat: create(),
       viewMat: globals.camera,
-      projectionMat: globals.perspective
+      projectionMat: globals.perspective,
+      directionalLightDir
     }
   }
 }

@@ -20,5 +20,16 @@ export const main = () => {
     renderer.render()
   })
 
+  const $dirX = document.getElementById('dir-x')
+  const $dirY = document.getElementById('dir-y')
+  const $dirZ = document.getElementById('dir-z')
+  ;[$dirX, $dirY, $dirZ].forEach(input => {
+    input.addEventListener('input', () => {
+      const [dx, dy, dz] = [$dirX.value, $dirY.value, $dirZ.value]
+      renderer.setGlobal('directionalLightDir', [dx, dy, dz])
+      renderer.render()
+    })
+  })
+
   window.renderer = renderer
 }
