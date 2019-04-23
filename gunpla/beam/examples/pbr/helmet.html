@@ -13,7 +13,7 @@
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { loadGLTF } from '../common/gltf-loader.js'
-import { MeshElement, MeshPlugin } from './mesh.js'
+import { MeshPlugin, createMeshElement } from './mesh.js'
 import { loadCubeMaps, loadImage } from './loader.js'
 
 const canvas = document.getElementById('gl-canvas')
@@ -33,7 +33,7 @@ Promise.all([
   loadCubeMaps('../common/textures/papermill'),
   loadImage('../common/textures/brdfLUT.png')
 ]).then(([[bufferInfos, images], cubeMaps, brdf]) => {
-  const meshElement = new MeshElement({ bufferInfos, images })
+  const meshElement = createMeshElement({ bufferInfos, images })
   renderer.setGlobal('cubeMaps', cubeMaps)
   renderer.setGlobal('brdf', brdf)
   renderer.setGlobal('modelRotate', [0, 180, 0])

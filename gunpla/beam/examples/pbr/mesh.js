@@ -1,5 +1,5 @@
 import {
-  Element,
+  createElement,
   ShadePlugin,
   ShaderTypes,
   PropTypes
@@ -455,9 +455,10 @@ export class MeshPlugin extends ShadePlugin {
     }
   }
 
-  propsByElement ({ props }) {
-    const { attributeInfos, indicesInfo } = props.bufferInfos
-    const { images } = props
+  propsByElement ({ state }) {
+    const { attributeInfos, indicesInfo } = state.bufferInfos
+    const { images } = state
+    // FIXME replace ArrayBuffer data
     return {
       a_Position: attributeInfos[1].data,
       a_Normal: attributeInfos[0].data,
@@ -520,9 +521,4 @@ export class MeshPlugin extends ShadePlugin {
   }
 }
 
-export class MeshElement extends Element {
-  constructor (props) {
-    super(props)
-    this.plugins = { MeshPlugin }
-  }
-}
+export const createMeshElement = data => createElement(data, MeshPlugin)

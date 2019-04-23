@@ -1,5 +1,5 @@
 import {
-  Element,
+  createElement,
   ShadePlugin,
   ShaderTypes,
   PropTypes
@@ -110,8 +110,8 @@ export class CubePlugin extends ShadePlugin {
     }
   }
 
-  propsByElement ({ props }) {
-    const p = props.position
+  propsByElement ({ state }) {
+    const p = state.position
     const pos = []
     for (let i = 0; i < basePositions.length; i += 3) {
       push(pos, basePositions[i] + p[0])
@@ -120,7 +120,7 @@ export class CubePlugin extends ShadePlugin {
     }
     let color = []
     for (let i = 0; i < faceColors.length; i++) {
-      const c = props.color ? props.color : faceColors[i]
+      const c = state.color ? state.color : faceColors[i]
       color = color.concat(c, c, c, c)
     }
     return { pos, color, index }
@@ -134,9 +134,4 @@ export class CubePlugin extends ShadePlugin {
   }
 }
 
-export class CubeElement extends Element {
-  constructor (props) {
-    super(props)
-    this.plugins = { CubePlugin }
-  }
-}
+export const createCubeElement = data => createElement(data, CubePlugin)

@@ -12,11 +12,11 @@
     <canvas id="gl-canvas"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { CubePlugin, CubeElement } from '../cube/cube.js'
-import { ImagePlugin, ImageElement, loadImages } from '../image/image.js'
+import { CubePlugin, createCubeElement } from '../cube/cube.js'
+import { ImagePlugin, createImageElement, loadImages } from '../image/image.js'
 import {
   PostProcessingPlugin,
-  PostProcessingElement
+  createPostProcessingElement
 } from './post-processing.js'
 import { lookAt, perspective } from '../common/mat4.js'
 
@@ -43,27 +43,29 @@ imagePlugin.propsByGlobals = () => ({
 })
 
 loadImages(urls).then(([blackHole]) => {
-  const post = new PostProcessingElement()
-  const image = new ImageElement({
+  const post = createPostProcessingElement()
+  const image = createImageElement({
     position: [0, 0, 35],
-    imgA: blackHole,
-    imgB: blackHole
+    img0: blackHole,
+    img1: blackHole
   })
   renderer.addElement(image)
   renderer.addElement(post)
-  const N = 2
+  const N = 5
+  const cubeElements = []
 
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
       for (let k = 0; k < N; k++) {
-        const cube = new CubeElement({
+        const cube = createCubeElement({
           position: [i * 3 - N, j * 3 - N, k * 3 - N],
           color: [random(), random(), random(), 1]
         })
-        renderer.addElement(cube)
+        cubeElements.push(cube)
       }
     }
   }
+  renderer.addElements(cubeElements)
 })
 
 let i = 0
@@ -74,7 +76,7 @@ const tick = () => {
   for (let i = 0; i < renderer.elements.length; i++) {
     const element = renderer.elements[i]
     if (!element.plugins['CubePlugin']) continue
-    const { position, color } = element.props
+    const { position, color } = element.state
     const [x, y, z] = position
     renderer.changeElement(element, {
       position: [x + random() - 0.5, y + random() - 0.5, z + random() - 0.5],

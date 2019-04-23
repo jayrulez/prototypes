@@ -109,9 +109,9 @@ export class Renderer {
     this.texLoaded = false
   }
 
-  changeElement (element, props) {
+  changeElement (element, state) {
     const { gl, elements, plugins, glUtils } = this
-    element.props = props
+    element.state = state
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor

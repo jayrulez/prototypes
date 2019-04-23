@@ -12,7 +12,7 @@
     <canvas id="gl-canvas"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { ImagePlugin, ImageElement, loadImages } from './image.js'
+import { ImagePlugin, createImageElement, loadImages } from './image.js'
 
 const { cos, sin } = Math
 const canvas = document.getElementById('gl-canvas')
@@ -28,10 +28,10 @@ loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
       const image = (i + j) % 2 === 0 ? imgA : imgB
-      const imageElement = new ImageElement({
+      const imageElement = createImageElement({
         position: [i * 3 - N, j * 3 - N, -3],
-        imgA: image,
-        imgB: image
+        img0: image,
+        img1: image
       })
       renderer.addElement(imageElement)
     }

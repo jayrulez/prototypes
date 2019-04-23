@@ -16,7 +16,7 @@ export class ShadePlugin {
     this.offscreen = false
   }
 
-  propsByElement ({ props }) {
+  propsByElement ({ state }) {
     return {}
   }
 

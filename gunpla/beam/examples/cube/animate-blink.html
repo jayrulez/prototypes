@@ -10,7 +10,7 @@
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { CubeElement, CubePlugin } from './cube.js'
+import { CubePlugin, createCubeElement } from './cube.js'
 
 const canvas = document.getElementById('gl-canvas')
 
@@ -23,10 +23,8 @@ const elements = []
 for (let i = 0; i < N; i++) {
   for (let j = 0; j < N; j++) {
     for (let k = 0; k < N; k++) {
-      const cube = new CubeElement({
-        position: [i * 3 - N, j * 3 - N, k * 3 - N],
-        color: [1, 1, 1, 1]
-      })
+      const position = [i * 3 - N, j * 3 - N, k * 3 - N]
+      const cube = createCubeElement({ position , color: [1, 1, 1, 1] })
       elements.push(cube)
     }
   }
@@ -40,7 +38,7 @@ const tick = () => {
   renderer.setCamera([cos(i) * 40, sin(i) * 40, 40])
   for (let i = 0; i < renderer.elements.length; i++) {
     const element = renderer.elements[i]
-    const [x, y, z] = element.props.position
+    const [x, y, z] = element.state.position
     renderer.changeElement(element, {
       position: [x + random() - 0.5, y + random() - 0.5, z + random() - 0.5],
       color: [random(), random(), random(), random()]

@@ -10,7 +10,7 @@
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { CubeElement, CubePlugin } from './cube.js'
+import { CubePlugin, createCubeElement } from './cube.js'
 
 const canvas = document.getElementById('gl-canvas')
 const config = { bufferChunkSize: 1000 * 1024 }
@@ -23,9 +23,8 @@ const elements = []
 for (let i = 0; i < N; i++) {
   for (let j = 0; j < N; j++) {
     for (let k = 0; k < N; k++) {
-      const cube = new CubeElement({
-        position: [i * 3 - N, j * 3 - N, k * 3 - N]
-      })
+      const position = [i * 3 - N, j * 3 - N, k * 3 - N]
+      const cube = createCubeElement({ position })
       elements.push(cube)
     }
   }

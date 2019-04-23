@@ -1,5 +1,5 @@
 import {
-  Element,
+  createElement,
   ShadePlugin,
   ShaderTypes,
   PropTypes
@@ -59,8 +59,8 @@ export class TextPlugin extends ShadePlugin {
     }
   }
 
-  propsByElement ({ props }) {
-    const { positions, normals, indices } = props
+  propsByElement ({ state }) {
+    const { positions, normals, indices } = state
     return { pos: positions, normal: normals, index: indices }
   }
 
@@ -73,9 +73,4 @@ export class TextPlugin extends ShadePlugin {
   }
 }
 
-export class TextElement extends Element {
-  constructor (props) {
-    super(props)
-    this.plugins = { TextPlugin }
-  }
-}
+export const createTextElement = data => createElement(data, TextPlugin)

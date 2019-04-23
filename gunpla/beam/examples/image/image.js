@@ -1,7 +1,7 @@
 /* eslint-env browser */
 
 import {
-  Element,
+  createElement,
   ShadePlugin,
   ShaderTypes,
   PropTypes
@@ -25,13 +25,13 @@ void main() {
 `
 
 const fragmentShader = `
-uniform sampler2D imgA;
-uniform sampler2D imgB;
+uniform sampler2D img0;
+uniform sampler2D img1;
 varying highp vec2 vTexCoord;
 
 void main() {
-  highp vec4 colorA = texture2D(imgA, vTexCoord);
-  highp vec4 colorB = texture2D(imgB, vTexCoord);
+  highp vec4 colorA = texture2D(img0, vTexCoord);
+  highp vec4 colorB = texture2D(img1, vTexCoord);
   gl_FragColor = colorA * colorB;
 }
 `
@@ -50,8 +50,8 @@ export class ImagePlugin extends ShadePlugin {
     this.shaderSchema.uniforms = {
       viewMat: mat4,
       projectionMat: mat4,
-      imgA: sampler2D,
-      imgB: sampler2D
+      img0: sampler2D,
+      img1: sampler2D
     }
 
     const { buffer, texture } = PropTypes
@@ -60,14 +60,14 @@ export class ImagePlugin extends ShadePlugin {
       pos: { type: buffer, n: 3 },
       texCoord: { type: buffer, n: 2 },
       index: { type: buffer, index: true },
-      imgA: { type: texture, unit: 0, flip: true },
-      imgB: { type: texture, unit: 1, flip: true }
+      img0: { type: texture, unit: 0, flip: true },
+      img1: { type: texture, unit: 1, flip: true }
     }
   }
 
-  propsByElement ({ props }) {
-    const p = props.position
-    const r = props.aspectRatio || 1
+  propsByElement ({ state }) {
+    const p = state.position
+    const r = state.aspectRatio || 1
     const basePositions = [
       -1.0, -1.0 * r, 1.0,
       1.0, -1.0 * r, 1.0,
@@ -90,8 +90,8 @@ export class ImagePlugin extends ShadePlugin {
       pos,
       texCoord,
       index: [0, 1, 2, 0, 2, 3],
-      imgA: props.imgA,
-      imgB: props.imgB
+      img0: state.img0,
+      img1: state.img1
     }
   }
 
@@ -103,12 +103,7 @@ export class ImagePlugin extends ShadePlugin {
   }
 }
 
-export class ImageElement extends Element {
-  constructor (props) {
-    super(props)
-    this.plugins = { ImagePlugin }
-  }
-}
+export const createImageElement = data => createElement(data, ImagePlugin)
 
 const loadImage = url => new Promise(resolve => {
   const image = new Image()

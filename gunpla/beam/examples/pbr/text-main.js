@@ -2,7 +2,7 @@
 
 import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { parseOBJ } from '../common/obj-loader.js'
-import { MeshElement, MeshPlugin } from './mesh.js'
+import { MeshPlugin, createMeshElement } from './mesh.js'
 import { loadCubeMaps, loadImage, obj2BufferInfos } from './loader.js'
 
 export const main = () => {
@@ -69,7 +69,7 @@ export const main = () => {
   ]).then(([str, images, cubeMaps, brdf]) => {
     const [model] = parseOBJ(str)
     const bufferInfos = obj2BufferInfos(model)
-    const meshElement = new MeshElement({ bufferInfos, images })
+    const meshElement = createMeshElement({ bufferInfos, images })
     renderer.setGlobal('cubeMaps', cubeMaps)
     renderer.setGlobal('brdf', brdf)
     renderer.addElement(meshElement)

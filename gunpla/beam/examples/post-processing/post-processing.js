@@ -1,5 +1,5 @@
 import {
-  Element,
+  createElement,
   ShadePlugin,
   ShaderTypes,
   PropTypes
@@ -217,9 +217,6 @@ export class PostProcessingPlugin extends ShadePlugin {
   }
 }
 
-export class PostProcessingElement extends Element {
-  constructor (props) {
-    super(props)
-    this.plugins = { PostProcessingPlugin }
-  }
-}
+export const createPostProcessingElement = data => createElement(
+  data, PostProcessingPlugin
+)

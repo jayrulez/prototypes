@@ -10,17 +10,17 @@
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { CubeElement, CubePlugin } from './cube.js'
+import { CubePlugin, createCubeElement } from './cube.js'
 
 const canvas = document.getElementById('gl-canvas')
 
 const cubePlugin = new CubePlugin()
 const renderer = new Basic3DRenderer(canvas, [cubePlugin])
 
-const cubeA = new CubeElement({ position: [0, 0, 0] })
-const cubeB = new CubeElement({ position: [3, 0, 0] })
-const cubeC = new CubeElement({ position: [-3, 0, 0] })
-const cubeD = new CubeElement({ position: [0, -3, 0] })
+const cubeA = createCubeElement({ position: [0, 0, 0] })
+const cubeB = createCubeElement({ position: [3, 0, 0] })
+const cubeC = createCubeElement({ position: [-3, 0, 0] })
+const cubeD = createCubeElement({ position: [0, -3, 0] })
 
 renderer.setCamera([0, 10, 10])
 renderer.addElement(cubeA)
