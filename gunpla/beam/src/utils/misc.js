@@ -55,7 +55,7 @@ const joinBufferProps = (
   const { name } = plugin.constructor
 
   const joinedBufferProps = mapValue(bufferPropsGroup[0], () => [])
-  const bufferKeys = Object.keys(bufferPropsGroup[0])
+  const bufferKeys = getBufferKeys(propSchema)
   const indexKey = bufferKeys.find(key => propSchema[key].index)
 
   let indexOffset = baseIndexOffset
@@ -69,6 +69,7 @@ const joinBufferProps = (
     element.bufferPropsMap[name] = {
       ...bufferProps, [indexKey]: offsetIndexArr
     }
+    // TypedArray props are converted to plain array props here
     bufferKeys.forEach(key => {
       concat(joinedBufferProps[key], element.bufferPropsMap[name][key])
     })
@@ -77,7 +78,6 @@ const joinBufferProps = (
   return joinedBufferProps
 }
 
-// TODO align array buffer indices
 export const alignBufferProps = (
   plugin,
   bufferPropsGroup,
@@ -128,10 +128,8 @@ export const divideUploadKeys = (
     const key = bufferKeys[i]
     const size = bufferTypeSize(propSchema, key)
     const baseOffset = bufferPropOffset(elements, name, key) * size
-    const bufferLength = bufferProps[key] instanceof ArrayBuffer
-      ? bufferProps[key].byteLength
-      : bufferProps[key].length * size
-    const spaceRequired = baseOffset + bufferLength
+    const length = bufferProps[key].length * size
+    const spaceRequired = baseOffset + length
     spaceRequired < bufferChunkSize ? push(subKeys, key) : push(fullKeys, key)
   }
   return [fullKeys, subKeys]
@@ -144,9 +142,7 @@ export const allocateBufferSizes = (
   for (let i = 0; i < fullKeys.length; i++) {
     const key = fullKeys[i]
     const size = bufferTypeSize(propSchema, key)
-    const length = bufferProps[key] instanceof ArrayBuffer
-      ? bufferProps[key].byteLength
-      : bufferProps[key].length * size
+    const length = bufferProps[key].length * size
     bufferSizes[key] += Math.max(bufferChunkSize, length)
   }
 }
@@ -220,33 +216,33 @@ export const updateCodeMapsByTextures = (
 
 // All plugin-related elements are divided into `elementGroups` in the shape of:
 // [Element[], Element[]...]
-// So we create corresponding `indexBufferGroups` in the shape of:
+// So we create corresponding `indexPropsGroup` in the shape of:
 // [[0, 1, 2, 0, 2, 3...], [100, 101, 102, 100, 102, 103...]...]
-const createIndexBufferGroups = (plugin, elementGroups, indexKey) => {
+const createIndexPropsGroup = (plugin, elementsGroup, indexKey) => {
   const { name } = plugin.constructor
-  const indexBufferGroups = []
-  for (let i = 0; i < elementGroups.length; i++) {
-    const elements = elementGroups[i]
-    let indexGroup = []
+  const indexPropsGroup = []
+  for (let i = 0; i < elementsGroup.length; i++) {
+    const elements = elementsGroup[i]
+    let indexProps = []
     for (let j = 0; j < elements.length; j++) {
-      const indexProps = elements[j].bufferPropsMap[name][indexKey]
-      // Can be [0, 1, 2, 2, 3, 4...] with default array
-      // and [ArrayBuffer, ArrayBuffer] with array buffer
-      indexGroup = indexGroup.concat(indexProps)
+      const baseIndexProps = elements[j].bufferPropsMap[name][indexKey]
+      // flat [0, 1, 2, 2, 3, 4...] with default array
+      concat(indexProps, baseIndexProps)
     }
-    push(indexBufferGroups, indexGroup)
+    push(indexPropsGroup, indexProps)
   }
-  return indexBufferGroups
+
+  return indexPropsGroup
 }
 
 export const divideElementGroups = (plugin, elements) => {
   const { propSchema } = plugin
   const { name } = plugin.constructor
-  const elementGroups = divideElementsByCode(elements, name)
+  const elementsGroup = divideElementsByCode(elements, name)
   const indexKey = Object
     .keys(propSchema)
     .find(key => propSchema[key].index)
-  plugin.indexBufferGroups = createIndexBufferGroups(
-    plugin, elementGroups, indexKey
+  plugin.indexPropsGroups = createIndexPropsGroup(
+    plugin, elementsGroup, indexKey
   )
 }

@@ -2,6 +2,7 @@
 
 import { ShaderTypes } from '../consts.js'
 import {
+  concat,
   isPowerOf2,
   getBufferKeys,
   bufferPropOffset,
@@ -160,20 +161,19 @@ export const uploadFullBuffers = (gl, plugin, bufferKeys, elements) => {
 
     for (let j = 0; j < bufferKeys.length; j++) {
       const key = bufferKeys[j]
-      props[key] = props[key].concat(elementBufferProps[key])
+      concat(props[key], elementBufferProps[key])
     }
   }
 
   bufferKeys.forEach(key => {
     const { index } = propSchema[key]
-    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
-    let data = props[key]
-    if (data[0] instanceof ArrayBuffer) data = data[0]
-    const arr = index ? new Uint16Array(data) : new Float32Array(data)
+    if (index) return
 
-    gl.bindBuffer(target, buffers[key])
-    gl.bufferData(target, bufferSizes[key], gl.STATIC_DRAW)
-    gl.bufferData(target, arr, gl.STATIC_DRAW)
+    const data = props[key]
+    const arr = new Float32Array(data)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers[key])
+    gl.bufferData(gl.ARRAY_BUFFER, bufferSizes[key], gl.STATIC_DRAW)
+    gl.bufferData(gl.ARRAY_BUFFER, arr, gl.STATIC_DRAW)
   })
 }
 
@@ -184,19 +184,15 @@ export const uploadSubBuffers = (
   const { name } = plugin.constructor
   bufferKeys.forEach(key => {
     const { index } = propSchema[key]
-    const target = index ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER
-    const commonOffset = bufferPropOffset(elements, name, key)
-
     if (index) return
 
-    let data = bufferProps[key]
-    if (data[0] instanceof ArrayBuffer) data = data[0]
-
-    const arr = index ? new Uint16Array(data) : new Float32Array(data)
+    const data = bufferProps[key]
+    const arr = new Float32Array(data)
     const size = index ? 2 : 4
+    const commonOffset = bufferPropOffset(elements, name, key)
 
-    gl.bindBuffer(target, buffers[key])
-    gl.bufferSubData(target, commonOffset * size, arr)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers[key])
+    gl.bufferSubData(gl.ARRAY_BUFFER, commonOffset * size, arr)
   })
 }
 
@@ -291,20 +287,18 @@ export const resetBeforeDraw = (gl, clearColor) => {
 }
 
 const uploadIndexBuffer = (gl, plugin, i) => {
-  const { buffers, propSchema, indexBufferGroups } = plugin
-  const indexBufferGroup = indexBufferGroups[i]
+  const { buffers, propSchema, indexPropsGroups } = plugin
+  const indexBufferGroup = indexPropsGroups[i]
   const bufferKeys = getBufferKeys(propSchema)
   const indexKey = bufferKeys.find(key => propSchema[key].index)
-
-  let data = indexBufferGroup
-  if (data[0] instanceof ArrayBuffer) data = data[0]
+  const data = indexBufferGroup
   const arr = new Uint16Array(data)
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers[indexKey])
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, arr, gl.STATIC_DRAW)
 }
 
-const draw = (gl, plugin, props, totalLength, texLoaded) => {
+const draw = (gl, plugin, props, count, texLoaded) => {
   const { programInfo, propSchema, buffers, textureMap } = plugin
   const bufferKeys = getBufferKeys(propSchema)
 
@@ -378,31 +372,29 @@ const draw = (gl, plugin, props, totalLength, texLoaded) => {
     uniformSetterMapping[type]()
   })
 
-  gl.drawElements(gl.TRIANGLES, totalLength, gl.UNSIGNED_SHORT, 0)
+  gl.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_SHORT, 0)
 }
 
-export const drawByGroup = (gl, plugin, elementGroups, globals, texLoaded) => {
+export const drawByGroup = (gl, plugin, elementsGroup, globals, texLoaded) => {
   const { propSchema } = plugin
   const { name } = plugin.constructor
   const indexKey = Object
     .keys(propSchema)
     .find(key => propSchema[key].index)
-  for (let i = 0; i < elementGroups.length; i++) {
-    const groupedElements = elementGroups[i]
+  for (let i = 0; i < elementsGroup.length; i++) {
+    const elements = elementsGroup[i]
     uploadIndexBuffer(gl, plugin, i)
 
-    let totalLength = 0
-    for (let i = 0; i < groupedElements.length; i++) {
-      const indexProp = groupedElements[i].bufferPropsMap[name][indexKey]
-      indexProp instanceof ArrayBuffer
-        ? totalLength += indexProp.byteLength / 2
-        : totalLength += indexProp.length
+    let count = 0
+    for (let i = 0; i < elements.length; i++) {
+      const indexProp = elements[i].bufferPropsMap[name][indexKey]
+      count += indexProp.length
     }
     const props = {
       // Should always has length, always same element props in same batch
-      ...plugin.propsByElement(groupedElements[0]),
+      ...plugin.propsByElement(elements[0]),
       ...plugin.propsByGlobals(globals)
     }
-    draw(gl, plugin, props, totalLength, texLoaded)
+    draw(gl, plugin, props, count, texLoaded)
   }
 }

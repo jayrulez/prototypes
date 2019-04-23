@@ -16,10 +16,12 @@ const fetchBufferInfos = (
   fetchBin(binPath).then(buffer => {
     attributeInfos.forEach(attributeInfo => {
       const { byteOffset, byteLength } = attributeInfo.bufferView
-      attributeInfo.data = buffer.slice(byteOffset, byteOffset + byteLength)
+      const arrayBuffer = buffer.slice(byteOffset, byteOffset + byteLength)
+      attributeInfo.data = new Float32Array(arrayBuffer)
     })
     const { byteOffset, byteLength } = indicesInfo.bufferView
-    indicesInfo.data = buffer.slice(byteOffset, byteOffset + byteLength)
+    const arrayBuffer = buffer.slice(byteOffset, byteOffset + byteLength)
+    indicesInfo.data = new Uint16Array(arrayBuffer)
     resolve({
       attributeInfos,
       indicesInfo

@@ -139,12 +139,8 @@ export class Renderer {
   removeElements (elements) {
     const { gl, plugins, glUtils } = this
     const { clearBuffers } = glUtils
-    const remainedElements = this.elements.filter(
-      element => !elements.includes(element)
-    )
-    for (let i = 0; i < plugins.length; i++) {
-      clearBuffers(gl, plugins[i])
-    }
+    const remainedElements = this.elements.filter(el => !elements.includes(el))
+    for (let i = 0; i < plugins.length; i++) clearBuffers(gl, plugins[i])
     this.elements = []
     this.addElements(remainedElements)
   }
@@ -161,12 +157,12 @@ export class Renderer {
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       const { name } = plugin.constructor
-      const elementGroups = divideElementsByCode(elements, name)
+      const elementsGroup = divideElementsByCode(elements, name)
       const { drawByGroup } = glUtils
 
       plugin.beforeDraw(gl)
-      drawByGroup(gl, plugin, elementGroups, globals, this.texLoaded)
-      this.texLoaded = true
+      drawByGroup(gl, plugin, elementsGroup, globals, this.texLoaded)
     }
+    this.texLoaded = true
   }
 }
