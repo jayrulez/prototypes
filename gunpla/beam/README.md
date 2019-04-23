@@ -49,15 +49,15 @@ npm install -g http-server && http-server .
 <canvas id="demo" width="400" height="400"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { CubeElement, CubePlugin } from './cube.js'
+import { CubePlugin, createCubeElement } from './cube.js'
 
 const canvas = document.getElementById('gl-canvas')
 
 const cubePlugin = new CubePlugin()
 const renderer = new Basic3DRenderer(canvas, [cubePlugin])
 
-const cubeA = new CubeElement({ position: [0, 0, 0] })
-const cubeB = new CubeElement({ position: [3, 0, 0] })
+const cubeA = createCubeElement({ position: [0, 0, 0] })
+const cubeB = createCubeElement({ position: [3, 0, 0] })
 
 renderer.setCamera([0, 10, 10])
 renderer.addElement(cubeA)
@@ -67,7 +67,7 @@ renderer.render()
 </script>
 ```
 
-我们在这个示例中实例化出了一个 `renderer` 渲染器，并使用其 `addElement` 方法为其添加了若干个 `CubeElement` 元素实例。在 Beam 中，元素只是纯数据 Props 的载体，不包含渲染状态与逻辑。而着色插件则会识别出其所支持的元素，将元素内形如 `position` 的语义化数据字段转换为 GPU 支持的缓冲区、纹理等数据，在最后 `render` 时渲染出全部元素。
+我们在这个示例中实例化出了一个 `renderer` 渲染器，并使用其 `addElement` 方法为其添加了若干个 `CubeElement` 元素实例。在 Beam 中，元素只是纯数据 State 的载体，不包含渲染状态与逻辑。而着色插件则会识别出其所支持的元素，将元素内形如 `position` 的语义化数据字段转换为 GPU 支持的缓冲区、纹理等数据，在最后 `render` 时渲染出全部元素。
 
 在存在可用的着色插件时对 Beam 的基础使用，仅仅需要包括调用 `addElement` / `changeElement` / `removeElement` 这些操作元素的 API，再加上最终的 `render` 方法。这就是它的核心能力了。
 

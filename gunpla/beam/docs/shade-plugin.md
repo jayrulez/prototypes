@@ -7,7 +7,7 @@ Beam 全部的实际渲染能力都是建立在着色插件的基础上的。一
 
 1. 初始化阶段，引擎编译着色器，根据插件的 `shaderSchema` 来获得各个着色器变量的 location 信息。
 1. 上层调用 `addElement` API，添加包含语义化数据的 Element 元素。
-2. 引擎将 Element 中的语义化数据，根据着色插件提供的逻辑，转换为 JS 内「准备好提交到 GPU」的数据。我们将这类数据称作 Props。例如一个带着 `color` 字段的 Element，在这一阶段就可以将 `'red'` 转换为形如 `[1, 0, 0, 1]` 的 Props。Props 既可以来自于 Element，也可以来自于 Globals。
+2. 引擎将 Element 中的 State 语义化数据，根据着色插件提供的逻辑，转换为 JS 内「准备好提交到 GPU」的数据。我们将这类数据称作 Props。例如一个带着 `color` 字段的 Element，在这一阶段就可以将 `'red'` 转换为形如 `[1, 0, 0, 1]` 的 Props。Props 既可以来自于 Element 中的 State 字段，也可以来自于 Globals。
 3. 引擎根据着色插件的 `propSchema` 配置与初始化时获得的 location 信息，将「准备好」的 Props 数据上传到 GPU。
 4. 引擎 `render` 时结合来自 Element 与 Globals 的 Props 数据，调度 Draw Call 绘制出元素。
 
@@ -42,14 +42,14 @@ this.shaderSchema.uniforms = {
   projectionMat: mat4
 }
 
-const { attribute } = PropTypes
+const { buffer } = PropTypes
 this.propSchema = {
-  pos: { type: attribute, n: 3 },
-  color: { type: attribute, n: 4 },
-  index: { type: attribute, index: true }
+  pos: { type: buffer, n: 3 },
+  color: { type: buffer, n: 4 },
+  index: { type: buffer, index: true }
 }
 ```
 
-这里的 `ShaderTypes` 和 `PropTypes` 是引擎提供的类型常量。通过这一配置，`propSchema` 中的 `color` 字段告诉引擎，元素 Props 数据中的 `color` 字段装着 numCompoents 为 4 的 `attribute` 数组，由于这个字段名与 `shaderSchema.attributes` 下的 `color` 一致，因此在运行时引擎就能自动地将相应的 Props 数据提交到着色器中的 `attribute color` 变量所对应的 Buffer 了。
+这里的 `ShaderTypes` 和 `PropTypes` 是引擎提供的类型常量。通过这一配置，`propSchema` 中的 `color` 字段告诉引擎，元素 Props 数据中的 `color` 字段需要被转换为 numCompoents 为 4 的 Buffer，由于这个字段名与 `shaderSchema.attributes` 下的 `color` 一致，因此在运行时引擎就能自动地将相应的 Props 数据提交到着色器中的 `attribute color` 变量所对应的 Buffer 了。
 
 > Schema 中扩展的字段配置仍在演化中，暂时请以实际实现为准。

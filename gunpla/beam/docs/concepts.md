@@ -27,9 +27,9 @@
 
 在理解了 WebGL 概念与主流渲染引擎的抽象之间的关系后，再来回顾 Beam 的设计就更加有趣了。和 Three 选择完全封装掉 Shader 不同，Beam 将可配置的 Shader 作为自己的核心，这带来了这样的概念抽象：
 
-* `ShadePlugin` 着色插件由使用者指定，只要包含一个或多个着色插件的数组，就能构成一条完整的渲染路径。
-* `Element` 元素包含了语义化的 Buffer 与 Texture 数据。例如一个 `CubeElement` 就可以指定自己的 `position` / `size` / `image` 等信息，由插件来将这些语义化的数据转换为对 WebGL 友好的数组、图像数据。这些「已经准备好提交到 GPU」的数据，我们定义为 `Prop`。不同 Prop 在上传到 GPU 时有不同的方式，这是通过着色插件内对 Prop 约定的一套 Schema 来指定的。
-* `Globals` 全局对象是一个容器，可以包含各类语义化的数据，由插件指定如何将其转换为 Uniform。例如一个全局的 `camera` 字段，就可以被插件转换并传入着色器中的 `viewMatrix` 变量。
+* **ShadePlugin** 着色插件由使用者指定，只要包含一个或多个着色插件的数组，就能构成一条完整的渲染路径。
+* **Element** 元素中的 `state` 字段内，包含了语义化的 Buffer 与 Texture 数据。例如一个 `CubeElement` 就可以指定自己的 `position` / `size` / `image` 等信息，由插件来将这些语义化的数据转换为对 WebGL 友好的数组、图像数据。这些「已经准备好提交到 GPU」的数据，我们定义为 `Prop`。不同 Prop 在上传到 GPU 时有不同的方式，这是通过着色插件内对 Prop 约定的一套 Schema 来指定的。
+* **Globals** 全局对象是一个容器，可以包含各类语义化的数据，由插件指定如何将其转换为 Uniform。例如一个全局的 `camera` 字段，就可以被插件转换并传入着色器中的 `viewMatrix` 变量。
 
 作为总结，从与 WebGL 的关系来看，Beam 的核心抽象是这样的：
 
