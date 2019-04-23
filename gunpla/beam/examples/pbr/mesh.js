@@ -78,6 +78,7 @@ const fragmentShader = `
 #define HAS_EMISSIVEMAP 1
 #define HAS_OCCLUSIONMAP 1
 #define USE_TEX_LOD 1
+#define NR_POINT_LIGHTS 2
 //
 // This fragment shader defines a reference implementation for Physically Based Shading of
 // a microfacet surface material defined by a glTF model.
@@ -101,7 +102,7 @@ struct PointLight {
   vec3 color;
   float strength;
 };
-uniform PointLight u_Lights[1];
+uniform PointLight u_Lights[NR_POINT_LIGHTS];
 
 #ifdef USE_IBL
 uniform samplerCube u_DiffuseEnvSampler;
@@ -335,44 +336,51 @@ void main()
 
   vec3 n = getNormal();                             // normal at surface point
   vec3 v = normalize(u_Camera - v_Position);        // Vector from surface point to camera
-  vec3 l = normalize(u_Lights[0].direction);             // Vector from surface point to light
-  vec3 h = normalize(l+v);                          // Half vector between both l and v
   vec3 reflection = -normalize(reflect(v, n));
 
-  float NdotL = clamp(dot(n, l), 0.001, 1.0);
-  float NdotV = clamp(abs(dot(n, v)), 0.001, 1.0);
-  float NdotH = clamp(dot(n, h), 0.0, 1.0);
-  float LdotH = clamp(dot(l, h), 0.0, 1.0);
-  float VdotH = clamp(dot(v, h), 0.0, 1.0);
+  vec3 color = vec3(0, 0, 0);
+  float NdotL, NdotV, NdotH, LdotH, VdotH;
+  PBRInfo pbrInputs;
+  vec3 F;
+  float G, D;
+  vec3 diffuseContrib, specContrib;
 
-  PBRInfo pbrInputs = PBRInfo(
-    NdotL,
-    NdotV,
-    NdotH,
-    LdotH,
-    VdotH,
-    perceptualRoughness,
-    metallic,
-    specularEnvironmentR0,
-    specularEnvironmentR90,
-    alphaRoughness,
-    diffuseColor,
-    specularColor
-  );
+  for(int i = 0; i < NR_POINT_LIGHTS; ++i) {
+    vec3 l = normalize(u_Lights[i].direction);      // Vector from surface point to light
+    vec3 h = normalize(l + v);                      // Half vector between both l and v
 
-  // Calculate the shading terms for the microfacet specular shading model
-  vec3 F = specularReflection(pbrInputs);
-  float G = geometricOcclusion(pbrInputs);
-  float D = microfacetDistribution(pbrInputs);
+    NdotL = clamp(dot(n, l), 0.001, 1.0);
+    NdotV = clamp(abs(dot(n, v)), 0.001, 1.0);
+    NdotH = clamp(dot(n, h), 0.0, 1.0);
+    LdotH = clamp(dot(l, h), 0.0, 1.0);
+    VdotH = clamp(dot(v, h), 0.0, 1.0);
 
-  // Calculation of analytical lighting contribution
-  vec3 diffuseContrib = (1.0 - F) * diffuse(pbrInputs);
-  vec3 specContrib = F * G * D / (4.0 * NdotL * NdotV);
-  // Obtain final intensity as reflectance (BRDF) scaled by the energy of the light (cosine law)
-  vec3 lightColor0 = NdotL * u_Lights[0].color * (diffuseContrib + specContrib);
-  lightColor0 *= u_Lights[0].strength;
-
-  vec3 color = lightColor0;
+    pbrInputs = PBRInfo(
+      NdotL,
+      NdotV,
+      NdotH,
+      LdotH,
+      VdotH,
+      perceptualRoughness,
+      metallic,
+      specularEnvironmentR0,
+      specularEnvironmentR90,
+      alphaRoughness,
+      diffuseColor,
+      specularColor
+    );
+    // Calculate the shading terms for the microfacet specular shading model
+    F = specularReflection(pbrInputs);
+    G = geometricOcclusion(pbrInputs);
+    D = microfacetDistribution(pbrInputs);
+    // Calculation of analytical lighting contribution
+    diffuseContrib = (1.0 - F) * diffuse(pbrInputs);
+    specContrib = F * G * D / (4.0 * NdotL * NdotV);
+    // Obtain final intensity as reflectance (BRDF) scaled by the energy of the light (cosine law)
+    vec3 lightColor = NdotL * u_Lights[i].color * (diffuseContrib + specContrib);
+    lightColor *= u_Lights[i].strength;
+    color += lightColor;
+  }
 
   // Calculate lighting contribution from image based lighting source (IBL)
   #ifdef USE_IBL
@@ -427,6 +435,9 @@ export class MeshPlugin extends ShadePlugin {
       'u_Lights[0].direction': vec3,
       'u_Lights[0].color': vec3,
       'u_Lights[0].strength': float,
+      'u_Lights[1].direction': vec3,
+      'u_Lights[1].color': vec3,
+      'u_Lights[1].strength': float,
       u_DiffuseEnvSampler: samplerCube,
       u_SpecularEnvSampler: samplerCube,
       u_brdfLUT: sampler2D,
@@ -517,6 +528,9 @@ export class MeshPlugin extends ShadePlugin {
       'u_Lights[0].direction': lightDir,
       'u_Lights[0].color': [1.0, 1.0, 1.0],
       'u_Lights[0].strength': lightStrength,
+      'u_Lights[1].direction': [-0.16, -0.60, 0.78],
+      'u_Lights[1].color': [0.0, 0.0, 1.0],
+      'u_Lights[1].strength': 1.0,
       u_NormalScale: 1.0,
       u_EmissiveFactor: [1.0, 1.0, 1.0],
       u_OcclusionStrength: 1.0,
