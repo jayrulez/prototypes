@@ -26,9 +26,15 @@ export const main = () => {
   ;[$dirX, $dirY, $dirZ].forEach(input => {
     input.addEventListener('input', () => {
       const [dx, dy, dz] = [$dirX.value, $dirY.value, $dirZ.value]
-      renderer.setGlobal('directionalLightDir', [dx, dy, dz])
+      renderer.setGlobal('dirLightDirection', [dx, dy, dz])
       renderer.render()
     })
+  })
+
+  const $dirStrength = document.getElementById('dir-strength')
+  $dirStrength.addEventListener('input', () => {
+    renderer.setGlobal('dirLightStrength', $dirStrength.value)
+    renderer.render()
   })
 
   window.renderer = renderer

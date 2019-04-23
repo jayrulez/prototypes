@@ -26,17 +26,21 @@ void main() {
 const fragmentShader = `
 precision highp float;
 
-uniform vec3 directionalLightDir;
+struct DirectionalLight {
+  vec3 direction;
+  vec4 color;
+  float strength;
+};
+uniform DirectionalLight dirLight;
 uniform mat4 normalMat;
 
 varying vec4 vNormal;
 
 void main() {
-  vec4 color = vec4(1, 0, 0, 1);
   vec3 normalDir = normalize(vec3(normalMat * vNormal));
-  float nDotL = max(dot(normalDir, directionalLightDir), 0.0);
-  vec4 finalColor = vec4(color.rgb * nDotL, color.a);
-  gl_FragColor = finalColor;
+  float nDotL = max(dot(normalDir, dirLight.direction), 0.0);
+  vec4 dirLight = vec4(dirLight.color.rgb * nDotL * dirLight.strength, dirLight.color.a);
+  gl_FragColor = dirLight;
 }
 `
 
@@ -44,7 +48,7 @@ export class TextPlugin extends ShadePlugin {
   constructor () {
     super()
 
-    const { vec3, vec4, mat4 } = ShaderTypes
+    const { float, vec3, vec4, mat4 } = ShaderTypes
     this.vertexShader = vertexShader
     this.fragmentShader = fragmentShader
     this.shaderSchema.attributes = {
@@ -55,7 +59,9 @@ export class TextPlugin extends ShadePlugin {
       viewMat: mat4,
       projectionMat: mat4,
       normalMat: mat4,
-      directionalLightDir: vec3
+      'dirLight.direction': vec3,
+      'dirLight.color': vec4,
+      'dirLight.strength': float
     }
 
     const { buffer } = PropTypes
@@ -72,12 +78,18 @@ export class TextPlugin extends ShadePlugin {
   }
 
   propsByGlobals (globals) {
-    const { directionalLightDir = [1, 0, 1] } = globals
+    const {
+      dirLightDirection = [1, 0, 1],
+      dirLightStrength = 0.5
+    } = globals
+
     return {
       normalMat: create(),
       viewMat: globals.camera,
       projectionMat: globals.perspective,
-      directionalLightDir
+      'dirLight.direction': dirLightDirection,
+      'dirLight.color': [1, 1, 1, 1],
+      'dirLight.strength': dirLightStrength
     }
   }
 }
