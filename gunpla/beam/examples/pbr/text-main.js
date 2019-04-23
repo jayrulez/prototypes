@@ -123,5 +123,11 @@ export const main = () => {
     renderer.render()
   })
 
+  const $lightStrength = document.getElementById('light-strength')
+  $lightStrength.addEventListener('input', () => {
+    renderer.setGlobal('lightStrength', $lightStrength.value)
+    renderer.render()
+  })
+
   window.renderer = renderer
 }

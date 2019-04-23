@@ -96,8 +96,12 @@ const fragmentShader = `
 
 precision highp float;
 
-uniform vec3 u_LightDirection;
-uniform vec3 u_LightColor;
+struct PointLight {
+    vec3 direction;
+    vec3 color;
+    float strength;
+};
+uniform PointLight u_Lights[1];
 
 #ifdef USE_IBL
 uniform samplerCube u_DiffuseEnvSampler;
@@ -331,7 +335,7 @@ void main()
 
     vec3 n = getNormal();                             // normal at surface point
     vec3 v = normalize(u_Camera - v_Position);        // Vector from surface point to camera
-    vec3 l = normalize(u_LightDirection);             // Vector from surface point to light
+    vec3 l = normalize(u_Lights[0].direction);             // Vector from surface point to light
     vec3 h = normalize(l+v);                          // Half vector between both l and v
     vec3 reflection = -normalize(reflect(v, n));
 
@@ -365,7 +369,10 @@ void main()
     vec3 diffuseContrib = (1.0 - F) * diffuse(pbrInputs);
     vec3 specContrib = F * G * D / (4.0 * NdotL * NdotV);
     // Obtain final intensity as reflectance (BRDF) scaled by the energy of the light (cosine law)
-    vec3 color = NdotL * u_LightColor * (diffuseContrib + specContrib);
+    vec3 lightColor0 = NdotL * u_Lights[0].color * (diffuseContrib + specContrib);
+    lightColor0 *= u_Lights[0].strength;
+
+    vec3 color = lightColor0;
 
     // Calculate lighting contribution from image based lighting source (IBL)
 #ifdef USE_IBL
@@ -417,8 +424,9 @@ export class MeshPlugin extends ShadePlugin {
       u_MVPMatrix: mat4,
       u_ModelMatrix: mat4,
       u_NormalMatrix: mat4,
-      u_LightDirection: vec3,
-      u_LightColor: vec3,
+      'u_Lights[0].direction': vec3,
+      'u_Lights[0].color': vec3,
+      'u_Lights[0].strength': float,
       u_DiffuseEnvSampler: samplerCube,
       u_SpecularEnvSampler: samplerCube,
       u_brdfLUT: sampler2D,
@@ -458,7 +466,7 @@ export class MeshPlugin extends ShadePlugin {
   propsByElement ({ state }) {
     const { attributeInfos, indicesInfo } = state.bufferInfos
     const { images } = state
-    // FIXME replace ArrayBuffer data
+
     return {
       a_Position: attributeInfos[1].data,
       a_Normal: attributeInfos[0].data,
@@ -485,6 +493,7 @@ export class MeshPlugin extends ShadePlugin {
       scaleIBLAmbient = 1,
       lightRotate = 0,
       lightPitch = 0,
+      lightStrength = 1,
       perspective
     } = globals
     const [rx = 0, ry = 0, rz = 0] = modelRotate
@@ -505,8 +514,9 @@ export class MeshPlugin extends ShadePlugin {
       u_MVPMatrix: mvpMat,
       u_DiffuseEnvSampler: cubeMaps[0],
       u_SpecularEnvSampler: cubeMaps[1],
-      u_LightDirection: lightDir,
-      u_LightColor: [1.0, 1.0, 1.0],
+      'u_Lights[0].direction': lightDir,
+      'u_Lights[0].color': [1.0, 1.0, 1.0],
+      'u_Lights[0].strength': lightStrength,
       u_NormalScale: 1.0,
       u_EmissiveFactor: [1.0, 1.0, 1.0],
       u_OcclusionStrength: 1.0,
