@@ -25,13 +25,13 @@
 
 那么 Shader 呢？理论上，只要配置 Geometry 和 Material 时传入足够的附加信息，着色器就可以完全基于这些配置来动态生成。Three 设计了复杂的架构来做到这一点，这应当也是它难以被 Tree Shaking 优化的主要原因之一。
 
-在理解了 WebGL 概念与主流渲染引擎的抽象之间的关系后，再来回顾 Beam 的设计就更加有趣了。和 Three 选择完全封装掉 Shader 不同，Beam 将可配置的 Shader 作为自己的核心，这带来了这样的概念抽象：
+在理解了 WebGL 概念与主流渲染引擎的抽象之间的关系后，再来回顾 Beam 的设计就更加有趣了。和 Three 选择几乎完全将 Shader 概念屏蔽不同，Beam 将用户可配置的 Shader 作为自己的核心，这带来了这样的概念抽象：
 
 * **ShadePlugin** 着色插件由使用者指定，只要包含一个或多个着色插件的数组，就能构成一条完整的渲染路径。
 * **Element** 元素中的 `state` 字段内，包含了语义化的 Buffer 与 Texture 数据。例如一个 `CubeElement` 就可以指定自己的 `position` / `size` / `image` 等信息，由插件来将这些语义化的数据转换为对 WebGL 友好的数组、图像数据。这些「已经准备好提交到 GPU」的数据，我们定义为 `Prop`。不同 Prop 在上传到 GPU 时有不同的方式，这是通过着色插件内对 Prop 约定的一套 Schema 来指定的。
 * **Globals** 全局对象是一个容器，可以包含各类语义化的数据，由插件指定如何将其转换为 Uniform。例如一个全局的 `camera` 字段，就可以被插件转换并传入着色器中的 `viewMatrix` 变量。
 
-作为总结，从与 WebGL 的关系来看，Beam 的核心抽象是这样的：
+简单地说，从与 WebGL 的关系来看，Beam 的核心抽象是这样的：
 
 * `ShadePlugin` 是对 Shader 可插拔、规范化的封装。
 * `Element` 是对 Buffer 和 Texture 的封装。
@@ -57,6 +57,6 @@ Beam 的着色插件和典型的 WebGL 着色器或 WebGL 应用之间，有什�
 * 默认情况下，Element 数组中的顺序与最终元素的层级顺序是无关的。WebGL 的深度测试会自动将 Element 绘制为正确的深度顺序。当然，你也可以手动禁用深度测试，从而基于 Element 数组的顺序来绘制出特殊的效果。
 * Element 中的各类顶点数量必须固定而不能动态浮动，否则是无法在连续的显存空间中布局的。实际上对于 3D 场景而言，一个 Element 一般对应于一个顶点数量固定的 3D 模型。这时常见的操作是矩阵变换，而不是改变模型的顶点数量。
 * Element 在每次 `add` / `change` 时都会通过 `gl.bufferSubData` 更新显存，因此连续执行大量 `addElement` 是**非常高耗**的，可以使用形如 `addElements` 的方式批量插入来优化。
-* 由于相同的原因，Element 的连续 `remove` 操作是同样高耗的。对于批量移除元素的场景，也建议始终使用 `removeElements` 的 API 来实现。
+* 由于相同的原因，Element 的连续单次 `remove` 操作是同样高耗的。对于批量移除元素的场景，也建议始终使用 `removeElements` 的 API 来实现。
 
 Element 中还可以携带 Image 元素来作为 Texture。例如，形状相同但贴图不同的两个盒子，就相当于 `image` 字段不同而其他字段相同的两个 Element。如果多个 Element 包含了相同的 Image，那么这些 Image 最终都会被合并为同一个 Texture 对象。在绘制时，引擎会根据不同 Element 中这些对象的异同，来自动分组绘制 Element。

@@ -28,7 +28,7 @@ Beam 全部的实际渲染能力都是建立在着色插件的基础上的。一
 
 
 ## Schema 约定
-Beam 使用一套简单的命名约定和类型标识来自动维护运行时的数据映射关系，这对应于名为 shaderSchema 与 PropSchema 的两套结构。例如基础的 Cube 着色插件，其使用的 Schema 配置是形如这样的：
+Beam 使用一套简单的命名约定和类型标识来自动维护运行时的数据映射关系，这对应于名为 shaderSchema 与 propSchema 的两套结构。例如基础的 Cube 着色插件，其使用的 Schema 配置是形如这样的：
 
 ``` js
 // ...inside plugin constructor
