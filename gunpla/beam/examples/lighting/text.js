@@ -28,7 +28,7 @@ precision highp float;
 
 struct DirectionalLight {
   vec3 direction;
-  vec4 color;
+  vec3 color;
   float strength;
 };
 uniform DirectionalLight dirLight;
@@ -39,12 +39,12 @@ varying vec4 vNormal;
 void main() {
   vec3 normalDir = normalize(vec3(normalMat * vNormal));
   float nDotL = max(dot(normalDir, dirLight.direction), 0.0);
-  vec4 dirLight = vec4(dirLight.color.rgb * nDotL * dirLight.strength, dirLight.color.a);
+  vec4 dirLight = vec4(dirLight.color * nDotL * dirLight.strength, 1.0);
   gl_FragColor = dirLight;
 }
 `
 
-export class TextPlugin extends ShadePlugin {
+export class MeshPlugin extends ShadePlugin {
   constructor () {
     super()
 
@@ -60,7 +60,7 @@ export class TextPlugin extends ShadePlugin {
       projectionMat: mat4,
       normalMat: mat4,
       'dirLight.direction': vec3,
-      'dirLight.color': vec4,
+      'dirLight.color': vec3,
       'dirLight.strength': float
     }
 
@@ -80,6 +80,7 @@ export class TextPlugin extends ShadePlugin {
   propsByGlobals (globals) {
     const {
       dirLightDirection = [1, 0, 1],
+      dirLightColor = [1, 1, 1],
       dirLightStrength = 0.5
     } = globals
 
@@ -88,10 +89,10 @@ export class TextPlugin extends ShadePlugin {
       viewMat: globals.camera,
       projectionMat: globals.perspective,
       'dirLight.direction': dirLightDirection,
-      'dirLight.color': [1, 1, 1, 1],
+      'dirLight.color': dirLightColor,
       'dirLight.strength': dirLightStrength
     }
   }
 }
 
-export const createTextElement = data => createElement(data, TextPlugin)
+export const createMeshElement = data => createElement(data, MeshPlugin)
