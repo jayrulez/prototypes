@@ -78,7 +78,7 @@ const fragmentShader = `
 #define HAS_EMISSIVEMAP 1
 #define HAS_OCCLUSIONMAP 1
 #define USE_TEX_LOD 1
-#define NR_POINT_LIGHTS 2
+#define NR_POINT_LIGHTS 3
 //
 // This fragment shader defines a reference implementation for Physically Based Shading of
 // a microfacet surface material defined by a glTF model.
@@ -438,6 +438,9 @@ export class MeshPlugin extends ShadePlugin {
       'u_Lights[1].direction': vec3,
       'u_Lights[1].color': vec3,
       'u_Lights[1].strength': float,
+      'u_Lights[2].direction': vec3,
+      'u_Lights[2].color': vec3,
+      'u_Lights[2].strength': float,
       u_DiffuseEnvSampler: samplerCube,
       u_SpecularEnvSampler: samplerCube,
       u_brdfLUT: sampler2D,
@@ -502,20 +505,29 @@ export class MeshPlugin extends ShadePlugin {
       roughness = 1,
       baseColorFactor = 1,
       scaleIBLAmbient = 1,
-      lightRotate = 0,
-      lightPitch = 0,
-      lightStrength = 1,
+      light0X = 0,
+      light0Y = 0,
+      light0Z = 0,
+      light0Strength = 1,
+      light0Color = [1, 1, 1],
+      light1X = 0,
+      light1Y = 0,
+      light1Z = 0,
+      light1Strength = 1,
+      light1Color = [1, 1, 1],
+      light2X = 0,
+      light2Y = 0,
+      light2Z = 0,
+      light2Strength = 1,
+      light2Color = [1, 1, 1],
       perspective
     } = globals
     const [rx = 0, ry = 0, rz = 0] = modelRotate
-    const { sin, cos } = Math
     const modelMat = create()
     rotate(modelMat, modelMat, rx / 180 * Math.PI, [1, 0, 0])
     rotate(modelMat, modelMat, ry / 180 * Math.PI, [0, 1, 0])
     rotate(modelMat, modelMat, rz / 180 * Math.PI, [0, 0, 1])
 
-    const [r, p] = [lightRotate / 180 * Math.PI, lightPitch / 180 * Math.PI]
-    const lightDir = [sin(r) * cos(p), sin(p), cos(r) * cos(p)]
     const viewProjectionMat = multiply([], perspective, camera)
     const mvpMat = multiply([], viewProjectionMat, modelMat)
 
@@ -525,12 +537,16 @@ export class MeshPlugin extends ShadePlugin {
       u_MVPMatrix: mvpMat,
       u_DiffuseEnvSampler: cubeMaps[0],
       u_SpecularEnvSampler: cubeMaps[1],
-      'u_Lights[0].direction': lightDir,
-      'u_Lights[0].color': [1.0, 1.0, 1.0],
-      'u_Lights[0].strength': lightStrength,
-      'u_Lights[1].direction': [-0.16, -0.60, 0.78],
-      'u_Lights[1].color': [1.0, 1.0, 1.0],
-      'u_Lights[1].strength': 1.0,
+      'u_Lights[0].direction': [light0X, light0Y, light0Z],
+      'u_Lights[0].color': light0Color,
+      'u_Lights[0].strength': light0Strength,
+      'u_Lights[1].direction': [light1X, light1Y, light1Z],
+      'u_Lights[1].color': light1Color,
+      'u_Lights[1].strength': light1Strength,
+      'u_Lights[2].direction': [light2X, light2Y, light2Z],
+      'u_Lights[2].color': light2Color,
+      'u_Lights[2].strength': light2Strength,
+      u_LightCount: 3,
       u_NormalScale: 1.0,
       u_EmissiveFactor: [1.0, 1.0, 1.0],
       u_OcclusionStrength: 1.0,

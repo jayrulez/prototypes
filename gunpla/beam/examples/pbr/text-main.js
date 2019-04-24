@@ -111,23 +111,43 @@ export const main = () => {
     renderer.render()
   })
 
-  const $lightRotate = document.getElementById('light-rotate')
-  $lightRotate.addEventListener('input', () => {
-    renderer.setGlobal('lightRotate', $lightRotate.value)
-    renderer.render()
-  })
+  for (let i = 0; i < 3; i++) {
+    const $lightX = document.getElementById(`light-${i}-x`)
+    $lightX.addEventListener('input', () => {
+      renderer.setGlobal(`light${i}X`, $lightX.value)
+      renderer.render()
+    })
 
-  const $lightPitch = document.getElementById('light-pitch')
-  $lightPitch.addEventListener('input', () => {
-    renderer.setGlobal('lightPitch', $lightPitch.value)
-    renderer.render()
-  })
+    const $lightY = document.getElementById(`light-${i}-y`)
+    $lightY.addEventListener('input', () => {
+      renderer.setGlobal(`light${i}Y`, $lightY.value)
+      renderer.render()
+    })
 
-  const $lightStrength = document.getElementById('light-strength')
-  $lightStrength.addEventListener('input', () => {
-    renderer.setGlobal('lightStrength', $lightStrength.value)
-    renderer.render()
-  })
+    const $lightZ = document.getElementById(`light-${i}-z`)
+    $lightZ.addEventListener('input', () => {
+      renderer.setGlobal(`light${i}Z`, $lightZ.value)
+      renderer.render()
+    })
+
+    const $lightStrength = document.getElementById(`light-${i}-strength`)
+    $lightStrength.addEventListener('input', () => {
+      renderer.setGlobal(`light${i}Strength`, $lightStrength.value)
+      renderer.render()
+    })
+
+    const $lightColor = document.getElementById(`light-${i}-color`)
+    $lightColor.addEventListener('input', () => {
+      const hex = $lightColor.value
+      const rgb = [
+        parseInt(hex.slice(1, 3), 16) / 256,
+        parseInt(hex.slice(3, 5), 16) / 256,
+        parseInt(hex.slice(5, 7), 16) / 256
+      ]
+      renderer.setGlobal(`light${i}Color`, rgb)
+      renderer.render()
+    })
+  }
 
   window.renderer = renderer
 }

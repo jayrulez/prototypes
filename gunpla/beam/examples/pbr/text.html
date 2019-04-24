@@ -37,14 +37,62 @@
       <input type="range" min="0" max="1" value="1" step="0.01" id="ibl-ambient">
       <label for="ibl-ambient">环境光强度</label>
 
-      <input type="range" min="-180" max="180" value="0" id="light-rotate">
-      <label for="light-rotate">点光源旋转</label>
+      <!-- BEGIN 点光源 0 -->
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-0-x">
+      <label for="light-0-x">点光源 0 X</label>
 
-      <input type="range" min="-90" max="90" value="0" id="light-pitch">
-      <label for="light-pitch">点光源倾斜</label>
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-0-y">
+      <label for="light-0-y">点光源 0 Y</label>
 
-      <input type="range" min="0" max="1" value="1" step="0.01" id="light-strength">
-      <label for="light-strength">点光源强度</label>
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-0-z">
+      <label for="light-0-z">点光源 0 Z</label>
+
+      <input type="range" min="0" max="1" value="1" step="0.01" id="light-0-strength">
+      <label for="light-0-strength">点光源 0 强度</label>
+
+      <br/>
+      <input type="color" value="#ffffff" id="light-0-color">
+      <label for="light-0-color">点光源 0 颜色</label>
+      <br/>
+      <!-- END 点光源 0 -->
+
+      <!-- BEGIN 点光源 1 -->
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-1-x">
+      <label for="light-1-x">点光源 1 X</label>
+
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-1-y">
+      <label for="light-1-y">点光源 1 Y</label>
+
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-1-z">
+      <label for="light-1-z">点光源 1 Z</label>
+
+      <input type="range" min="0" max="1" value="1" step="0.01" id="light-1-strength">
+      <label for="light-1-strength">点光源 1 强度</label>
+
+      <br/>
+      <input type="color" value="#ffffff" id="light-1-color">
+      <label for="light-1-color">点光源 1 颜色</label>
+      <br/>
+      <!-- END 点光源 1 -->
+
+      <!-- BEGIN 点光源 2 -->
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-2-x">
+      <label for="light-2-x">点光源 2 X</label>
+
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-2-y">
+      <label for="light-2-y">点光源 2 Y</label>
+
+      <input type="range" min="-1" max="1" value="0" step="0.01" id="light-2-z">
+      <label for="light-2-z">点光源 2 Z</label>
+
+      <input type="range" min="0" max="1" value="1" step="0.01" id="light-2-strength">
+      <label for="light-2-strength">点光源 2 强度</label>
+
+      <br/>
+      <input type="color" value="#ffffff" id="light-2-color">
+      <label for="light-2-color">点光源 2 颜色</label>
+      <br/>
+      <!-- END 点光源 2 -->
     </div>
     <canvas id="gl-canvas"></canvas>
 <script type="module">
