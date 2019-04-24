@@ -529,7 +529,7 @@ export class MeshPlugin extends ShadePlugin {
       'u_Lights[0].color': [1.0, 1.0, 1.0],
       'u_Lights[0].strength': lightStrength,
       'u_Lights[1].direction': [-0.16, -0.60, 0.78],
-      'u_Lights[1].color': [0.0, 0.0, 1.0],
+      'u_Lights[1].color': [1.0, 1.0, 1.0],
       'u_Lights[1].strength': 1.0,
       u_NormalScale: 1.0,
       u_EmissiveFactor: [1.0, 1.0, 1.0],
