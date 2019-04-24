@@ -2,7 +2,7 @@
 
 import { Basic3DRenderer } from '../common/custom-renderers.js'
 import { parseOBJ } from '../common/obj-loader.js'
-import { MeshPlugin, createMeshElement } from './text.js'
+import { MeshPlugin, createMeshElement } from './mesh.js'
 
 export const main = () => {
   const canvas = document.getElementById('gl-canvas')
