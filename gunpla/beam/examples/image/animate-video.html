@@ -18,7 +18,7 @@
     <canvas id="gl-canvas"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { ImagePlugin, createImageElement } from './image.js'
+import { PlanePlugin, createPlaneElement } from './plane.js'
 
 const { cos, sin } = Math
 const videoA = document.getElementById('video-a')
@@ -28,23 +28,23 @@ const canvas = document.getElementById('gl-canvas')
 canvas.height = window.innerHeight / 2
 canvas.width = window.innerWidth / 2
 
-const imagePlugin = new ImagePlugin()
-const renderer = new Basic3DRenderer(canvas, [imagePlugin])
+const planePlugin = new PlanePlugin()
+const renderer = new Basic3DRenderer(canvas, [planePlugin])
 renderer.setCamera([0, 0, 10])
 
 button.addEventListener('click',() => {
   const ratioA = videoA.videoHeight / videoA.videoWidth
   const ratioB = videoB.videoHeight / videoB.videoWidth
-  const videoElementA = createImageElement({
+  const videoPlaneA = createPlaneElement({
     position: [-1, 1, 7], img0: videoA, img1: videoA, aspectRatio: ratioA
   })
-  const videoElementB = createImageElement({
+  const videoPlaneB = createPlaneElement({
     position: [1, 1, 5], img0: videoB, img1: videoB, aspectRatio: ratioB
   })
   videoA.play()
   videoB.play()
-  renderer.addElement(videoElementA)
-  renderer.addElement(videoElementB)
+  renderer.addElement(videoPlaneA)
+  renderer.addElement(videoPlaneB)
   tick()
 })
 

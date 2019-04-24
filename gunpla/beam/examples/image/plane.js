@@ -36,7 +36,7 @@ void main() {
 }
 `
 
-export class ImagePlugin extends ShadePlugin {
+export class PlanePlugin extends ShadePlugin {
   constructor () {
     super()
 
@@ -103,7 +103,7 @@ export class ImagePlugin extends ShadePlugin {
   }
 }
 
-export const createImageElement = data => createElement(data, ImagePlugin)
+export const createPlaneElement = data => createElement(data, PlanePlugin)
 
 const loadImage = url => new Promise(resolve => {
   const image = new Image()

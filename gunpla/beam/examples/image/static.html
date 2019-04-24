@@ -10,31 +10,31 @@
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { ImagePlugin, createImageElement, loadImages } from './image.js'
+import { PlanePlugin, createPlaneElement, loadImages } from './plane.js'
 
 const canvas = document.getElementById('gl-canvas')
 
-const imagePlugin = new ImagePlugin()
-const renderer = new Basic3DRenderer(canvas, [imagePlugin])
+const planePlugin = new PlanePlugin()
+const renderer = new Basic3DRenderer(canvas, [planePlugin])
 renderer.setCamera([0, 0, 10])
 
 loadImages(['./black-hole.jpg', './gundam.jpg']).then(([imgA,  imgB]) => {
-  const imageA1 = createImageElement({
+  const planeA = createPlaneElement({
     position: [-1, 1, -3], img0: imgA, img1: imgA
   })
-  const imageA2 = createImageElement({
+  const planeB = createPlaneElement({
     position: [1, 1, -3], img0: imgA, img1: imgB
   })
-  const imageB1 = createImageElement({
+  const planeC = createPlaneElement({
     position: [-1, -1, -3], img0: imgB, img1: imgA
   })
-  const imageB2 = createImageElement({
+  const planeD = createPlaneElement({
     position: [1, -1, -3], img0: imgB, img1: imgB
   })
-  renderer.addElement(imageA1)
-  renderer.addElement(imageA2)
-  renderer.addElement(imageB1)
-  renderer.addElement(imageB2)
+  renderer.addElement(planeA)
+  renderer.addElement(planeB)
+  renderer.addElement(planeC)
+  renderer.addElement(planeD)
   renderer.render()
 })
 
