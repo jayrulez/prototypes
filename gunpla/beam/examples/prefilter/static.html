@@ -10,17 +10,19 @@
     <canvas id="gl-canvas" width="400" height="400"></canvas>
 <script type="module">
 import { Basic3DRenderer } from '../common/custom-renderers.js'
-import { PlanePlugin, createPlaneElement } from './plane.js'
+import { PlanePlugin, createPlaneElement, loadImages } from './plane.js'
 
 const canvas = document.getElementById('gl-canvas')
 
 const planePlugin = new PlanePlugin()
 const renderer = new Basic3DRenderer(canvas, [planePlugin])
-renderer.setCamera([0, 0, 10])
 
-const plane = createPlaneElement()
-renderer.addElement(plane)
-renderer.render()
+const src = '../common/textures/papermill/environment/environment_back_0.jpg'
+loadImages([src]).then(([img]) => {
+  const plane = createPlaneElement({ img })
+  renderer.addElement(plane)
+  renderer.render()
+})
 
 window.renderer = renderer
 </script>
