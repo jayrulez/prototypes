@@ -1,12 +1,12 @@
-import World from '../../psycho/world/world.js'
-import Entity from '../../psycho/entity/entity.js'
+import World from '../../world/world.js'
+import Entity from '../../entity/entity.js'
 import {
   CameraComponent,
   GraphicsComponent,
   PositionComponent,
   TransformComponent
-} from '../../psycho/components/index.js'
-import { RenderSystem } from '../../psycho/systems/render-system.js'
+} from '../../components/index.js'
+import { RenderSystem } from '../../systems/render-system.js'
 import { SpinSystem } from './systems.js'
 import { InputCommand } from './command.js'
 
@@ -39,4 +39,5 @@ world.addEntity(grid)
 world.addEntity(camera)
 void new InputCommand(canvas, camera, CameraComponent)
 
+world.start()
 window.world = world

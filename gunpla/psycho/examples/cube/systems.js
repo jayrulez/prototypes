@@ -1,9 +1,9 @@
-import System from '../../psycho/systems/system.js'
+import System from '../../systems/system.js'
 import {
   PositionComponent,
   TransformComponent
-} from '../../psycho/components/index.js'
-import { create, rotate } from '../../psycho/utils/math/matrix.js'
+} from '../../components/index.js'
+import { create, rotate } from '../../utils/math/matrix.js'
 
 let ts = Date.now()
 const getDelta = () => (Date.now() - ts) / 1000
