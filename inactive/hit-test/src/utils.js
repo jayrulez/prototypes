@@ -15,11 +15,22 @@ export const rgbToHex = (rgb) => '#' + [rgb[0], rgb[1], rgb[2]].map(x => {
   return hex.length === 1 ? '0' + hex : hex
 }).join('')
 
-export const fillClip = (clipCanvas, clipCtx, img, color, width, height) => {
+export const fillClip = (
+  clipCanvas, clipCtx, imgCanvas, imgCtx, img, color, width, height
+) => {
+  imgCanvas.width = img.width
+  imgCanvas.height = img.height
+  imgCtx.drawImage(img, 0, 0, img.width, img.height)
+  const pixels = imgCtx.getImageData(0, 0, img.width, img.height)
+  for (let i = 0; i < pixels.data.length; i += 4) {
+    pixels.data[i + 3] = pixels.data[i + 3] !== 0 ? 255 : 0
+  }
+  imgCtx.putImageData(pixels, 0, 0)
+
   clipCanvas.width = width
   clipCanvas.height = height
   clipCtx.save()
-  clipCtx.drawImage(img, 0, 0, width, height)
+  clipCtx.drawImage(imgCanvas, 0, 0, width, height)
   clipCtx.globalCompositeOperation = 'source-in'
   clipCtx.fillStyle = color
   clipCtx.fillRect(0, 0, width, height)

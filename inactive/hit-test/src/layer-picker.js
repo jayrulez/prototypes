@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import { getNewColor, rgbToHex, fillClip, transformLayer } from './utils'
+import { getNewColor, rgbToHex, fillClip, transformLayer } from './utils.js'
 
 export class LayerPicker {
   constructor () {
@@ -7,6 +7,8 @@ export class LayerPicker {
     this.hitCtx = this.hitCanvas.getContext('2d')
     this.clipCanvas = document.createElement('canvas')
     this.clipCtx = this.clipCanvas.getContext('2d')
+    this.imgCanvas = document.createElement('canvas')
+    this.imgCtx = this.imgCanvas.getContext('2d')
     this.colorMap = {}
   }
 
@@ -17,7 +19,9 @@ export class LayerPicker {
     return layers.reduce((p, layer) => p.then(() => {
       const newColor = getNewColor(this.colorMap)
       this.colorMap[newColor] = layer
-      const { hitCtx, clipCanvas, clipCtx } = this
+      const {
+        hitCtx, clipCanvas, clipCtx, imgCanvas, imgCtx
+      } = this
       const { type, x, y, width, height, transform } = layer
 
       if (type === 'rect') {
@@ -28,7 +32,16 @@ export class LayerPicker {
         return Promise.resolve()
       } else if (type === 'image') {
         transformLayer(hitCtx, transform, x, y, width, height)
-        fillClip(clipCanvas, clipCtx, layer.$el, newColor, width, height)
+        fillClip(
+          clipCanvas,
+          clipCtx,
+          imgCanvas,
+          imgCtx,
+          layer.$el,
+          newColor,
+          width,
+          height
+        )
         hitCtx.drawImage(clipCanvas, x, y)
         hitCtx.restore()
         return Promise.resolve()
@@ -39,7 +52,16 @@ export class LayerPicker {
         return new Promise((resolve, reject) => {
           img.onload = () => {
             transformLayer(hitCtx, transform, x, y, width, height)
-            fillClip(clipCanvas, clipCtx, img, newColor, width, height)
+            fillClip(
+              clipCanvas,
+              clipCtx,
+              imgCanvas,
+              imgCtx,
+              img,
+              newColor,
+              width,
+              height
+            )
             hitCtx.drawImage(clipCanvas, x, y)
             hitCtx.restore()
             resolve()

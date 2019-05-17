@@ -1,7 +1,7 @@
 /* eslint-env browser */
 
-import { LayerPicker } from '../src/layer-picker'
-import { getRandomColor, transformLayer } from '../src/utils'
+import { LayerPicker } from '../src/layer-picker.js'
+import { getRandomColor, transformLayer } from '../src/utils.js'
 import alphaImgSrc from './alpha-test.png'
 
 const $img = document.getElementById('img-test')
@@ -96,6 +96,6 @@ $img.onload = () => {
     const result = picker.pick(e.layerX, e.layerY)
     console.log(e.layerX, e.layerY, result)
     document.body.appendChild(picker.hitCanvas)
-    // document.body.appendChild(picker.clipCanvas)
+    document.body.appendChild(picker.clipCanvas)
   })
 }
