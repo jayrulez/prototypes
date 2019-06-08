@@ -6,14 +6,33 @@ export const fillPixelWrapper = ny => {
 }
 
 export class Vec3 extends Float32Array {
+  constructor (a, b, c) {
+    super(3)
+    this[0] = a; this[1] = b; this[2] = c
+  }
+
+  get x () { return this[0] }
+  get y () { return this[1] }
+  get z () { return this[2] }
+
   add (b) {
     const a = this
-    return new Vec3([a[0] + b[0], a[1] + b[1], a[2] + b[2]])
+    return new Vec3(a[0] + b[0], a[1] + b[1], a[2] + b[2])
   }
 
   scale (b) {
     const a = this
-    return new Vec3([a[0] * b, a[1] * b, a[2] * b])
+    return new Vec3(a[0] * b, a[1] * b, a[2] * b)
+  }
+
+  len () {
+    const a = this
+    return Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2])
+  }
+
+  toUnit () {
+    const a = this
+    return a.scale(1 / a.len())
   }
 }
 
@@ -24,7 +43,6 @@ export class Ray {
   }
 
   get origin () { return this.a }
-
   get direction () { return this.b }
 
   pointAt (t) {
