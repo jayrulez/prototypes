@@ -6,7 +6,7 @@ document.getElementById('go').addEventListener('click', () => {
   worker.postMessage('action', e => {
     console.log(e.data)
   })
-  worker.onmessage = (result) => {
+  worker.onmessage = result => {
     console.log(result.data)
   }
 })
