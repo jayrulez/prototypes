@@ -206,17 +206,17 @@ function init() {
     g_textures.push(loadTexture("particle-anim.png"));
 
     setupFlame();
-    setupNaturalGasFlame();
-    setupSmoke();
-    setupWhiteEnergy();
-    setupRipples();
-    setupText();
-    setupRain();
-    setupAnim();
-    setupBall();
-    setupCube();
-    setupPoof();
-    setupTrail();
+    // setupNaturalGasFlame();
+    // setupSmoke();
+    // setupWhiteEnergy();
+    // setupRipples();
+    // setupText();
+    // setupRain();
+    // setupAnim();
+    // setupBall();
+    // setupCube();
+    // setupPoof();
+    // setupTrail();
 
     draw();
 }
