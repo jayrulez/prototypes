@@ -1,0 +1,8 @@
+{
+  "name": "beam-gl",
+  "version": "0.0.0",
+  "main": "main.js",
+  "repository": "git@github.com:doodlewind/beam.git",
+  "author": "Yifeng Wang <i@ewind.us>",
+  "license": "UNLICENSED"
+}
