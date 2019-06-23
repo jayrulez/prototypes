@@ -596,5 +596,5 @@ function draw() {
     if (g_fpsCounter) {
         g_fpsCounter.update();
     }
-    g_requestId = window.requestAnimFrame(draw, g_canvas);
+    // g_requestId = window.requestAnimFrame(draw, g_canvas);
 }
