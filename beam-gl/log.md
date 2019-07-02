@@ -1,4 +1,5 @@
 # DevLog 1907
+* DONE regl 概念参考 - 引入 Resource / Context
 * TODO Resource
 
 ## 设计目标
