@@ -1,5 +1,7 @@
 # DevLog 1907
 * DONE regl 概念参考 - 引入 Resource / Context
+* DONE ResourceSchema 概念引入
+* DONE usePlugin 基本支持
 * TODO Resource
 
 ## 设计目标
