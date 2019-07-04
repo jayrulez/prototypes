@@ -2,6 +2,7 @@
 * DONE regl 概念参考 - 引入 Resource / Context
 * DONE ResourceSchema 概念引入
 * DONE usePlugin 基本支持
+* DONE resourceId 基本设计
 * TODO Resource
 
 ## 设计目标
