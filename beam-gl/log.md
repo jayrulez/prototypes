@@ -3,6 +3,8 @@
 * DONE ResourceSchema 概念引入
 * DONE usePlugin 基本支持
 * DONE resourceId 基本设计
+* DONE Shape Utils 增加 Cache
+* DONE Schema from 基本支持
 * TODO Resource
 
 ## 设计目标
