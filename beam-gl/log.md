@@ -5,6 +5,9 @@
 * DONE resourceId 基本设计
 * DONE Shape Utils 增加 Cache
 * DONE Schema from 基本支持
+* DONE Basic Shape 插件线框改造
+* DONE resources 概念支持
+* DONE 插件 resource 相关状态迁移
 * TODO Resource
 
 ## 设计目标
