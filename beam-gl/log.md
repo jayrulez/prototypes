@@ -9,7 +9,8 @@
 * DONE resources 概念支持
 * DONE 插件 resource 相关状态迁移
 * DONE ResourceContainer 概念引入
-* TODO Resource Buffer 共享状态冲突解决
+* DONE Resource Buffer 共享状态冲突解决
+* DONE Resource Buffer 数据结构设计
 * TODO Resource
 
 ## 设计目标
