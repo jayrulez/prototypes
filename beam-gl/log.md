@@ -11,6 +11,7 @@
 * DONE ResourceContainer 概念引入
 * DONE Resource Buffer 共享状态冲突解决
 * DONE Resource Buffer 数据结构设计
+* DONE Basic Shapes 系列示例适配
 * TODO Resource
 
 ## 设计目标
