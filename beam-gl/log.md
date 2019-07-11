@@ -12,6 +12,9 @@
 * DONE Resource Buffer 共享状态冲突解决
 * DONE Resource Buffer 数据结构设计
 * DONE Basic Shapes 系列示例适配
+* DONE 修复同插件下元素 Data Buffer 共享
+* DONE 新 API 适配 Lambert 示例
+* DONE 修复插件分组与 Env State 更新污染
 * TODO Resource
 
 ## 设计目标
