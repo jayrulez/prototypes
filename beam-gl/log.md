@@ -15,6 +15,8 @@
 * DONE 修复同插件下元素 Data Buffer 共享
 * DONE 新 API 适配 Lambert 示例
 * DONE 修复插件分组与 Env State 更新污染
+* DONE 修复纹理更新默认值配置
+* DONE 适配 Texture 分组示例
 * TODO Resource
 
 ## 设计目标
