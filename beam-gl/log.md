@@ -17,6 +17,8 @@
 * DONE 修复插件分组与 Env State 更新污染
 * DONE 修复纹理更新默认值配置
 * DONE 适配 Texture 分组示例
+* DONE 支持 setProgram 动态更新着色器
+* DONE Resource 系列重构文档描述
 * TODO Resource
 
 ## 设计目标
