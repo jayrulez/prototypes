@@ -19,6 +19,7 @@
 * DONE 适配 Texture 分组示例
 * DONE 支持 setProgram 动态更新着色器
 * DONE Resource 系列重构文档描述
+* DONE Bone 示例适配与模块分离
 * TODO Resource
 
 ## 设计目标
