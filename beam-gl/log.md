@@ -21,7 +21,11 @@
 * DONE Resource 系列重构文档描述
 * DONE Bone 示例适配与模块分离
 * DONE Pipeline API 原型设计
+* DONE PBR 示例迁移
+* TODO Env Element 混合状态依赖计算
 * TODO Resource
+
+> /Users/ewind/code/QuickJS
 
 ## 设计目标
 * 动态切换 / 编译 Shader
