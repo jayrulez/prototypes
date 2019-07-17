@@ -22,6 +22,7 @@
 * DONE Bone 示例适配与模块分离
 * DONE Pipeline API 原型设计
 * DONE PBR 示例迁移
+* DONE createElement 默认值处理
 * TODO Env Element 混合状态依赖计算
 * TODO Resource
 
