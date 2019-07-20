@@ -23,6 +23,7 @@
 * DONE Pipeline API 原型设计
 * DONE PBR 示例迁移
 * DONE createElement 默认值处理
+* DONE FBO Chained POC 支持
 * TODO plugin FBO 设计
 * TODO Env Element 混合状态依赖计算
 * TODO Resource
