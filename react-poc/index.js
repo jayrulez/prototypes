@@ -1,19 +1,39 @@
+/* eslint-disable react/jsx-fragments */ // rollup plugin workaround
 // import './polyfill.js'
 import React from 'react/cjs/react.development.js'
-import MyRenderer from './renderer.js'
+import { MyRenderer, Text, Pixel } from './renderer.js'
 
-const Text = 'TEXT'
-const Rect = 'RECT'
+const { Component, Fragment } = React
+class App extends Component {
+  constructor () {
+    super()
+    this.state = {
+      hello: 'Hello React!',
+      pixelX: 0
+    }
+  }
 
-const App = (
-  <Rect>
-    <Text key={0}>123</Text>
-    <Text key={1}>123</Text>
-    <Text key={2}>123</Text>
-    <Rect>
-      <Rect />
-    </Rect>
-  </Rect>
-)
+  render () {
+    const { hello, pixelX } = this.state
+    return (
+      <Fragment>
+        <Text row={0} col={0}>
+          {hello}
+        </Text>
+        <Text row={1} col={0}>
+          Hello QuickJS!
+        </Text>
+        <Pixel x={pixelX} y={42} />
+      </Fragment>
+    )
+  }
 
-MyRenderer.render(App)
+  componentDidMount () {
+    console.log('APP DID MOUNT!')
+
+    // XXX: emulate event driven update
+    setTimeout(() => this.setState({ hello: 'Hello Pi!', pixelX: 42 }), 2000)
+  }
+}
+
+MyRenderer.render(<App />)
