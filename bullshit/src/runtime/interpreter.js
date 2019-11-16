@@ -1,7 +1,11 @@
 class Interpreter {
-  execute (obj, stateMachine) {
-    // TODO
-    return null
+  constructor (root, stateMachine) {
+    this.root = root
+    this.stateMachine = stateMachine
+  }
+
+  execute (Bytecode) {
+    console.log(Bytecode)
   }
 }
 

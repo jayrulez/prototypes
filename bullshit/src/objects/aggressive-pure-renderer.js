@@ -1,5 +1,8 @@
 import CorePluginScheduler from './core-plugin-scheduler.js'
 
+/**
+ * @class AggressivePureRenderer
+ */
 class AggressivePureRenderer {
   constructor () {
     this.corePluginScheduler = new CorePluginScheduler()
@@ -16,7 +19,7 @@ class AggressivePureRenderer {
    * Get Core Plugin Scheduler
    */
   getCorePluginScheduler () {
-    return this.coreScheduler
+    return this.corePluginScheduler
   }
 }
 
