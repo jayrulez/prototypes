@@ -1,0 +1,7 @@
+{
+  "name": "skia-js",
+  "version": "0.0.0",
+  "main": "main.js",
+  "author": "Yifeng Wang <i@ewind.us>",
+  "license": "UNLICENSED"
+}
