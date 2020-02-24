@@ -149,3 +149,27 @@ const COLORS = {
   ctx.closePath()
   ctx.fill()
 }
+
+{
+  const canvas = document.getElementById('c7')
+  const ctx = canvas.getContext('2d')
+
+  ctx.strokeStyle = COLORS.RED
+  ctx.lineWidth = 2
+  ctx.strokeRect(49, 49, 4, 4)
+
+  ctx.save()
+
+  ctx.translate(50, 50)
+  ctx.moveTo(0, 0)
+  ctx.lineTo(100, 0)
+
+  ctx.restore()
+  ctx.lineTo(100, 100)
+  ctx.closePath()
+  ctx.fill()
+
+  ctx.restore()
+
+  // ctx.restore()
+}
