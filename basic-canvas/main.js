@@ -125,3 +125,27 @@ const COLORS = {
   ctx.ellipse(240, 75, 50, 30, Math.PI * 0.25, 0, Math.PI, true)
   ctx.fill()
 }
+
+{
+  const canvas = document.getElementById('c5')
+  const ctx = canvas.getContext('2d')
+  ctx.font = '50px serif'
+  ctx.fillText('Hello world', 50, 90)
+}
+
+{
+  const canvas = document.getElementById('c6')
+  const ctx = canvas.getContext('2d')
+
+  ctx.scale(2, 2)
+  ctx.save()
+
+  ctx.scale(0.5, 0.5)
+  ctx.moveTo(0, 0)
+  ctx.lineTo(0, 100) // 0, 50
+
+  ctx.restore()
+  ctx.lineTo(100, 100) // 200, 200
+  ctx.closePath()
+  ctx.fill()
+}
