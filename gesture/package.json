@@ -1,0 +1,9 @@
+{
+  "name": "gesture",
+  "version": "0.0.0",
+  "main": "main.js",
+  "repository": "git@github.com:doodlewind/prototypes.git",
+  "author": "Yifeng Wang <i@ewind.us>",
+  "private": true,
+  "license": "UNLICENSED"
+}
