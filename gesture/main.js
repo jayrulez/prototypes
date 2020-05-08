@@ -38,28 +38,33 @@ class MockElement {
     this.el.addEventListener('touchstart', e => {
       const mockEvt = {
         touches: simplify(e.touches),
-        changedTouches: simplify(e.changedTouches)
+        // changedTouches: simplify(e.changedTouches)
+        changedTouches: true
       }
       this.callbacks.touchstart(mockEvt)
     }, false)
     this.el.addEventListener('touchmove', e => {
       const mockEvt = {
         touches: simplify(e.touches),
-        changedTouches: simplify(e.changedTouches)
+        // changedTouches: simplify(e.changedTouches)
+        changedTouches: true
       }
       this.callbacks.touchmove(mockEvt)
     }, false)
     this.el.addEventListener('touchend', e => {
       const mockEvt = {
         touches: simplify(e.touches),
-        changedTouches: simplify(e.changedTouches)
+        // changedTouches: simplify(e.changedTouches)
+        changedTouches: true
       }
+      console.log(mockEvt.touches.length)
       this.callbacks.touchend(mockEvt)
     }, false)
     this.el.addEventListener('touchcancel', e => {
       const mockEvt = {
         touches: simplify(e.touches),
-        changedTouches: simplify(e.changedTouches)
+        // changedTouches: simplify(e.changedTouches)
+        changedTouches: true
       }
       this.callbacks.touchcancel(mockEvt)
     }, false)
@@ -75,8 +80,12 @@ class MockElement {
 
 const mockBox = new MockElement('mock-box')
 void new AlloyFinger(mockBox, {
-  pressMove: function (evt) {
+  longTap (evt) {
+    console.log('longTap', evt)
+  },
+  pressMove (evt) {
     const { deltaX, deltaY } = evt
+    // console.log(evt)
     mockBox.left += deltaX
     mockBox.top += deltaY
     mockBox.el.style.left = `${mockBox.left}px`

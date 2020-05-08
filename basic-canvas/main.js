@@ -1,3 +1,5 @@
+import venus from './venus.jpg'
+
 {
   const canvas = document.getElementById('c1')
   const ctx = canvas.getContext('2d')
@@ -172,4 +174,27 @@ const COLORS = {
   ctx.restore()
 
   // ctx.restore()
+}
+
+{
+  const canvas = document.getElementById('c8')
+  const ctx = canvas.getContext('2d')
+  const img = new Image()
+  img.src = venus
+  const spriteX = 50
+  const spriteY = 50
+  const imageX = -10
+  const imageY = -10
+  img.onload = () => {
+    ctx.translate(spriteX, spriteY)
+
+    const path = new Path2D()
+    path.rect(0, 0, 100, 100)
+    ctx.clip(path)
+
+    ctx.scale(2, 2)
+    ctx.drawImage(img, imageX, imageY, 100, 100)
+
+    ctx.translate(-spriteX, -spriteY)
+  }
 }
