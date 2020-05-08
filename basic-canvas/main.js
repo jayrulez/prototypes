@@ -69,6 +69,7 @@ const COLORS = {
   BLACK: 'black',
   RED: 'red',
   GREEN: 'green',
+  WHITE: 'white',
   BLUE: 'blue'
 }
 
@@ -139,15 +140,21 @@ const COLORS = {
   const canvas = document.getElementById('c6')
   const ctx = canvas.getContext('2d')
 
-  ctx.scale(2, 2)
   ctx.save()
-
-  ctx.scale(0.5, 0.5)
-  ctx.moveTo(0, 0)
-  ctx.lineTo(0, 100) // 0, 50
-
+  ctx.fillStyle = COLORS.WHITE
+  ctx.fillRect(0, 0, 200, 200)
   ctx.restore()
-  ctx.lineTo(100, 100) // 200, 200
+
+  ctx.save()
+  ctx.scale(2, 2) // scale = 2
+  {
+    ctx.save() // scale = 2
+    ctx.scale(0.5, 0.5) // scale = 1
+    ctx.moveTo(0, 0) // (0, 0)
+    ctx.lineTo(0, 100) // (0, 100)
+    ctx.restore() // scale = 2
+  }
+  ctx.lineTo(100, 100) // (200, 200)
   ctx.closePath()
   ctx.fill()
   ctx.restore()
