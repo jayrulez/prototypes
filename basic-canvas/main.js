@@ -150,6 +150,7 @@ const COLORS = {
   ctx.lineTo(100, 100) // 200, 200
   ctx.closePath()
   ctx.fill()
+  ctx.restore()
 }
 
 {
