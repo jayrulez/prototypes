@@ -8,5 +8,8 @@
     "new": "node new.js"
   },
   "private": true,
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "marked": "^1.2.3"
+  }
 }
