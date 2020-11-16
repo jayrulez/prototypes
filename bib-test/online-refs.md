@@ -2,7 +2,7 @@
 # 纸质版配套参考文献链接
 
 * [1] [A Brief History of the Web](https://web.archive.org/web/20191115115352/https://www.w3.org/DesignIssues/TimBook-old/History.html)
-* [2] [Scripting: Higher Level Programming for the 21st Century](undefined)
+* [2] Scripting: Higher Level Programming for the 21st Century
 * [3] [AppleScript](http://doi.acm.org/10.1145/1238844.1238845)
 * [4] [Embrace, extend, and extinguish---Wikipedia, The Free Encyclopedia](https://en.wikipedia.org/wiki/Embrace)
 * [5] [Mark Anders Remembers Blackbird, and Other Microsoft Hits and Misses](https://web.archive.org/web/20081004233115/http://www.itwriting.com/blog/363-mark-anders-remembers-blackbird-and-other-microsoft-hits-and-misses.html)
@@ -10,8 +10,8 @@
 * [7] [Happy 3rd Birthday!](https://web.archive.org/web/19990224053407/http://java.sun.com:80/features/1998/05/birthday.html)
 * [8] [Netscape to License Sun's Java Programming Language](https://web.archive.org/web/19970614003224/http://home.netscape.com/newsref/pr/newsrelease25.html)
 * [9] [SGI Indy---Higher Intellect Vintage Computer Wiki](https://web.archive.org/web/20190803225438/https://wiki.preterhuman.net/SGI_Indy)
-* [10] [Hypercard Script Language Guide: The Hypertalk Language](undefined)
-* [11] [Mindstorms: Children, Computers, and Powerful Ideas](undefined)
+* [10] Hypercard Script Language Guide: The Hypertalk Language
+* [11] Mindstorms: Children, Computers, and Powerful Ideas
 * [12] [Self: The Power of Simplicity](http://doi.acm.org/10.1145/38765.38828)
 * [13] [Popularity](https://web.archive.org/web/20150204160755/http://brendaneich.com/2008/04/)
 * [14] [New JavaScript Engine Module Owner](https://web.archive.org/web/20190320112431/https://brendaneich.com/2011/06/)
@@ -27,18 +27,18 @@
 * [24] [Release Notes: Netscape Navigator for Window, Atlas Preview Release 2](https://web.archive.org/web/19960512203909/http://www20.netscape.com/eng/mozilla/3.0/relnotes/windows-3.0b3.html)
 * [25] [Features added after version 1](https://web.archive.org/web/19981205015442/http://home.netscape.com/eng/mozilla/3.0/handbook/javascript/newfunc.htm#1005394)
 * [26] [Netscape 3.0 JavaScript Guide](https://web.archive.org/web/19970614042441/http://home.netscape.com/eng/mozilla/3.0/handbook/javascript/index.html)
-* [27] [American National Standard for Information Systems--programming language--C: ANSI X3.159–1989](undefined)
+* [27] American National Standard for Information Systems--programming language--C: ANSI X3.159–1989
 * [28] [The AWK Programming Language](https://archive.org/download/pdfy-MgN0H1joIoDVoIC7/The_AWK_Programming_Language.pdf)
 * [29] [Netscape 2.0 JavaScript Handbook](https://web.archive.org/web/19970613234917/http://home.netscape.com:80/eng/mozilla/2.0/handbook/javascript/index.html)
-* [30] [IEEE Standard for Floating-Point Arithmetic. IEEE Std. 754--2008](undefined)
+* [30] IEEE Standard for Floating-Point Arithmetic. IEEE Std. 754--2008
 * [31] [JavaScript Language Specification](https://www.ecma-international.org/archive/ecmascript/1996/TC39/96-002.pdf)
 * [32] [Netscape 3.0 JavaScript Guide](https://web.archive.org/web/19970614042441/http://home.netscape.com/eng/mozilla/3.0/handbook/javascript/index.html)
 * [33] [Self: The Power of Simplicity](http://doi.acm.org/10.1145/38765.38828)
 * [34] [Netscape 3.0 JavaScript Guide](https://web.archive.org/web/19970614042441/http://home.netscape.com/eng/mozilla/3.0/handbook/javascript/index.html)
 * [35] [Level 0 DOM](https://web.archive.org/web/20031205223929/http://www.quirksmode.org:80/js/dom0.html)
 * [36] [Navigator Objects](https://web.archive.org/web/19970617232504fw_/http://home.netscape.com/eng/mozilla/2.0/handbook/javascript/navobj.html)
-* [37] [The Java Language Specification](undefined)
-* [38] [Hypercard Script Language Guide: The Hypertalk Language](undefined)
+* [37] The Java Language Specification
+* [38] Hypercard Script Language Guide: The Hypertalk Language
 * [39] [Navigator Scripting](https://web.archive.org/web/19970617232458/http://home.netscape.com:80/eng/mozilla/2.0/handbook/javascript/script.html)
 * [40] [Microsoft storms the Web](https://web.archive.org/web/20200227211510/https://books.google.com/books?id=QjgEAAAAMBAJ&lpg=PP1&dq=Inforworld%2520Dec%252011%252C%25201995&pg=PP3#v=onepage&q&f=false)
 * [41] [Microsoft Internet Explorer 3.0 Beta Now Available](https://web.archive.org/web/20141006081714/http://news.microsoft.com/1996/05/29/microsoft-internet-explorer-3-0-beta-now-available//)
@@ -65,13 +65,13 @@
 * [62] [Minutes for the 1st meeting of TC39](https://www.ecma-international.org/archive/ecmascript/1996/TC39/96-004.pdf)
 * [63] [Minutes for the 1st meeting of TC39](https://www.ecma-international.org/archive/ecmascript/1996/TC39/96-004.pdf)
 * [64] [JavaScript Language Specification](https://www.ecma-international.org/archive/ecmascript/1996/TC39/96-002.pdf)
-* [65] [American National Standard for Information Systems--programming language--C: ANSI X3.159–1989](undefined)
+* [65] American National Standard for Information Systems--programming language--C: ANSI X3.159–1989
 * [66] [Borland's IntraBuilder 1.0](http://web.archive.org/web/20000815084651/http://www.sdmagazine.com:80/breakrm/products/reviews/s971r1.shtml)
 * [67] [Proposed JavaScript Extensions](https://www.ecma-international.org/archive/ecmascript/1996/TC39/96-006.pdf)
 * [68] [History of Nombas](https://web.archive.org/web/20131112235257/http://www.brent-noorda.com/nombas/history/HistoryOfNombas.html)
 * [69] [Oral history of members of original Microsoft JScript development team](https://web.archive.org/web/20200307173732/http://www.wirfs-brock.com/allen/files/jshistory/JScriptInterview.mp3)
 * [70] [Oral history of members of original Microsoft JScript development team](https://web.archive.org/web/20200307173732/http://www.wirfs-brock.com/allen/files/jshistory/JScriptInterview.mp3)
-* [71] [LISP 1.5 Programmer's Manual](undefined)
+* [71] LISP 1.5 Programmer's Manual
 * [72] [The JScript Language Specification, Version 0.1](https://www.ecma-international.org/archive/ecmascript/1996/TC39/96-005.pdf)
 * [73] [Minutes for the 1st meeting of TC39](https://www.ecma-international.org/archive/ecmascript/1996/TC39/96-004.pdf)
 * [74] [Minutes for the 2nd meeting of TC39, 14-15 January 1997](https://www.ecma-international.org/archive/ecmascript/1997/TC39/97-007.pdf)
@@ -80,7 +80,7 @@
 * [77] [Oral history of members of original Microsoft JScript development team](https://web.archive.org/web/20200307173732/http://www.wirfs-brock.com/allen/files/jshistory/JScriptInterview.mp3)
 * [78] [ECMAScript Language Specification, Version 0.3](https://www.ecma-international.org/archive/ecmascript/1997/TC39/97-001.pdf)
 * [79] [ECMAScript Language Specification, Version 0.3](https://www.ecma-international.org/archive/ecmascript/1997/TC39/97-001.pdf)
-* [80] [The Art of the Metaobject Protocol](undefined)
+* [80] The Art of the Metaobject Protocol
 * [81] [1/15 working group meeting notes](https://www.ecma-international.org/archive/ecmascript/1997/TC39/97-005.pdf)
 * [82] [1/15 working group meeting notes](https://www.ecma-international.org/archive/ecmascript/1997/TC39/97-005.pdf)
 * [83] [1/24 working group notes](https://www.ecma-international.org/archive/ecmascript/1997/TC39/97-008.pdf)
@@ -155,7 +155,7 @@
 * [152] [JSLINT The JavaScript Verifier](https://web.archive.org/web/20020501090302/http://www.crockford.com:80/javascript/lint.html)
 * [153] [JSMIN The JavaScript Minifier](https://web.archive.org/web/20020405140416/http://www.crockford.com/javascript/jsmin.html)
 * [154] [Minify](https://web.archive.org/web/20190511185904/https://www.crockford.com/minify.html)
-* [155] [JavaScript: The Good Parts](undefined)
+* [155] JavaScript: The Good Parts
 * [156] [Introducing JSON](https://web.archive.org/web/20030228034147/http://www.crockford.com/JSON/index.html)
 * [157] [JSON in JavaScript](https://web.archive.org/web/20030111194120/http://www.crockford.com:80/JSON/js.html)
 * [158] [json.org](https://web.archive.org/web/20200216094715/https://www.json.org/json-en.html)
@@ -265,23 +265,23 @@
 * [262] [Minutes of Ecma TC39-TG1 February 16, 2006](https://www.ecma-international.org/archive/ecmascript/2006/TG1/tc39-tg1-2006-011.pdf)
 * [263] [The Maude 2.0 System](http://dl.acm.org/citation.cfm?id=1759148.1759156)
 * [264] [Stratego: A Language for Program Transformation Based on Rewriting Strategies](http://dl.acm.org/citation.cfm?id=647200.718711)
-* [265] [A visual environment for developing context-sensitive term rewriting systems](undefined)
+* [265] A visual environment for developing context-sensitive term rewriting systems
 * [266] [Minutes of Ecma TC39-TG1 October 19-20, 2006](https://www.ecma-international.org/archive/ecmascript/2006/TG1/tc39-tg1-2006-041.pdf)
-* [267] [The Definition of Standard ML](undefined)
+* [267] The Definition of Standard ML
 * [268] [Status Report: Specifying Javascript with ML](http://doi.acm.org/10.1145/1292535.1292543)
 * [269] [Microsoft's VJ\#.Net is made in India](https://web.archive.org/web/20131128170355/http://computer.financialexpress.com/20020729/indnews3.shtml)
 * [270] [A Third Generation Smalltalk-80 Implementation](http://doi.acm.org/10.1145/28697.28709)
-* [271] [American National Standard for Information Technology--Programming Languages--Smalltalk: ANSI INCITS 319-1998](undefined)
+* [271] American National Standard for Information Technology--Programming Languages--Smalltalk: ANSI INCITS 319-1998
 * [272] [Public snapshot of TC39-TG1's private ES4 wiki](https://web.archive.org/web/20070103223712/http://developer.mozilla.org/es4/)
 * [273] [Lisp: Good News, Bad News, How to Win Big (keynote), European Conference on the Practical Applications of Lisp, Cambridge University, Cambridge, England, March 1990](https://web.archive.org/web/20190702100353/http://www.dreamsongs.com/WorseIsBetter.html)
-* [274] [TC39 Email Reflector](undefined)
+* [274] TC39 Email Reflector
 * [275] [Discussion: Browser Profile](https://web.archive.org/web/20071103151603/http://wiki.ecmascript.org:80/doku.php?id=discussion:browser_profile)
 * [276] [Recommendations for Modifications to the ECMAScript Language Specification](https://web.archive.org/web/20020405143250/http://www.crockford.com:80/javascript/recommend.html)
 * [277] [ES4 Minimalist Proposal - Draft](https://web.archive.org/web/20071212035642/http://wiki.ecmascript.org/lib/exe/fetch.php?id=discussion%3Abrowser_profile&cache=cache&media=discussion:es4minimalistproposaldraft.rtf)
 * [278] [Proposal to Refocus TC39-TG1 On the Maintenance of the ECMAScript 3rd Edition Specification](https://ecma-international.org/archive/ecmascript/2007/misc/proposal_to_refocus_tc39-tg1.pdf)
-* [279] [RE: Refocus (16 March 2007, 6:21 PM)](undefined)
-* [280] [RE: Refocus (16 March 2007, 10:42 PM)](undefined)
-* [281] [RE: Refocus (16 March 2007, 4:22 PM)](undefined)
+* [279] RE: Refocus (16 March 2007, 6:21 PM)
+* [280] RE: Refocus (16 March 2007, 10:42 PM)
+* [281] RE: Refocus (16 March 2007, 4:22 PM)
 * [282] [Minutes of Ecma TC39-TG1 March 21-23, 2007](https://www.ecma-international.org/archive/ecmascript/2007/TG1/tc39-tg1-2007-013.pdf)
 * [283] [ES3.1 Proposal Working Draft](https://web.archive.org/web/20071103151613/http://wiki.ecmascript.org/doku.php?id=es3.1:es3.1_proposal_working_draft)
 * [284] [Recommendations for Modifications to the ECMAScript Language Specification (2007-4-21)](https://web.archive.org/web/20070607172621/http://www.crockford.com:80/javascript/recommend.html)
@@ -300,9 +300,9 @@
 * [297] [Mozilla, Microsoft drawing sabers over next JavaScript](https://web.archive.org/web/20071103090450/http://www.itworld.com:80/AppDev/4061/071101mozillams/)
 * [298] [Robust Composition: Towards a Unified Approach to Access Control and Concurrency Control](https://web.archive.org/web/20120205063344/http://www.erights.org/talks/thesis/markm-thesis.pdf)
 * [299] [Proposed ECMAScript 4th Edition -- Language Overview (Revised 23 October 2007)](https://www.ecma-international.org/archive/ecmascript/2007/misc/overview.pdf)
-* [300] [ECMAScript 4 Language Overview White Paper (21 Oct. 2007, 10:32 AM)](undefined)
-* [301] [Re: ECMAScript 4 Language Overview White Paper (23 Oct. 2007, 5:47 AM)](undefined)
-* [302] [Re: ECMAScript 4 Language Overview White Paper (21 Oct. 2007, 11:31 AM)](undefined)
+* [300] ECMAScript 4 Language Overview White Paper (21 Oct. 2007, 10:32 AM)
+* [301] Re: ECMAScript 4 Language Overview White Paper (23 Oct. 2007, 5:47 AM)
+* [302] Re: ECMAScript 4 Language Overview White Paper (21 Oct. 2007, 11:31 AM)
 * [303] [ECMAScript Documentation](https://web.archive.org/web/20071027093837/http://www.ecmascript.org:80/docs.php)
 * [304] [Minutes for the meeting of the Co-ordinating Committee, 9-10 May 2007](https://www.ecma-international.org/archive/ecmascript/2007/GA/ga-2007-088-excerpt.pdf)
 * [305] [ES Wiki](https://web.archive.org/web/20150924163114/http://wiki.ecmascript.org/doku.php)
@@ -335,7 +335,7 @@
 * [332] [ECMAScript Harmony](https://web.archive.org/web/20110522171641/https://mail.mozilla.org/pipermail/es-discuss/2008-August/006837.html)
 * [333] [Press Release: TC39 coalesces on future direction of Web Programming Language](https://www.ecma-international.org/archive/ecmascript/2008/TC39/tc39-2008-073.pdf)
 * [334] [Brendan Eich and Arun Ranganathan on ECMAScript Harmony](https://web.archive.org/web/20080818140242/http://openwebpodcast.com/episode-2-brendan-eich-and-arun-ranganathan-on-ecmascript-harmony)
-* [335] [Progress in digital integrated electronics](undefined)
+* [335] Progress in digital integrated electronics
 * [336] [Announcing SunSpider 0.9](https://web.archive.org/web/20071221055744/http://webkit.org/blog/152/announcing-sunspider-09/)
 * [337] [V8 JavaScript Engine: Design Elements](https://web.archive.org/web/20080904201714/http://code.google.com/apis/v8/design.html)
 * [338] [Chrome / V8 Javascript performance](https://web.archive.org/web/20120228090103/http://darrenhobbs.com:80/2008/09/02/chrome-v8-javascript-performance/)
@@ -397,7 +397,7 @@
 * [394] [Presentations at the 1st meeting of Ecma TC39 Special group on Secure ECMAScript](https://www.ecma-international.org/archive/ecmascript/2008/index.html#files-086)
 * [395] [Automated Analysis of Security-Critical JavaScript APIs](https://ieeexplore.ieee.org/document/5958040/)
 * [396] [ECMA-262, 5th Edition: ECMAScript Language Specification](https://www.ecma-international.org/publications/files/ECMA-ST-ARCH/ECMA-262%205th%20edition%20December%202009.pdf)
-* [397] [Initial set of ECMAScript 5 conformance tests]()
+* [397] Initial set of ECMAScript 5 conformance tests
 * [398] [Full TC39 and SES meeting notes](https://web.archive.org/web/20140605033918/https://mail.mozilla.org/pipermail/es-discuss/2009-January/008711.html)
 * [399] [ECMAScript 5 Conformance Suite](https://web.archive.org/web/20090701022640/http://es5conform.codeplex.com)
 * [400] [Launching Sputnik into Orbit](https://web.archive.org/web/20090701034142/http://blog.chromium.org/2009/06/launching-sputnik-into-orbit.html)
@@ -458,7 +458,7 @@
 * [455] [Look Ma, no this](https://web.archive.org/web/20111102180809/https://mail.mozilla.org/pipermail/es-discuss/2008-August/006941.html)
 * [456] [Scheming with objects](https://web.archive.org/web/19991216142810/http://ftp.cs.indiana.edu/pub/scheme-repository/doc/pubs/swob.txt)
 * [457] [Scheme: An interpreter for extended lambda calculus](https://doi.org/10.1023/A:1010035624696)
-* [458] [JavaScript: The Good Parts](undefined)
+* [458] JavaScript: The Good Parts
 * [459] [ES-Harmony Class System Proposal](https://web.archive.org/web/20100908004606/http://wiki.ecmascript.org:80/doku.php?id=strawman:classes)
 * [460] [How much sugar do classes need?](https://web.archive.org/web/20100718154033/https://mail.mozilla.org/pipermail/es-discuss/2008-November/008181.html)
 * [461] [Classes as Sugar -- old threads revisited (1 of 2)](https://web.archive.org/web/20140605032619/https://mail.mozilla.org/pipermail/es-discuss/2009-March/009116.html)
@@ -539,7 +539,7 @@
 * [536] [three small proposals: the bikeshed cometh!](https://web.archive.org/web/20140605012440/https://mail.mozilla.org/pipermail/es-discuss/2010-April/011010.html)
 * [537] [Strawman: Shorter function syntax](https://web.archive.org/web/20110122011436/http://wiki.ecmascript.org/doku.php?id=strawman:shorter_function_syntax)
 * [538] [Strawman: lambdas](https://web.archive.org/web/20081015125619/http://wiki.ecmascript.org/doku.php?id=strawman:lambdas)
-* [539] [Principles of programming languages](undefined)
+* [539] Principles of programming languages
 * [540] [Allen's lambda syntax proposal](https://web.archive.org/web/20100718152218/https://mail.mozilla.org/pipermail/es-discuss/2008-November/008216.html)
 * [541] [Strawman: arrow function syntax](https://web.archive.org/web/20110509070104/http://wiki.ecmascript.org/doku.php?id=strawman:arrow_function_syntax)
 * [542] [Strawman: block lambda revival](https://web.archive.org/web/20110615161817/http://wiki.ecmascript.org/doku.php?id=strawman:block_lambda_revival)
@@ -579,5 +579,29 @@
 * [576] [TC39 Bugzilla Archive, 2011--2015](https://tc39.es/archives/bugzilla/)
 * [577] [Minutes for the 36th meeting of Ecma TC39](https://www.ecma-international.org/archive/ecmascript/2013/TC39/tc39-2013-055.pdf)
 * [578] [Post-ES6 Spec Process](https://web.archive.org/web/20140724033336/http://slides.com/rafaelweinstein/tc39-process/#)
-* [579] [James Webb Space Telescope ground to flight interface design](undefined)
+* [579] James Webb Space Telescope ground to flight interface design
 * [580] [New JavaScript Engine Module Owner](https://web.archive.org/web/20111009042338/https://www.slideshare.net/BrendanEich/jslol-9539395)
+* [581] Coders at work: Reflections on the craft of programming
+* [582] [Scheme: An interpreter for extended lambda calculus](https://doi.org/10.1023/A:1010035624696)
+* [583] [Programming Pearls: Little Languages](http://doi.acm.org/10.1145/6424.315691)
+* [584] [Telescript Language Reference](https://web.archive.org/web/20100505125110/http://bitsavers.org/pdf/generalMagic/Telescript_Language_Reference_Oct95.pdf)
+* [585] [Oral history of members of original Microsoft JScript development team](https://web.archive.org/web/20200307173732/http://www.wirfs-brock.com/allen/files/jshistory/JScriptInterview.mp3)
+* [586] [Common LISP: the Language, 2nd Edition](https://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html)
+* [587] [Core JavaScript Guide 1.5](https://web.archive.org/web/20021026084319/http://devedge.netscape.com/library/manuals/2000/javascript/1.5/guide/)
+* [588] [Revised section 12](https://www.ecma-international.org/archive/ecmascript/1998/TC39WG/980930-horwat/12.pdf)
+* [589] [Updates for section 12](https://www.ecma-international.org/archive/ecmascript/1998/TC39WG/980430-label3.pdf)
+* [590] [Fragmented Future](https://web.archive.org/web/20111116234636/http://darcyd.com/fragmented_future.pdf)
+* [591] [Immediately-Invoked Function Expression (IIFE)](https://web.archive.org/web/20101118035434/http://benalman.com/news/2010/11/immediately-invoked-function-expression/)
+* [592] [Spice language manual](https://web.archive.org/web/20030831045804/http://www.hpl.hp.com/techreports/2002/HPL-2002-229.pdf)
+* [593] [The Ginger Project](https://web.archive.org/web/20181210095052/https://ginger.readthedocs.io/en/latest)
+* [594] [JS2 source code archive](https://web.archive.org/web/20200226164005/https://dxr.mozilla.org/js/source/mozilla/js2)
+* [595] [Epimetheus](https://web.archive.org/web/20030814002031/http://www.mozilla.org/js/language/Epimetheus.html)
+* [596] [JavaScript 2.0](https://web.archive.org/web/20030803020856/http://www.mozilla.org/js/language/js20.html)
+* [597] [Rust Language Wiki](https://web.archive.org/web/20101007214717/http://github.com/graydon/rust/wiki)
+* [598] [ES Wiki](https://web.archive.org/web/20150924163114/http://wiki.ecmascript.org/doku.php)
+* [599] TC39 Email Reflector
+* [600] [Comments regarding: defineProperty/getProperty design sketch](https://web.archive.org/web/20140605052239/https://mail.mozilla.org/pipermail/es-discuss/2008-April/006222.html)
+* [601] [Attribute defaults for Object.defineProperty](https://web.archive.org/web/20111102184647/https://mail.mozilla.org/pipermail/es-discuss/2008-August/006979.html)
+* [602] [Identify the Champion, An Organisational Pattern Language for Programme Committees](https://web.archive.org/web/20090728094227/http://scg.unibe.ch/download/champion/)
+* [603] [Notification Proxies](https://web.archive.org/web/20170122023705/http://tvcutsem.github.io/notification-proxies)
+* [604] [Expression Closures proposal](https://web.archive.org/web/20071020082604/http://wiki.ecmascript.org:80/doku.php?id=proposals:expression_closures)

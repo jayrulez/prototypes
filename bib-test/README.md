@@ -10,7 +10,7 @@
 
 与最终产物相关的源文件：
 
-* `part-x.md` - 原有的在线版 markdown 文件
+* `part-x.md` / `notes.md` - 原有的在线版 markdown 文件
 * `jshopl.bib` - 由原作者提供的 BibTeX 格式引用文件
 * `jshopl.json` - 由 BibTeX 格式引用文件转换生成的 JSON 格式文件
 
@@ -18,4 +18,4 @@
 
 * `bib-parser.js` - 针对 BibTeX 文件的转换库
 * `bib-converter.js` - 从 BibTeX 文件生成 `jshopl.json` 文件的脚本
-* `ref-converter.js` - 基于 4 个 part 的 markdown 文件与 `jshopl.json`，生成 `online-refs.md` 文件的脚本
+* `ref-converter.js` - 基于原文的 markdown 文件与 `jshopl.json`，生成 `online-refs.md` 文件的脚本

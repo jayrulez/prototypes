@@ -9,6 +9,7 @@ function readFiles() {
   for (let i = 1; i <= 4; i++) {
     str += fs.readFileSync(`./part-${i}.md`, 'utf8') + '\n';
   }
+  str += fs.readFileSync('./notes.md', 'utf8');
   return str;
 }
 
@@ -22,7 +23,7 @@ function walkTokens(token) {
       if (onlineRefIndex > -1) {
         const displayIndex = String(onlineRefIndex + 1)
         token.text = token.tokens[0].text = displayIndex;
-        token.href = `#online-refs.md#${token.text}`;
+        token.href = `#online-refs.md#${token.text || ''}`;
         return;
       }
 
@@ -35,7 +36,7 @@ function walkTokens(token) {
       onlineRefs.push(refItem);
       const displayIndex = String(onlineRefs.length);
       token.text = token.tokens[0].text = displayIndex;
-      token.href = `#online-refs.md#${token.text}`;
+      token.href = `#online-refs.md#${token.text || ''}`;
     }
   }
 }
@@ -45,7 +46,9 @@ const doc = readFiles();
 const docHTML = marked(doc);
 
 const onlieRefsText = onlineRefs
-  .map((r, i) => `* [${i + 1}] [${r.title}](${r.url})`)
+  .map((r, i) => r.url
+    ? `* [${i + 1}] [${r.title}](${r.url})`
+    : `* [${i + 1}] ${r.title}`)
   .join('\n');
 const onlineRefsFile = `
 # 纸质版配套参考文献链接
