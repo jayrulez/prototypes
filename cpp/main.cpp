@@ -1,36 +1,77 @@
 #include <iostream>
 #include <memory>
 
-class Node {
+class Resource {
  public:
-  Node(int n) : num(n) { std::cout << "default ctor" << std::endl; }
-  Node(const Node& r) {
+  Resource(int n) : num(n) { std::cout << "default ctor" << std::endl; }
+  Resource(const Resource& r) {
     std::cout << "copy ctor" << std::endl;
-    num = r.num;  // manually implement
+    num = r.num;
   }
-  Node& operator=(const Node& r) {
+  Resource& operator=(const Resource& r) {
     std::cout << "copy assignment operator" << std::endl;
-    num = r.num;  // manually implement
+    num = r.num;
     return *this;
   }
-  // Node(Node&& r) {
-  //   std::cout << "move ctor" << std::endl;
-  //   std::cout << "count from src is " << r.num << std::endl;
-  // }
-  ~Node() { std::cout << "default dtor " << num << std::endl; }
+  Resource(Resource&& r) {
+    std::cout << "move ctor" << std::endl;
+    num = r.num;
+  }
+  Resource& operator=(Resource&& r) {
+    std::cout << "move assignment operator" << std::endl;
+    num = r.num;
+    return *this;
+  }
+  ~Resource() { std::cout << "default dtor " << num << std::endl; }
   int num;
 };
 
-Node CreateNode() {
-  Node r1(1), r2(2);
+Resource createResource() {
+  Resource r1(1);
   r1.num = 123;
-  // auto r3 = std::move(res);
+  return r1;
+}
+
+void testDefaultCtor() {
+  Resource r1(1), r2(2);
+  printf("%d %d\n", r1.num, r2.num);
+}
+
+void testCopyCtor() {
+  Resource r1(1);
+  r1.num = 123;
+  auto r2 = r1;
+  printf("%d %d\n", r1.num, r2.num);
+}
+
+void testCopyAssignmentOperator() {
+  Resource r1(1), r2(2);
+  r1.num = 123;
   r2 = r1;
   printf("%d %d\n", r1.num, r2.num);
-  return r2;
+}
+
+void testMoveCtor() {
+  Resource r1(1);
+  r1.num = 123;
+  auto r2 = std::move(r1);
+  printf("%d %d\n", r1.num, r2.num);
+}
+
+void testMoveAssignmentOperator() {
+  Resource r1(1), r2(2);
+  r1.num = 123;
+  r2 = std::move(r1);
+  // r2 = createResource();
+  printf("%d %d\n", r1.num, r2.num);
 }
 
 int main() {
-  Node r = CreateNode();
+  // testDefaultCtor();
+  // testCopyCtor();
+  // testCopyAssignmentOperator();
+  // testMoveCtor();
+  // testMoveAssignmentOperator();
+  // auto r = createResource();
   printf("before main return...\n");
 }
