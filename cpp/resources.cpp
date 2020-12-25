@@ -12,8 +12,8 @@ class MyResource {
 class MyContainer {
  public:
   std::unique_ptr<MyResource> res;
-  // MyResource r0;
   // MyResource* res;
+  // MyResource r0;
   MyContainer() : MyContainer("") {}
   MyContainer(const std::string& name) {
     res = std::make_unique<MyResource>();
